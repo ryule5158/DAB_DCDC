@@ -1,0 +1,10 @@
+slprj/
+.slxc/
+*.slxc
+*.asv
+*.autosave
+*.tmp
+*.log
+.codex-remote-attachments/
+.codex/
+.agents/

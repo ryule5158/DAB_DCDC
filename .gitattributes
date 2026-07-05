@@ -1,0 +1,10 @@
+*.slx binary
+*.slxp binary
+*.mdl binary
+*.mlx binary
+*.mat binary
+*.fig binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
