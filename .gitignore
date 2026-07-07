@@ -5,17 +5,25 @@ slprj/
 *.autosave
 *.tmp
 *.log
+*.mat
+*.dat
+*.hea
 .codex-remote-attachments/
 .codex/
 .agents/
 
-# Legacy exploratory models and generated reports kept on disk, but not part
-# of the final physical MOSFET DAB deliverable tracked by this repository.
+# Legacy exploratory models and generated reports are not part of the final
+# physical MOSFET DAB deliverable tracked by this repository.
 DAB_*.slx
 DAB_*.png
 DAB_*.csv
 DAB_*.json
 probe_*.slx
+retune_phase_base_trim_*.m
+sweep_mos_*.m
+tune_*.m
+update_*controller*.m
+copy_manual_layout_from_gan.m
 agentic_toolkit_smoke_test.m
 test_agentic_toolkit_smoke.m
 run_agentic_toolkit_setup.m
@@ -28,36 +36,26 @@ build_pq4040_pc95_validation_bench.m
 build_realistic_same_hardware_models.m
 make_actual_dcdc_circuit_readable_safe.m
 optimize_final_actual_circuit_layout.m
+
 DAB_RA8P1_PCB_Notes/**
 !DAB_RA8P1_PCB_Notes/
 !DAB_RA8P1_PCB_Notes/DAB_RA8P1_Final_Physical_MOSFET.slx
-!DAB_RA8P1_PCB_Notes/DAB_RA8P1_Final_Secondary_GaN.slx
 !DAB_RA8P1_PCB_Notes/FINAL_SIM_BOM_PARAMS.csv
 !DAB_RA8P1_PCB_Notes/25_DCDC_BOM_立创优先.csv
 !DAB_RA8P1_PCB_Notes/FINAL_LCSC_SELECTION_AUDIT.csv
 !DAB_RA8P1_PCB_Notes/datasheets/
 DAB_RA8P1_PCB_Notes/datasheets/**
 !DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/
-!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/**
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/
-DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/**
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C130037_TI_TLV3201AIDCKR_datasheet.pdf
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C178648_PANASONIC_EEHZC1K470P_47uF_80V.pdf
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C2596007_PULSE_PA2247_472NLT_4p7uH_30A.pdf
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C337254_NCC_EKZN630ELL102ML25S_1000uF_63V.pdf
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C4175647_BOURNS_CSS2H_2512R_1mOhm_datasheet.pdf
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C7499406_PSA_FS55X226K101LRG_22uF_100V_X7R.pdf
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/Infineon_IPT015N10N5_datasheet.pdf
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/TI_UCC21520_datasheet.pdf
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/
 DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/**
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/01_final_physical_top_layout_current.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/02_primary_full_bridge_subsystem.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/03_primary_leg_A_MOSFETs_visible.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/04_Q1_gate_RCD_DS_driver_visible.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/05_PQ4040_PC95_transformer_parameters.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/final_physical_validation_common_matrix.csv
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/final_physical_validation_common_matrix.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/final_physical_validation_high_power.csv
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/final_physical_validation_high_power.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/scope_native_48V_100W_Scope_Input_Output_Current.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/scope_native_48V_100W_Scope_Power_Efficiency.png
-!DAB_RA8P1_PCB_Notes/final_physical_mosfet_screenshots/scope_native_48V_100W_Scope_Vout_RawLC.png
-
-# Final MOSFET validation evidence generated after the manual-layout pass.
-!DAB_RA8P1_PCB_Notes/25_DCDC_BOM_立创优先.csv
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/DAB_RA8P1_Final_Physical_MOSFET_final_all_cases.csv
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/DAB_RA8P1_Final_Physical_MOSFET_mos_final_common_matrix.csv
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/DAB_RA8P1_Final_Physical_MOSFET_mos_final_high_power.csv

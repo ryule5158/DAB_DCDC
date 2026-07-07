@@ -6,9 +6,8 @@ notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 if ~exist(notesDir, 'dir'), mkdir(notesDir); end
 
 build_one('DAB_RA8P1_Final_Physical_MOSFET', notesDir, false, false);
-build_one('DAB_RA8P1_Final_Secondary_GaN', notesDir, true, false);
 
-disp('FINAL_PHYSICAL_MOSFET_AND_SECONDARY_GAN_DAB_MODELS_BUILT');
+disp('FINAL_PHYSICAL_MOSFET_DAB_MODEL_BUILT');
 end
 
 function build_one(mdl, notesDir, secGan, mpptMode)
@@ -132,7 +131,7 @@ set_param(mdl + "/Rload_DC_Output", 'R','23.04', 'R_unit','Ohm');
 set_param(mdl + "/Rload_DC_Output", 'Orientation','down');
 add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', mdl + "/SEC_Return_Ref", 'Position',[1950 440 2000 490]);
 
-% Full bridges contain the actual nonideal MOSFET/GaN devices and gate networks.
+% Full bridges contain the actual nonideal MOSFET devices and gate networks.
 add_full_bridge(mdl, "PRI_Full_Bridge_RealDrivers", [355 115 735 560], false, ...
     ["Q1_PRI_A_HS","Q2_PRI_A_LS","Q3_PRI_B_HS","Q4_PRI_B_LS"]);
 add_full_bridge(mdl, "SEC_Full_Bridge_RealDrivers", [1240 115 1620 560], secGan, ...
@@ -210,7 +209,6 @@ try
     ann = Simulink.Annotation(char(mdl), sprintf(['Selected physical parts used in the final model\n' ...
         'Q1-Q8 MOS baseline: Infineon IPT015N10N5, 100V, Rds_on max 1.5mOhm.\n' ...
         'MOS isolated drivers: TI UCC21520DWR/UCC21520ADWR class, 5.7kVrms, 45ns timing budget.\n' ...
-        'Secondary GaN model: secondary Q5-Q8 use LMG3100R017-class 100V 1.7mOhm GaN FET with integrated driver; ISO7740 isolation remains before driver inputs.\n' ...
         'Input bulk: 4x NCC EKZN630ELL102ML25S, 1000uF 63V, ESR 24mOhm each.\n' ...
         'Input/output MLCC: PSA FS55X226K101LRG, 22uF 100V X7R.\n' ...
         'Secondary/output polymer caps: Panasonic EEHZC1K470P, 47uF 80V, ESR 36mOhm.\n' ...
@@ -487,11 +485,10 @@ add_block('simulink/Ports & Subsystems/Subsystem', bankPath, 'Position',[760 815
 try, delete_line(bankPath, 'In1/1', 'Out1/1'); catch, end
 try, delete_block(bankPath + "/Out1"); catch, end
 if secGan
-    titleText = "RA8P1 PWM isolation to secondary LMG3100 inputs";
+    titleText = "RA8P1 PWM interface to secondary bridge driver inputs";
     delayText = "3.7e-8";
-    note = ['Secondary GaN version: PWM isolation remains explicit.' newline ...
+    note = ['Alternate secondary bridge version: PWM interface remains explicit.' newline ...
         'Primary MOSFET bridges: UCC21520-class isolated gate drivers.' newline ...
-        'Secondary bridge: ISO7740DWR-class 4-forward-channel logic isolation feeding LMG3100R017 integrated GaN drivers.' newline ...
         'Modeled delay: 37 ns nominal budget, small enough for 300 kHz with 120 ns RA8P1 dead-time.' newline ...
         'No firmware architecture change: same phase-shift outputs, only driver delay/dead-time calibration differs.'];
 else
@@ -545,7 +542,7 @@ add_block('simulink/Sources/In1', drvPath + "/PWM_B", 'Position',[25 72 55 92]);
 add_block('simulink/Sinks/Out1', drvPath + "/GATE_A", 'Position',[500 28 530 48]);
 add_block('simulink/Sinks/Out1', drvPath + "/GATE_B", 'Position',[500 72 530 92]);
 if secGanDriver
-    icon = "ISO7740 + LMG3100 inputs";
+    icon = "Secondary bridge driver interface";
 else
     icon = "UCC21520 dual isolated gate driver";
 end
@@ -1115,7 +1112,7 @@ beautify_output_filter_layout(mdl + "/Output_Filter_Load");
 beautify_measurement_interface_layout(mdl + "/Isolated_VI_Sensing_Interface");
 
 topLabel = "Power path: input EMI -> primary MOSFET full bridge -> PQ4040/PC95 transformer -> secondary " + ...
-    ternary(secGan, "GaN bridge", "MOSFET bridge") + " -> output filter/load. Control and scopes are kept below the power schematic.";
+    ternary(secGan, "alternate bridge", "MOSFET bridge") + " -> output filter/load. Control and scopes are kept below the power schematic.";
 add_layout_note(mdl, topLabel, [55 35 900 75], 11);
 add_layout_note(mdl, "RA8P1-friendly realtime feedback control: measured Vin/Vout/Iout -> PI phase command -> isolated gate interface.", [85 735 1010 775], 10);
 compact_top_labels(mdl);
@@ -1160,7 +1157,7 @@ for i = 1:numel(blocks)
         move_block(legPath, name, [545 325 635 415], "right");
     end
 end
-add_layout_note(legPath, "Actual switching devices are the two N-channel MOSFET/GaN blocks; driver subsystems only model gate network parasitics.", [105 25 760 55], 10);
+add_layout_note(legPath, "Actual switching devices are the two N-channel MOSFET blocks; driver subsystems only model gate network parasitics.", [105 25 760 55], 10);
 route_all_lines(legPath);
 end
 
