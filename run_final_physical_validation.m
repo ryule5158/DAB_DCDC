@@ -1,57 +1,65 @@
-function results = run_final_physical_validation(mode)
+function results = run_final_physical_validation(mode, mdl)
 %RUN_FINAL_PHYSICAL_VALIDATION Run acceptance cases on the final physical DAB SLX.
 %
 % Results are read from Simscape sensor paths already wired to Scope/To
-% Workspace blocks in DAB_RA8P1_Final_Physical_MOSFET. This file does not
-% implement a replacement plant model.
+% Workspace blocks in the final Simulink electrical model. This file does
+% not implement a replacement plant model.
 
 if nargin < 1
     mode = "all";
 end
+if nargin < 2
+    mdl = "DAB_RA8P1_Final_Physical_MOSFET";
+end
+mode = string(mode);
+mdl = string(mdl);
 
 rootDir = fileparts(mfilename('fullpath'));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
-outDir = fullfile(notesDir, 'final_physical_mosfet_screenshots');
+outDir = fullfile(notesDir, 'final_physical_models_screenshots');
 if ~exist(outDir, 'dir')
     mkdir(outDir);
 end
 
-mdl = 'DAB_RA8P1_Final_Physical_MOSFET';
-modelFile = fullfile(notesDir, [mdl '.slx']);
-if bdIsLoaded(mdl)
-    close_system(mdl, 0);
+modelFile = fullfile(notesDir, char(mdl + ".slx"));
+if ~exist(modelFile, 'file')
+    error('Model file does not exist: %s', modelFile);
+end
+if bdIsLoaded(char(mdl))
+    close_system(char(mdl), 0);
 end
 load_system(modelFile);
 
-set_param(mdl, ...
+set_param(char(mdl), ...
     'StopTime', '0.00045', ...
     'ReturnWorkspaceOutputs', 'on', ...
     'SaveFormat', 'Dataset');
-set_param([mdl '/VIN_18_32V_Bench_Source'], 'dc_voltage', '24');
+set_param(resolve_block_path(mdl, "VIN_18_32V_Bench_Source"), 'dc_voltage', '24');
 
-cases = build_cases(string(mode));
+cases = build_cases(mode);
 rows = repmat(empty_result(), numel(cases), 1);
 for k = 1:numel(cases)
     rows(k) = run_one_case(mdl, cases(k));
     fprintf(['CASE Vin=%g Vref=%g Ptarget=%g R=%g ' ...
-        'Vmean=%.3f Vfinal=%.3f Pout=%.2f Pin=%.2f ' ...
+        'Vmean=%.3f Verr=%.3f pass01=%d Vfinal=%.3f Pout=%.2f Pin=%.2f ' ...
         'Iout=%.3f phase=%.4f us wall=%.1f s\n'], ...
         rows(k).Vin_set_V, rows(k).Vref_V, rows(k).Ptarget_W, ...
-        rows(k).Rload_Ohm, rows(k).Vout_mean_V, rows(k).Vout_final_V, ...
-        rows(k).Pout_mean_W, rows(k).Pin_mean_W, rows(k).Iout_mean_A, ...
-        rows(k).Phase_mean_us, rows(k).Wall_s);
+        rows(k).Rload_Ohm, rows(k).Vout_mean_V, rows(k).Vout_error_V, ...
+        rows(k).Voltage_pass_0p1, rows(k).Vout_final_V, rows(k).Pout_mean_W, ...
+        rows(k).Pin_mean_W, rows(k).Iout_mean_A, rows(k).Phase_mean_us, rows(k).Wall_s);
 end
 
 results = struct2table(rows);
-csvPath = fullfile(outDir, "final_physical_validation_" + string(mode) + ".csv");
+safeMdl = erase(mdl, "DAB_RA8P1_Final_");
+csvPath = fullfile(outDir, safeMdl + "_validation_" + mode + ".csv");
 writetable(results, csvPath);
-plotPath = fullfile(outDir, "final_physical_validation_" + string(mode) + ".png");
+plotPath = fullfile(outDir, safeMdl + "_validation_" + mode + ".png");
 plot_validation_summary(results, plotPath);
 
 fprintf('FINAL_PHYSICAL_VALIDATION_CSV=%s\n', csvPath);
 fprintf('FINAL_PHYSICAL_VALIDATION_PNG=%s\n', plotPath);
 disp(results);
-set_param(mdl, 'Dirty', 'off');
+set_param(char(mdl), 'Dirty', 'off');
 end
 
 function cases = build_cases(mode)
@@ -64,12 +72,12 @@ switch mode
         vrefs = [36 40 44 48];
         targets = [20 50 100];
         for v = vrefs
-            cases = [cases make_cases(24, v, targets)]; %#ok<AGROW>
+            cases = [cases; make_cases(24, v, targets)]; %#ok<AGROW>
         end
     case "high_power"
-        cases = [make_cases(24, 36, [300 500]) make_cases(24, 48, [300 500])];
+        cases = [make_cases(24, 36, [300 500]); make_cases(24, 48, [300 500])];
     case "all"
-        cases = [build_cases("common_matrix") build_cases("high_power")];
+        cases = [build_cases("common_matrix"); build_cases("high_power")];
     otherwise
         error('Unknown validation mode: %s', mode);
 end
@@ -85,14 +93,15 @@ end
 end
 
 function r = run_one_case(mdl, cfg)
-set_param([mdl '/VIN_18_32V_Bench_Source'], 'dc_voltage', sprintf('%.10g', cfg.Vin));
-set_param([mdl '/MCU_Vout_Setpoint_V'], 'Value', sprintf('%.10g', cfg.Vref));
+mdl = string(mdl);
+set_param(resolve_block_path(mdl, "VIN_18_32V_Bench_Source"), 'dc_voltage', sprintf('%.10g', cfg.Vin));
+set_param(char(mdl + "/MCU_Vout_Setpoint_V"), 'Value', sprintf('%.10g', cfg.Vref));
 rload = cfg.Vref^2 / cfg.Ptarget;
-set_param([mdl '/Rload_DC_Output'], 'R', sprintf('%.10g', rload));
+set_param(resolve_block_path(mdl, "Rload_DC_Output"), 'R', sprintf('%.10g', rload));
 set_output_initial_voltage(mdl, cfg.Vref);
 
 tic;
-simOut = sim(mdl);
+simOut = sim(char(mdl));
 wall = toc;
 
 [tVin, vin] = get_signal(simOut, mdl, 'vin');
@@ -120,24 +129,43 @@ r.Ptarget_W = cfg.Ptarget;
 r.Rload_Ohm = rload;
 r.Vin_mean_V = mean(vin(idxVin));
 r.Vout_mean_V = mean(vout(idxVout));
+r.Vout_error_V = r.Vout_mean_V - cfg.Vref;
+r.Voltage_pass_0p1 = abs(r.Vout_error_V) <= 0.1;
 r.Vout_final_V = vout(end);
 r.Vout_p2p_V = max(vout(idxVout)) - min(vout(idxVout));
 r.Iin_mean_A = mean(iin(idxIin));
 r.Iout_mean_A = mean(iout(idxIout));
+r.Iload_calc_A = r.Vout_mean_V / rload;
 r.Pin_mean_W = mean(pin(idxPin));
 r.Pout_mean_W = mean(pout(idxPout));
+r.Pload_calc_W = r.Vout_mean_V^2 / rload;
 r.Eff_mean_pct = mean(eff(idxEff));
 r.Phase_mean_us = mean(ph(idxPh));
 r.Wall_s = wall;
 end
 
 function set_output_initial_voltage(mdl, vref)
-capNames = ["CSEC_DC_Link_Cap", "COUT_DC_Bulk", "COUT_X_Film_Cap"];
+mdl = string(mdl);
+capNames = ["CSEC_DC_Link_Cap", "COUT_DC_Bulk", "COUT_HF_MLCC_Cap"];
 for i = 1:numel(capNames)
-    blk = [mdl '/' char(capNames(i))];
+    blk = resolve_block_path(mdl, capNames(i));
     set_param(blk, 'vc_specify', 'on', 'vc_priority', 'High', ...
         'vc', sprintf('%.10g', vref), 'vc_unit', 'V');
 end
+end
+
+function blk = resolve_block_path(mdl, blockName)
+mdl = string(mdl);
+blockName = string(blockName);
+matches = find_system(char(mdl), ...
+    'LookUnderMasks','all', ...
+    'FollowLinks','on', ...
+    'SearchDepth', inf, ...
+    'Name', char(blockName));
+if isempty(matches)
+    error('Block "%s" was not found in model "%s".', blockName, mdl);
+end
+blk = matches{1};
 end
 
 function r = empty_result()
@@ -148,12 +176,16 @@ r = struct( ...
     'Rload_Ohm', NaN, ...
     'Vin_mean_V', NaN, ...
     'Vout_mean_V', NaN, ...
+    'Vout_error_V', NaN, ...
+    'Voltage_pass_0p1', false, ...
     'Vout_final_V', NaN, ...
     'Vout_p2p_V', NaN, ...
     'Iin_mean_A', NaN, ...
     'Iout_mean_A', NaN, ...
+    'Iload_calc_A', NaN, ...
     'Pin_mean_W', NaN, ...
     'Pout_mean_W', NaN, ...
+    'Pload_calc_W', NaN, ...
     'Eff_mean_pct', NaN, ...
     'Phase_mean_us', NaN, ...
     'Wall_s', NaN);
@@ -165,7 +197,8 @@ idx = max(1, floor(n*0.75)):n;
 end
 
 function [t, y] = get_signal(simOut, mdl, suffix)
-varName = [mdl '_' suffix];
+mdl = string(mdl);
+varName = char(mdl + "_" + suffix);
 s = simOut.get(varName);
 if isa(s, 'timeseries')
     t = s.Time(:);
