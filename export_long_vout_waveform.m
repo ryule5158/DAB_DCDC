@@ -1,5 +1,5 @@
 function export_long_vout_waveform()
-%EXPORT_LONG_VOUT_WAVEFORM Export 8.5 ms Vout evidence for the final model.
+%EXPORT_LONG_VOUT_WAVEFORM Export 10 ms Vout evidence for the final model.
 
 rootDir = fileparts(mfilename('fullpath'));
 if isempty(rootDir)
@@ -24,7 +24,7 @@ cfg.Ptarget = 100;
 out = run_case(mdl, cfg);
 [t, vout] = get_signal(out, mdl, 'vout');
 
-tailStart = 0.0060;
+tailStart = 0.0090;
 idxTail = t >= tailStart;
 vMean = mean(vout(idxTail));
 vP2P = max(vout(idxTail)) - min(vout(idxTail));
@@ -38,7 +38,7 @@ xlabel('Time (ms)');
 ylabel('Vout (V)');
 title(sprintf('Final MOSFET DAB long Vout: Vin=%g V, Vref=%g V, P=%g W, tail mean=%.4f V, tail ripple=%.4f Vpp', ...
     cfg.Vin, cfg.Vref, cfg.Ptarget, vMean, vP2P), 'FontWeight', 'bold');
-ylim([47.75 48.15]);
+ylim([47.85 48.08]);
 exportgraphics(fig, fullfile(outDir, 'final_mos_48V_100W_long_vout.png'), 'Resolution', 160);
 close(fig);
 fprintf('Exported %s\n', fullfile(outDir, 'final_mos_48V_100W_long_vout.png'));
@@ -47,7 +47,7 @@ end
 function out = run_case(mdl, cfg)
 rload = cfg.Vref^2 / cfg.Ptarget;
 in = Simulink.SimulationInput(char(mdl));
-in = in.setModelParameter('StopTime', '0.0085');
+in = in.setModelParameter('StopTime', '0.010');
 in = in.setModelParameter('ReturnWorkspaceOutputs', 'on');
 in = in.setModelParameter('SaveFormat', 'Dataset');
 in = in.setBlockParameter(resolve_block_path(mdl, "VIN_18_32V_Bench_Source"), ...

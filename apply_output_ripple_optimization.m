@@ -112,7 +112,7 @@ script = replace_line(script, ...
 if ~contains(script, boostMarker)
     oldLine = "phaseUs = phaseUs + 0.010*(1 - exp(-max(Iout - 7.0, 0)/2.0));";
     newLine = oldLine + newline + boostMarker + newline + ...
-        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);";
+        "phaseUs = phaseUs + 0.026*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);";
     if ~contains(script, oldLine)
         error('Expected boost calibration line was not found.');
     end
@@ -120,11 +120,14 @@ if ~contains(script, boostMarker)
 else
     script = replace_if_present(script, ...
         "phaseUs = phaseUs + 0.015*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
-        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
+        "phaseUs = phaseUs + 0.026*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
     script = replace_if_present(script, ...
         "phaseUs = phaseUs + 0.030*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
-        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
-    if ~contains(script, "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);")
+        "phaseUs = phaseUs + 0.026*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
+    script = replace_if_present(script, ...
+        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
+        "phaseUs = phaseUs + 0.026*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
+    if ~contains(script, "phaseUs = phaseUs + 0.026*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);")
         error('Expected long-trace boost calibration line was not found.');
     end
 end

@@ -37,14 +37,27 @@ if mode == "spot"
         24 48 300
         24 48 500
         ];
+elseif mode == "exact48"
+    cases = [
+        24 48 100
+        ];
 else
     cases = [
         24 48 100
         ];
 end
 
-stopTime = 0.0085;
-tailStart = 0.0060;
+if mode == "exact48"
+    stopTime = 0.0100;
+    tailStart = 0.0090;
+    errorLimit = 0.010;
+    rippleLimit = 0.150;
+else
+    stopTime = 0.0085;
+    tailStart = 0.0060;
+    errorLimit = 0.050;
+    rippleLimit = 0.100;
+end
 rows = repmat(empty_result(), size(cases, 1) * repeats, 1);
 rowIdx = 0;
 for rep = 1:repeats
@@ -53,7 +66,7 @@ for rep = 1:repeats
         cfg.Vref = cases(k, 2);
         cfg.Ptarget = cases(k, 3);
         rowIdx = rowIdx + 1;
-        rows(rowIdx) = run_one_case(mdl, cfg, stopTime, tailStart, rep);
+        rows(rowIdx) = run_one_case(mdl, cfg, stopTime, tailStart, errorLimit, rippleLimit, rep);
         fprintf(['FINAL_LONG rep=%d Vin=%g Vref=%g P=%g mean=%.5f err=%.5f ' ...
             'p2p=%.5f rms=%.5f pass=%d phase=%.5f us wall=%.1fs\n'], ...
             rows(rowIdx).Repeat, rows(rowIdx).Vin_set_V, rows(rowIdx).Vref_V, ...
@@ -70,7 +83,7 @@ writetable(results, outCsv);
 fprintf('Wrote %s\n', outCsv);
 end
 
-function r = run_one_case(mdl, cfg, stopTime, tailStart, repeatIdx)
+function r = run_one_case(mdl, cfg, stopTime, tailStart, errorLimit, rippleLimit, repeatIdx)
 rload = cfg.Vref^2 / cfg.Ptarget;
 in = Simulink.SimulationInput(char(mdl));
 in = in.setModelParameter('StopTime', sprintf('%.10g', stopTime));
@@ -112,7 +125,9 @@ r.Vout_max_tail_V = max(vTail);
 r.Vout_p2p_tail_V = r.Vout_max_tail_V - r.Vout_min_tail_V;
 r.Vout_ac_rms_tail_V = rms(vTail - r.Vout_mean_tail_V);
 r.Phase_mean_tail_us = mean(ph(idxPh));
-r.Pass_strict_48V = abs(r.Vout_error_tail_V) <= 0.05 && r.Vout_p2p_tail_V <= 0.10;
+r.Error_limit_V = errorLimit;
+r.Ripple_limit_Vpp = rippleLimit;
+r.Pass_strict_48V = abs(r.Vout_error_tail_V) <= errorLimit && r.Vout_p2p_tail_V <= rippleLimit;
 r.Wall_s = wall;
 end
 
@@ -140,7 +155,8 @@ r = struct('Repeat', NaN, 'Vin_set_V', NaN, 'Vref_V', NaN, ...
     'Vout_error_tail_V', NaN, 'Vout_final_V', NaN, ...
     'Vout_min_tail_V', NaN, 'Vout_max_tail_V', NaN, ...
     'Vout_p2p_tail_V', NaN, 'Vout_ac_rms_tail_V', NaN, ...
-    'Phase_mean_tail_us', NaN, 'Pass_strict_48V', false, 'Wall_s', NaN);
+    'Phase_mean_tail_us', NaN, 'Error_limit_V', NaN, ...
+    'Ripple_limit_Vpp', NaN, 'Pass_strict_48V', false, 'Wall_s', NaN);
 end
 
 function [t, y] = get_signal(out, mdl, suffix)
