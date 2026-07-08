@@ -27,7 +27,8 @@ set_cap(mdl, "COUT_HF_MLCC_Cap", "110", "uF", "0.0008", ...
 
 apply_phase_calibration(mdl);
 apply_long_trace_controller_tuning(mdl);
-apply_feedback_divider_calibration(mdl);
+apply_transformer_ratio_tuning(mdl);
+remove_feedback_divider_calibration(mdl);
 
 save_system(char(mdl), modelFile);
 fprintf('OUTPUT_RIPPLE_OPTIMIZATION_APPLIED %s\n', modelFile);
@@ -139,34 +140,44 @@ end
 chart(1).Script = char(script);
 end
 
-function apply_feedback_divider_calibration(mdl)
-gain = 0.999530;
+function apply_transformer_ratio_tuning(mdl)
+core = find_system(char(mdl), 'LookUnderMasks', 'all', ...
+    'FollowLinks', 'on', 'Name', 'Coupled_Core');
+if isempty(core)
+    error('Transformer Coupled_Core block was not found.');
+end
+set_param(core{1}, 'L1', '57.5', 'L1_unit', 'uH', ...
+    'L2', '246', 'L2_unit', 'uH', 'k', '0.999999');
+try
+    set_param(core{1}, 'AttributesFormatString', ...
+        'Transformer effective turns ratio tuned for 48V: L1=57.5uH, L2=246uH, Ns/Np=2.0684');
+catch
+end
+t1 = char(mdl + "/T1_HF_Transformer_Real");
+try
+    set_param(t1, 'MaskDisplay', ...
+        "color('black');disp('T1 PQ4040 PC95\nNp:Ns 1:2.068, Llk_sec 0.5uH\nLm_sec 246uH, DCR 0.95/3mR');");
+catch
+end
+end
+
+function remove_feedback_divider_calibration(mdl)
 gainName = "VOUT_Feedback_Divider_Cal";
-gainBlk = char(mdl + "/" + gainName);
-adcBlk = char(mdl + "/ADC_OneCycle_Delay");
-fromBlk = char(mdl + "/VOUT_MEAS_Control_From");
 matches = find_system(char(mdl), 'SearchDepth', 1, 'Name', char(gainName));
 if isempty(matches)
-    fromPos = get_param(fromBlk, 'Position');
-    adcPos = get_param(adcBlk, 'Position');
-    x = round((fromPos(3) + adcPos(1)) / 2);
-    y = round((fromPos(2) + adcPos(2)) / 2);
-    add_block('simulink/Math Operations/Gain', gainBlk, ...
-        'Gain', sprintf('%.8g', gain), ...
-        'Position', [x - 24, y - 16, x + 24, y + 16]);
-    phAdc = get_param(adcBlk, 'PortHandles');
-    oldLine = get_param(phAdc.Inport(1), 'Line');
-    if oldLine ~= -1
-        delete_line(oldLine);
-    end
-    add_line(char(mdl), 'VOUT_MEAS_Control_From/1', 'VOUT_Feedback_Divider_Cal/1', 'autorouting', 'on');
-    add_line(char(mdl), 'VOUT_Feedback_Divider_Cal/1', 'ADC_OneCycle_Delay/1', 'autorouting', 'on');
-else
-    set_param(matches{1}, 'Gain', sprintf('%.8g', gain));
+    return;
 end
 try
-    set_param(gainBlk, 'AttributesFormatString', ...
-        'Vout feedback divider calibration: MCU ADC sees 0.999530*Vout');
+    delete_line(char(mdl), 'VOUT_MEAS_Control_From/1', 'VOUT_Feedback_Divider_Cal/1');
+catch
+end
+try
+    delete_line(char(mdl), 'VOUT_Feedback_Divider_Cal/1', 'ADC_OneCycle_Delay/1');
+catch
+end
+delete_block(matches{1});
+try
+    add_line(char(mdl), 'VOUT_MEAS_Control_From/1', 'ADC_OneCycle_Delay/1', 'autorouting', 'on');
 catch
 end
 end
