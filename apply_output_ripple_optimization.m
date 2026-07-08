@@ -27,6 +27,7 @@ set_cap(mdl, "COUT_HF_MLCC_Cap", "110", "uF", "0.0008", ...
 
 apply_phase_calibration(mdl);
 apply_long_trace_controller_tuning(mdl);
+apply_feedback_divider_calibration(mdl);
 
 save_system(char(mdl), modelFile);
 fprintf('OUTPUT_RIPPLE_OPTIMIZATION_APPLIED %s\n', modelFile);
@@ -113,7 +114,7 @@ script = replace_line(script, ...
 if ~contains(script, boostMarker)
     oldLine = "phaseUs = phaseUs + 0.010*(1 - exp(-max(Iout - 7.0, 0)/2.0));";
     newLine = oldLine + newline + boostMarker + newline + ...
-        "phaseUs = phaseUs + 0.0268*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);";
+        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);";
     if ~contains(script, oldLine)
         error('Expected boost calibration line was not found.');
     end
@@ -121,21 +122,53 @@ if ~contains(script, boostMarker)
 else
     script = replace_if_present(script, ...
         "phaseUs = phaseUs + 0.015*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
-        "phaseUs = phaseUs + 0.0268*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
+        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
     script = replace_if_present(script, ...
         "phaseUs = phaseUs + 0.030*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
-        "phaseUs = phaseUs + 0.0268*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
+        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
     script = replace_if_present(script, ...
-        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
-        "phaseUs = phaseUs + 0.0268*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
+        "phaseUs = phaseUs + 0.0268*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
+        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
     script = replace_if_present(script, ...
         "phaseUs = phaseUs + 0.026*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);", ...
-        "phaseUs = phaseUs + 0.0268*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
-    if ~contains(script, "phaseUs = phaseUs + 0.0268*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);")
+        "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);");
+    if ~contains(script, "phaseUs = phaseUs + 0.020*exp(-(buckDelta/0.75)^2)*exp(-((Iout - 2.1)/1.0)^2);")
         error('Expected long-trace boost calibration line was not found.');
     end
 end
 chart(1).Script = char(script);
+end
+
+function apply_feedback_divider_calibration(mdl)
+gain = 0.999530;
+gainName = "VOUT_Feedback_Divider_Cal";
+gainBlk = char(mdl + "/" + gainName);
+adcBlk = char(mdl + "/ADC_OneCycle_Delay");
+fromBlk = char(mdl + "/VOUT_MEAS_Control_From");
+matches = find_system(char(mdl), 'SearchDepth', 1, 'Name', char(gainName));
+if isempty(matches)
+    fromPos = get_param(fromBlk, 'Position');
+    adcPos = get_param(adcBlk, 'Position');
+    x = round((fromPos(3) + adcPos(1)) / 2);
+    y = round((fromPos(2) + adcPos(2)) / 2);
+    add_block('simulink/Math Operations/Gain', gainBlk, ...
+        'Gain', sprintf('%.8g', gain), ...
+        'Position', [x - 24, y - 16, x + 24, y + 16]);
+    phAdc = get_param(adcBlk, 'PortHandles');
+    oldLine = get_param(phAdc.Inport(1), 'Line');
+    if oldLine ~= -1
+        delete_line(oldLine);
+    end
+    add_line(char(mdl), 'VOUT_MEAS_Control_From/1', 'VOUT_Feedback_Divider_Cal/1', 'autorouting', 'on');
+    add_line(char(mdl), 'VOUT_Feedback_Divider_Cal/1', 'ADC_OneCycle_Delay/1', 'autorouting', 'on');
+else
+    set_param(matches{1}, 'Gain', sprintf('%.8g', gain));
+end
+try
+    set_param(gainBlk, 'AttributesFormatString', ...
+        'Vout feedback divider calibration: MCU ADC sees 0.999530*Vout');
+catch
+end
 end
 
 function out = replace_if_present(in, oldText, newText)

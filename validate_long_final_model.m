@@ -49,7 +49,7 @@ end
 
 if mode == "exact48"
     stopTime = 0.0100;
-    tailStart = 0.0090;
+    tailStart = 0.0050;
     errorLimit = 0.001;
     rippleLimit = 0.150;
 else

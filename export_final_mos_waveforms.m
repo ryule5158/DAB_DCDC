@@ -45,15 +45,6 @@ in = in.setBlockParameter(char(mdl + "/MCU_Vout_Setpoint_V"), ...
 in = in.setBlockParameter(resolve_block_path(mdl, "Rload_DC_Output"), ...
     'R', sprintf('%.10g', rload));
 
-capNames = ["CSEC_DC_Link_Cap", "COUT_DC_Bulk", "COUT_HF_MLCC_Cap"];
-for i = 1:numel(capNames)
-    blk = resolve_block_path(mdl, capNames(i));
-    in = in.setBlockParameter(blk, 'vc_specify', 'on');
-    in = in.setBlockParameter(blk, 'vc_priority', 'High');
-    in = in.setBlockParameter(blk, 'vc', sprintf('%.10g', cfg.Vref));
-    in = in.setBlockParameter(blk, 'vc_unit', 'V');
-end
-
 simOut = sim(in);
 end
 

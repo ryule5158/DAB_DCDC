@@ -24,7 +24,7 @@ cfg.Ptarget = 100;
 out = run_case(mdl, cfg);
 [t, vout] = get_signal(out, mdl, 'vout');
 
-tailStart = 0.0090;
+tailStart = 0.0050;
 idxTail = t >= tailStart;
 vMean = mean(vout(idxTail));
 vP2P = max(vout(idxTail)) - min(vout(idxTail));
