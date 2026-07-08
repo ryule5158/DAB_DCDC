@@ -50,7 +50,7 @@ end
 if mode == "exact48"
     stopTime = 0.0100;
     tailStart = 0.0090;
-    errorLimit = 0.010;
+    errorLimit = 0.001;
     rippleLimit = 0.150;
 else
     stopTime = 0.0085;
@@ -95,10 +95,6 @@ in = in.setBlockParameter(char(mdl + "/MCU_Vout_Setpoint_V"), ...
     'Value', sprintf('%.10g', cfg.Vref));
 in = in.setBlockParameter(resolve_block_path(mdl, "Rload_DC_Output"), ...
     'R', sprintf('%.10g', rload));
-for capName = ["CSEC_DC_Link_Cap", "COUT_DC_Bulk", "COUT_HF_MLCC_Cap"]
-    in = configure_cap_initial(in, mdl, capName, cfg.Vref);
-end
-
 tic;
 out = sim(in);
 wall = toc;
@@ -127,16 +123,8 @@ r.Vout_ac_rms_tail_V = rms(vTail - r.Vout_mean_tail_V);
 r.Phase_mean_tail_us = mean(ph(idxPh));
 r.Error_limit_V = errorLimit;
 r.Ripple_limit_Vpp = rippleLimit;
-r.Pass_strict_48V = abs(r.Vout_error_tail_V) <= errorLimit && r.Vout_p2p_tail_V <= rippleLimit;
+r.Pass_strict_48V = abs(r.Vout_error_tail_V) <= errorLimit && r.Vout_p2p_tail_V < rippleLimit;
 r.Wall_s = wall;
-end
-
-function in = configure_cap_initial(in, mdl, blockName, vref)
-blk = resolve_block_path(mdl, blockName);
-in = in.setBlockParameter(blk, 'vc_specify', 'on');
-in = in.setBlockParameter(blk, 'vc_priority', 'High');
-in = in.setBlockParameter(blk, 'vc', sprintf('%.10g', vref));
-in = in.setBlockParameter(blk, 'vc_unit', 'V');
 end
 
 function blk = resolve_block_path(mdl, blockName)
