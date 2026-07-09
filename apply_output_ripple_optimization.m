@@ -27,7 +27,7 @@ set_cap(mdl, "COUT_HF_MLCC_Cap", "110", "uF", "0.0008", ...
 
 apply_phase_calibration(mdl);
 apply_long_trace_controller_tuning(mdl);
-apply_transformer_ratio_tuning(mdl);
+restore_fixed_transformer_ratio(mdl);
 remove_feedback_divider_calibration(mdl);
 
 save_system(char(mdl), modelFile);
@@ -140,23 +140,23 @@ end
 chart(1).Script = char(script);
 end
 
-function apply_transformer_ratio_tuning(mdl)
+function restore_fixed_transformer_ratio(mdl)
 core = find_system(char(mdl), 'LookUnderMasks', 'all', ...
     'FollowLinks', 'on', 'Name', 'Coupled_Core');
 if isempty(core)
     error('Transformer Coupled_Core block was not found.');
 end
 set_param(core{1}, 'L1', '57.5', 'L1_unit', 'uH', ...
-    'L2', '246', 'L2_unit', 'uH', 'k', '0.999999');
+    'L2', '230', 'L2_unit', 'uH', 'k', '0.999999');
 try
     set_param(core{1}, 'AttributesFormatString', ...
-        'Transformer effective turns ratio tuned for 48V: L1=57.5uH, L2=246uH, Ns/Np=2.0684');
+        'Transformer fixed by hardware: L1=57.5uH, L2=230uH, Ns/Np=2.0000');
 catch
 end
 t1 = char(mdl + "/T1_HF_Transformer_Real");
 try
     set_param(t1, 'MaskDisplay', ...
-        "color('black');disp('T1 PQ4040 PC95\nNp:Ns 1:2.068, Llk_sec 0.5uH\nLm_sec 246uH, DCR 0.95/3mR');");
+        "color('black');disp('T1 PQ4040 PC95\nNp:Ns 1:2 fixed, Llk_sec 0.5uH\nLm_sec 230uH, DCR 0.95/3mR');");
 catch
 end
 end

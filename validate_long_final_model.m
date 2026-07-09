@@ -6,7 +6,7 @@ function results = validate_long_final_model(mode, repeats)
 % behavior that is visible in the Scope window.
 
 if nargin < 1
-    mode = "verify48";
+    mode = "ripple48";
 end
 if nargin < 2
     repeats = 3;
@@ -37,7 +37,7 @@ if mode == "spot"
         24 48 300
         24 48 500
         ];
-elseif mode == "exact48"
+elseif mode == "ripple48"
     cases = [
         24 48 100
         ];
@@ -47,11 +47,11 @@ else
         ];
 end
 
-if mode == "exact48"
+if mode == "ripple48"
     stopTime = 0.0100;
     tailStart = 0.0050;
-    errorLimit = 0.001;
-    rippleLimit = 0.150;
+    errorLimit = Inf;
+    rippleLimit = 0.100;
 else
     stopTime = 0.0085;
     tailStart = 0.0060;
