@@ -11,6 +11,7 @@ slprj/
 .codex-remote-attachments/
 .codex/
 .agents/
+outputs/
 
 # Legacy exploratory models and generated reports are not part of the final
 # physical MOSFET DAB deliverable tracked by this repository.
@@ -45,9 +46,12 @@ DAB_RA8P1_PCB_Notes/**
 !DAB_RA8P1_PCB_Notes/FINAL_LCSC_SELECTION_AUDIT.csv
 !DAB_RA8P1_PCB_Notes/RA8P1_DAB_Control_Strategy.md
 !DAB_RA8P1_PCB_Notes/DAB_RA8P1_从零理解仿真与MCU控制.md
+!DAB_RA8P1_PCB_Notes/DAB_RA8P1_仿真审查与新版BOM说明.md
+!DAB_RA8P1_PCB_Notes/DAB_RA8P1_新版BOM与选型.xlsx
 !DAB_RA8P1_PCB_Notes/datasheets/
 DAB_RA8P1_PCB_Notes/datasheets/**
 !DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/
+!DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/*.pdf
 !DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C130037_TI_TLV3201AIDCKR_datasheet.pdf
 !DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C178648_PANASONIC_EEHZC1K470P_47uF_80V.pdf
 !DAB_RA8P1_PCB_Notes/datasheets/selected_final_parts/C2596007_PULSE_PA2247_472NLT_4p7uH_30A.pdf
@@ -62,6 +66,7 @@ DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/**
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/DAB_RA8P1_Final_Physical_MOSFET_mos_final_common_matrix.csv
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/DAB_RA8P1_Final_Physical_MOSFET_mos_final_high_power.csv
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/DAB_RA8P1_Final_Physical_MOSFET_long_final_model_ripple48.csv
+!DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/DAB_RA8P1_Final_Physical_MOSFET_bom_stress_matrix.csv
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/final_mos_48V_100W_long_vout.png
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/final_mos_48V_100W_waveforms.png
 !DAB_RA8P1_PCB_Notes/final_physical_models_screenshots/final_mos_36V_500W_waveforms.png

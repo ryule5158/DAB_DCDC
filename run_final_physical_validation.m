@@ -59,7 +59,7 @@ plot_validation_summary(results, plotPath);
 fprintf('FINAL_PHYSICAL_VALIDATION_CSV=%s\n', csvPath);
 fprintf('FINAL_PHYSICAL_VALIDATION_PNG=%s\n', plotPath);
 disp(results);
-set_param(char(mdl), 'Dirty', 'off');
+close_system(char(mdl), 0);
 end
 
 function cases = build_cases(mode)

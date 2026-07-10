@@ -18,20 +18,85 @@ if bdIsLoaded(char(mdl))
 end
 load_system(modelFile);
 
+remove_pseudo_output_chokes(mdl);
 set_inductor(mdl, "LOUT_Filter_Inductor", "2.2", "uH", "0.0025", ...
-    "2.2uH output filter inductor, DCR modeled as 2.5mOhm for faster 48V settling");
-set_cap(mdl, "COUT_DC_Bulk", "4700", "uF", "0.0100", ...
-    "4.7mF output bulk bank, ESR modeled as 10mOhm for LC damping");
-set_cap(mdl, "COUT_HF_MLCC_Cap", "110", "uF", "0.0008", ...
-    "5x 22uF 100V X7R MLCC output HF bank, ESR modeled as 0.8mOhm");
+    "MTP2920-2R2MC: 2.2uH, DCR 2.5mOhm, 30A rated, 100A saturation");
+set_cap(mdl, "COUT_DC_Bulk", "8000", "uF", "0.003875", ...
+    "8x UR080M102J35TC97S00A: 8000uF, equivalent ESR 3.875mOhm");
+set_cap(mdl, "COUT_HF_MLCC_Cap", "44", "uF", "0.002", ...
+    "5x 22uF/100V X7R; conservative 44uF effective at 48V DC bias");
+configure_power_mosfets(mdl);
 
 apply_phase_calibration(mdl);
 apply_long_trace_controller_tuning(mdl);
 restore_fixed_transformer_ratio(mdl);
 remove_feedback_divider_calibration(mdl);
+restore_default_operating_point(mdl);
 
 save_system(char(mdl), modelFile);
 fprintf('OUTPUT_RIPPLE_OPTIMIZATION_APPLIED %s\n', modelFile);
+end
+
+function remove_pseudo_output_chokes(mdl)
+outPath = char(mdl + "/Output_Filter_Load");
+posName = "LOUT_EMI_Pos_Choke";
+negName = "LOUT_EMI_Return_Choke";
+pos = find_system(outPath, 'SearchDepth', 1, 'Name', char(posName));
+neg = find_system(outPath, 'SearchDepth', 1, 'Name', char(negName));
+if ~isempty(pos)
+    delete_block(pos{1});
+end
+if ~isempty(neg)
+    delete_block(neg{1});
+end
+ensure_physical_line(outPath, "LOUT_Filter_Inductor", "RConn", 1, ...
+    "Output_Current_Sensor", "LConn", 1);
+ensure_physical_line(outPath, "Rload_DC_Output", "RConn", 1, ...
+    "COUT_DC_Bulk", "RConn", 1);
+end
+
+function ensure_physical_line(scope, srcName, srcSide, srcIndex, dstName, dstSide, dstIndex)
+src = get_param(scope + "/" + srcName, 'PortHandles');
+dst = get_param(scope + "/" + dstName, 'PortHandles');
+srcHandle = src.(srcSide)(srcIndex);
+dstHandle = dst.(dstSide)(dstIndex);
+if get_param(srcHandle, 'Line') == -1 || get_param(dstHandle, 'Line') == -1
+    add_line(scope, srcHandle, dstHandle, 'autorouting', 'on');
+end
+end
+
+function configure_power_mosfets(mdl)
+blocks = find_system(char(mdl), 'LookUnderMasks', 'all', ...
+    'FollowLinks', 'on', 'Type', 'Block');
+isFet = false(size(blocks));
+for k = 1:numel(blocks)
+    try
+        isFet(k) = contains(string(get_param(blocks{k}, 'ReferenceBlock')), ...
+            "N-Channel MOSFET");
+    catch
+    end
+end
+fetBlocks = blocks(isFet);
+if numel(fetBlocks) ~= 8
+    error('Expected eight DAB power MOSFETs, found %d.', numel(fetBlocks));
+end
+for k = 1:numel(fetBlocks)
+    set_param(fetBlocks{k}, 'Rds', '0.0029', 'Rds_T2', '0.0048', ...
+        'C_iss', '5940', 'C_rss', '24', 'C_GS', '5916', 'C_GD', '24', ...
+        'C_oss', '1475', 'C_DS', '1451', 'Cj0Diode', '1475', 'Vth', '2.2');
+    try
+        set_param(fetBlocks{k}, 'AttributesFormatString', ...
+            'AONS66917 100V MOSFET; Rds typ 2.9mOhm, hot 4.8mOhm; Ciss 5940pF');
+    catch
+    end
+end
+end
+
+function restore_default_operating_point(mdl)
+set_param(resolve_block_path(mdl, "VIN_18_32V_Bench_Source"), 'dc_voltage', '24');
+set_param(resolve_block_path(mdl, "Rload_DC_Output"), 'R', '23.04');
+set_param(char(mdl + "/MCU_Vout_Setpoint_V"), 'Value', '48');
+set_param(char(mdl), 'StopTime', '0.01');
 end
 
 function set_inductor(mdl, blockName, inductanceValue, inductanceUnit, resistanceValue, noteText)
@@ -66,10 +131,16 @@ if isempty(chart)
     error('RA8P1_Realtime_Voltage_PI chart was not found.');
 end
 
-marker = "% Output-filter calibration for 4.7mF output bank.";
+marker = "% Output-filter calibration for finalized output network.";
 script = string(chart(1).Script);
 if contains(script, marker)
     fprintf('Phase calibration already present.\n');
+    return;
+end
+oldMarker = "% Output-filter calibration for 4.7mF output bank.";
+if contains(script, oldMarker)
+    chart(1).Script = char(replace(script, oldMarker, marker));
+    fprintf('Updated legacy output-filter calibration comment.\n');
     return;
 end
 

@@ -40,6 +40,7 @@ end
 results = struct2table(rows);
 writetable(results, fullfile(outDir, mdl + "_" + tag + ".csv"));
 assignin('base', char(mdl + "_" + tag), results);
+close_system(char(mdl), 0);
 end
 
 function r = run_one_case(mdl, cfg)

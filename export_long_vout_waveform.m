@@ -42,6 +42,7 @@ ylim([47.85 48.08]);
 exportgraphics(fig, fullfile(outDir, 'final_mos_48V_100W_long_vout.png'), 'Resolution', 160);
 close(fig);
 fprintf('Exported %s\n', fullfile(outDir, 'final_mos_48V_100W_long_vout.png'));
+close_system(char(mdl), 0);
 end
 
 function out = run_case(mdl, cfg)

@@ -15,7 +15,7 @@ dst = fullfile(notesDir, [mdl '.slx']);
 if bdIsLoaded(mdl), close_system(mdl, 0); end
 if exist(dst, 'file'), delete(dst); end
 new_system(mdl); open_system(mdl);
-stopTime = '0.00045';
+stopTime = '0.01';
 set_param(mdl, ...
     'StopTime',stopTime, ...
     'SolverType','Variable-step', ...
@@ -100,21 +100,17 @@ set_param(mdl + "/CSEC_DC_Link_Cap", 'c','47', 'c_unit','uF', 'r','0.036', 'r_un
 set_param(mdl + "/CSEC_DC_Link_Cap", 'Orientation','down');
 set_block_note(mdl + "/CSEC_DC_Link_Cap", "Panasonic EEHZC1K470P: 47uF 80V hybrid polymer, ESR 36mOhm");
 add_block('ee_lib/Passive/Inductor', mdl + "/LOUT_Filter_Inductor", 'Position',[1785 310 1885 360]);
-set_param(mdl + "/LOUT_Filter_Inductor", 'l','4.7', 'l_unit','uH', 'r','0.0034', 'r_unit','Ohm', 'max_working_current','30', 'max_working_current_unit','A');
-set_block_note(mdl + "/LOUT_Filter_Inductor", "Provisional output power inductor: Pulse PA2247.472NLT class, 4.7uH, 30A, Isat 39A, DCR 3.4mOhm");
+set_param(mdl + "/LOUT_Filter_Inductor", 'l','2.2', 'l_unit','uH', 'r','0.0025', 'r_unit','Ohm', 'max_working_current','30', 'max_working_current_unit','A');
+set_block_note(mdl + "/LOUT_Filter_Inductor", "MTP2920-2R2MC: 2.2uH, DCR 2.5mOhm, 30A rated, 100A saturation");
 add_block('ee_lib/Passive/Capacitor', mdl + "/COUT_DC_Bulk", 'Position',[1950 280 2020 385]);
-set_param(mdl + "/COUT_DC_Bulk", 'c','470', 'c_unit','uF', 'r','0.0036', 'r_unit','Ohm', 'max_working_voltage_range','[-100,100]', 'max_working_voltage_range_unit','V', 'vc_specify','on', 'vc','48', 'vc_unit','V', 'vc_priority','High');
+set_param(mdl + "/COUT_DC_Bulk", 'c','8000', 'c_unit','uF', 'r','0.003875', 'r_unit','Ohm', 'max_working_voltage_range','[-100,100]', 'max_working_voltage_range_unit','V', 'vc_specify','on', 'vc','48', 'vc_unit','V', 'vc_priority','High');
 set_param(mdl + "/COUT_DC_Bulk", 'Orientation','down');
-set_block_note(mdl + "/COUT_DC_Bulk", "10x Panasonic EEHZC1K470P: 47uF 80V each, ESR 36mOhm each -> 470uF, 3.6mOhm");
+set_block_note(mdl + "/COUT_DC_Bulk", "8x Suscon UR080M102J35TC97S00A: 1000uF 80V each -> 8000uF, ESR 3.875mOhm");
 add_block('fl_lib/Electrical/Electrical Sensors/Current Sensor', mdl + "/Output_Current_Sensor", 'Position',[2075 300 2145 355]);
-add_block('ee_lib/Passive/Inductor', mdl + "/LOUT_EMI_Pos_Choke", 'Position',[2075 210 2165 255]);
-set_param(mdl + "/LOUT_EMI_Pos_Choke", 'l','2.2', 'l_unit','uH', 'r','0.012', 'r_unit','Ohm', 'max_working_current','35', 'max_working_current_unit','A');
-add_block('ee_lib/Passive/Inductor', mdl + "/LOUT_EMI_Return_Choke", 'Position',[2075 440 2165 485]);
-set_param(mdl + "/LOUT_EMI_Return_Choke", 'l','2.2', 'l_unit','uH', 'r','0.012', 'r_unit','Ohm', 'max_working_current','35', 'max_working_current_unit','A');
 add_block('ee_lib/Passive/Capacitor', mdl + "/COUT_HF_MLCC_Cap", 'Position',[2195 405 2255 460]);
-set_param(mdl + "/COUT_HF_MLCC_Cap", 'c','22', 'c_unit','uF', 'r','0.002', 'r_unit','Ohm', 'vc_specify','on', 'vc','48', 'vc_unit','V', 'vc_priority','High');
+set_param(mdl + "/COUT_HF_MLCC_Cap", 'c','44', 'c_unit','uF', 'r','0.002', 'r_unit','Ohm', 'vc_specify','on', 'vc','48', 'vc_unit','V', 'vc_priority','High');
 set_param(mdl + "/COUT_HF_MLCC_Cap", 'Orientation','down');
-set_block_note(mdl + "/COUT_HF_MLCC_Cap", "1x PSA FS55X226K101LRG: 22uF 100V X7R high-frequency output capacitor");
+set_block_note(mdl + "/COUT_HF_MLCC_Cap", "5x PSA FS55X226K101LRG: 22uF 100V X7R, modeled as 44uF effective at 48V bias");
 add_block('ee_lib/Passive/Resistor', mdl + "/ROUT_Bleeder", 'Position',[2290 405 2350 460]);
 set_param(mdl + "/ROUT_Bleeder", 'R','100000', 'R_unit','Ohm');
 set_param(mdl + "/ROUT_Bleeder", 'Orientation','down');
@@ -181,11 +177,9 @@ connect(mdl, "CSEC_DC_Link_Cap", "RConn", 1, "COUT_DC_Bulk", "RConn", 1);
 connect(mdl, "CSEC_DC_Link_Cap", "LConn", 1, "LOUT_Filter_Inductor", "LConn", 1);
 connect(mdl, "LOUT_Filter_Inductor", "RConn", 1, "COUT_DC_Bulk", "LConn", 1);
 connect(mdl, "COUT_DC_Bulk", "RConn", 1, "SEC_Return_Ref", "LConn", 1);
-connect(mdl, "COUT_DC_Bulk", "LConn", 1, "LOUT_EMI_Pos_Choke", "LConn", 1);
-connect(mdl, "LOUT_EMI_Pos_Choke", "RConn", 1, "Output_Current_Sensor", "LConn", 1);
+connect(mdl, "COUT_DC_Bulk", "LConn", 1, "Output_Current_Sensor", "LConn", 1);
 connect(mdl, "Output_Current_Sensor", "RConn", 2, "Rload_DC_Output", "LConn", 1);
-connect(mdl, "Rload_DC_Output", "RConn", 1, "LOUT_EMI_Return_Choke", "LConn", 1);
-connect(mdl, "LOUT_EMI_Return_Choke", "RConn", 1, "COUT_DC_Bulk", "RConn", 1);
+connect(mdl, "Rload_DC_Output", "RConn", 1, "COUT_DC_Bulk", "RConn", 1);
 connect(mdl, "Rload_DC_Output", "LConn", 1, "COUT_HF_MLCC_Cap", "LConn", 1);
 connect(mdl, "COUT_HF_MLCC_Cap", "RConn", 1, "Rload_DC_Output", "RConn", 1);
 connect(mdl, "Rload_DC_Output", "LConn", 1, "ROUT_Bleeder", "LConn", 1);
@@ -207,12 +201,13 @@ end
 function add_selected_part_notes(mdl)
 try
     ann = Simulink.Annotation(char(mdl), sprintf(['Selected physical parts used in the final model\n' ...
-        'Q1-Q8 MOS baseline: Infineon IPT015N10N5, 100V, Rds_on max 1.5mOhm.\n' ...
+        'Q1-Q8 MOS: Alpha & Omega AONS66917, 100V, Rds_on typ 2.9mOhm, Qg 80nC.\n' ...
         'MOS isolated drivers: TI UCC21520DWR/UCC21520ADWR class, 5.7kVrms, 45ns timing budget.\n' ...
         'Input bulk: 4x NCC EKZN630ELL102ML25S, 1000uF 63V, ESR 24mOhm each.\n' ...
         'Input/output MLCC: PSA FS55X226K101LRG, 22uF 100V X7R.\n' ...
-        'Secondary/output polymer caps: Panasonic EEHZC1K470P, 47uF 80V, ESR 36mOhm.\n' ...
-        'Output power inductor is provisional because it has not been purchased: PA2247.472NLT-class 4.7uH/30A/3.4mOhm/39A Isat.']));
+        'Secondary DC-link: Panasonic EEHZC1K470P, 47uF 80V, ESR 36mOhm.\n' ...
+        'Output bulk: 8x Suscon UR080M102J35TC97S00A, total 8000uF/80V.\n' ...
+        'Output power inductor: MTP2920-2R2MC, 2.2uH/30A/2.5mOhm/100A Isat.']));
     ann.Position = [120 675 940 785];
     ann.FontSize = 10;
 catch
@@ -346,8 +341,8 @@ if isGan
     set_param(blockPath, 'Rds','0.0017', 'Rds_unit','Ohm', 'RS','0.00005', 'RS_unit','Ohm', 'RD','0.00005', 'RD_unit','Ohm', 'Vth','1.7', 'Vth_unit','V', 'Rds_T2','0.0023', 'Rds_T2_unit','Ohm', ...
         'C_iss','2400', 'C_iss_unit','pF', 'C_rss','90', 'C_rss_unit','pF', 'C_GS','2310', 'C_GS_unit','pF', 'C_GD','90', 'C_GD_unit','pF', 'C_oss','650', 'C_oss_unit','pF', 'C_DS','560', 'C_DS_unit','pF', 'Cj0Diode','450', 'Cj0Diode_unit','pF');
 else
-    set_param(blockPath, 'Rds','0.0015', 'Rds_unit','Ohm', 'RS','0.0001', 'RS_unit','Ohm', 'RD','0.0001', 'RD_unit','Ohm', 'Vth','3.0', 'Vth_unit','V', 'Rds_T2','0.0027', 'Rds_T2_unit','Ohm', ...
-        'C_iss','12000', 'C_iss_unit','pF', 'C_rss','140', 'C_rss_unit','pF', 'C_GS','11860', 'C_GS_unit','pF', 'C_GD','140', 'C_GD_unit','pF', 'C_oss','1800', 'C_oss_unit','pF', 'C_DS','1660', 'C_DS_unit','pF', 'Cj0Diode','1800', 'Cj0Diode_unit','pF');
+    set_param(blockPath, 'Rds','0.0029', 'Rds_unit','Ohm', 'RS','0.0001', 'RS_unit','Ohm', 'RD','0.0001', 'RD_unit','Ohm', 'Vth','2.2', 'Vth_unit','V', 'Rds_T2','0.0048', 'Rds_T2_unit','Ohm', ...
+        'C_iss','5940', 'C_iss_unit','pF', 'C_rss','24', 'C_rss_unit','pF', 'C_GS','5916', 'C_GS_unit','pF', 'C_GD','24', 'C_GD_unit','pF', 'C_oss','1475', 'C_oss_unit','pF', 'C_DS','1451', 'C_DS_unit','pF', 'Cj0Diode','1475', 'Cj0Diode_unit','pF');
 end
 end
 
@@ -965,8 +960,8 @@ create_readable_subsystem(mdl, inputNames, "Input_EMI_DC_Link");
 
 outputNames = [
     "CSEC_DC_Link_Cap","LOUT_Filter_Inductor","COUT_DC_Bulk", ...
-    "LOUT_EMI_Pos_Choke","Output_Current_Sensor","Rload_DC_Output", ...
-    "LOUT_EMI_Return_Choke","COUT_HF_MLCC_Cap","ROUT_Bleeder", ...
+    "Output_Current_Sensor","Rload_DC_Output", ...
+    "COUT_HF_MLCC_Cap","ROUT_Bleeder", ...
     "COUT_Y_Pos_to_PE","COUT_Y_Neg_to_PE","RPE_Output_Bleed", ...
     "SEC_Return_Ref","Vout_Sensor","Vout_To_Simulink","Iout_To_Simulink" ...
 ];
@@ -1018,10 +1013,8 @@ move_block(mdl, "Output_Filter_Load", [1970 130 2335 540], "right");
 move_block(mdl, "CSEC_DC_Link_Cap", [2505 245 2570 350], "down");
 move_block(mdl, "LOUT_Filter_Inductor", [2630 300 2730 350], "right");
 move_block(mdl, "COUT_DC_Bulk", [2795 245 2865 350], "down");
-move_block(mdl, "LOUT_EMI_Pos_Choke", [2935 205 3030 250], "right");
 move_block(mdl, "Output_Current_Sensor", [3080 205 3150 265], "right");
 move_block(mdl, "Rload_DC_Output", [3225 215 3295 350], "down");
-move_block(mdl, "LOUT_EMI_Return_Choke", [3080 445 3175 490], "right");
 move_block(mdl, "COUT_HF_MLCC_Cap", [3385 380 3445 460], "down");
 move_block(mdl, "ROUT_Bleeder", [3485 380 3545 460], "down");
 move_block(mdl, "COUT_Y_Pos_to_PE", [3385 530 3445 585], "down");
@@ -1219,20 +1212,18 @@ function beautify_output_filter_layout(outPath)
 move_block(outPath, "CSEC_DC_Link_Cap", [80 185 145 290], "down");
 move_block(outPath, "LOUT_Filter_Inductor", [220 235 320 285], "right");
 move_block(outPath, "COUT_DC_Bulk", [390 185 460 290], "down");
-move_block(outPath, "LOUT_EMI_Pos_Choke", [535 145 630 190], "right");
 move_block(outPath, "Output_Current_Sensor", [685 145 755 205], "right");
 move_block(outPath, "Rload_DC_Output", [835 160 905 295], "down");
 move_block(outPath, "Vout_Sensor", [950 175 1020 245], "right");
 move_block(outPath, "Vout_To_Simulink", [1065 192 1125 228], "right");
 move_block(outPath, "Iout_To_Simulink", [705 290 765 325], "right");
-move_block(outPath, "LOUT_EMI_Return_Choke", [685 415 780 460], "right");
 move_block(outPath, "COUT_HF_MLCC_Cap", [990 375 1050 455], "down");
 move_block(outPath, "ROUT_Bleeder", [1100 375 1160 455], "down");
 move_block(outPath, "COUT_Y_Pos_to_PE", [990 530 1050 585], "down");
 move_block(outPath, "COUT_Y_Neg_to_PE", [1100 530 1160 585], "down");
 move_block(outPath, "RPE_Output_Bleed", [1200 530 1260 585], "right");
 move_block(outPath, "SEC_Return_Ref", [390 430 440 480], "right");
-add_layout_note(outPath, "Output physical network: secondary DC-link, 4.7uH filter, 470uF bulk, 2.2uH EMI chokes, load, Vout/Iout sensors.", [55 35 1240 70], 10);
+add_layout_note(outPath, "Output physical network: 2.2uH/30A power inductor, 8mF/80V bulk bank, DC-bias-derated HF MLCC bank, load and Vout/Iout sensors.", [55 35 1240 70], 10);
 route_all_lines(outPath);
 end
 
@@ -1327,13 +1318,11 @@ end
 
 function compact_output_labels(scope)
 set_compact_label(scope, "CSEC_DC_Link_Cap", "47uF 80V\nESR 36mR", false);
-set_compact_label(scope, "LOUT_Filter_Inductor", "4.7uH\n3.4mR", false);
-set_compact_label(scope, "COUT_DC_Bulk", "470uF\nESR 3.6mR", false);
-set_compact_label(scope, "LOUT_EMI_Pos_Choke", "2.2uH", false);
+set_compact_label(scope, "LOUT_Filter_Inductor", "2.2uH\n2.5mR", false);
+set_compact_label(scope, "COUT_DC_Bulk", "8000uF\nESR 3.875mR", false);
 set_compact_label(scope, "Output_Current_Sensor", "Iout sense", true);
 set_compact_label(scope, "Rload_DC_Output", "Rload", false);
-set_compact_label(scope, "LOUT_EMI_Return_Choke", "2.2uH", false);
-set_compact_label(scope, "COUT_HF_MLCC_Cap", "22uF\nMLCC", false);
+set_compact_label(scope, "COUT_HF_MLCC_Cap", "44uF effective\nMLCC", false);
 set_compact_label(scope, "ROUT_Bleeder", "100k", false);
 set_compact_label(scope, "COUT_Y_Pos_to_PE", "Y 2.2nF", false);
 set_compact_label(scope, "COUT_Y_Neg_to_PE", "Y 2.2nF", false);
