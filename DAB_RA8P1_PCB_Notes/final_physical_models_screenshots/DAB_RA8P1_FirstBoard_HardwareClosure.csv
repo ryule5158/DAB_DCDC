@@ -1,0 +1,20 @@
+metric,value,unit
+Gate supply nominal,10.176,V
+Half-bridge max gate power,0.702144,W
+UCC33421 output load budget,0.9875,W
+BOOST EN delay to 1.2V,7.1931911414733,ms
+Aux eFuse OVP typical,35.4272093023256,V
+Aux eFuse OVP minimum,34.7645376882254,V
+Aux eFuse OVP maximum,36.5397449775357,V
+Aux eFuse ramp at 32V,12.032,ms
+VIN OVP rising,34.2587031807854,V
+VIN OVP falling,33.9976016004936,V
+VOUT OVP rising,52.0078808412687,V
+VOUT OVP falling,51.4939710105831,V
+Output stored energy at 48V,9.216,J
+Output bleeder initial power,0.462650602409639,W
+Output bleed 48V to 5V,90.1086418431958,s
+Input bleeder initial power,0.2048,W
+Input bleed 32V to 5V,37.1259598073125,s
+300W output current at 36V,8.33333333333333,A
+500W output current at 36V,13.8888888888889,A
