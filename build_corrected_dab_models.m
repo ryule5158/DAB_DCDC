@@ -413,7 +413,7 @@ prefix = extractBefore(fetName, "_");
 if isGan
     gateHigh = 6.0; gateLow = -1.5; rgOnValue = "5.1"; rgOffValue = "1.5"; snubCValue = "680";
 else
-    gateHigh = 10.0; gateLow = -2.0; rgOnValue = "4.7"; rgOffValue = "1.2"; snubCValue = "1000";
+    gateHigh = 10.18; gateLow = 0.0; rgOnValue = "4.7"; rgOffValue = "2.2"; snubCValue = "470";
 end
 gateGain = (gateHigh - gateLow) / 10.0;
 
@@ -439,14 +439,25 @@ add_block('simulink/Math Operations/Bias', cellPath + "/GateBias", 'Position',[2
 add_block('nesl_utility/Simulink-PS Converter', cellPath + "/Gate_PS", 'Position',[310 118 365 152]);
 set_param(cellPath + "/Gate_PS", 'Unit','V');
 add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', cellPath + "/Driver_Vgs_Source", 'Position',[430 135 505 225]);
+add_block('ee_lib/Passive/Resistor', cellPath + "/UCC_Rout_Source_1p15Ohm", 'Position',[520 150 590 180]);
+set_param(cellPath + "/UCC_Rout_Source_1p15Ohm", 'R','1.15', 'R_unit','Ohm');
+add_block('ee_lib/Passive/Resistor', cellPath + "/UCC_Rout_Sink_0p55Ohm", 'Position',[420 325 490 355]);
+set_param(cellPath + "/UCC_Rout_Sink_0p55Ohm", 'R','0.55', 'R_unit','Ohm');
 add_block('ee_lib/Passive/Resistor', cellPath + "/Rg_On", 'Position',[585 178 665 208]);
 set_param(cellPath + "/Rg_On", 'R',rgOnValue, 'R_unit','Ohm');
 add_block('ee_lib/Passive/Resistor', cellPath + "/Rg_Off", 'Position',[585 292 665 322]);
 set_param(cellPath + "/Rg_Off", 'R',rgOffValue, 'R_unit','Ohm');
 add_block('ee_lib/Semiconductors & Converters/Diode', cellPath + "/FastOff_Diode", 'Position',[470 292 520 322]);
+set_param(cellPath + "/FastOff_Diode", 'ModelType','ee.enum.diode.modelType.pwl', ...
+    'Vf','0.30', 'Vf_unit','V', 'Ron','0.19', 'Ron_unit','Ohm', ...
+    'BV','40', 'BV_unit','V', 'ZenerEnable','false');
 add_block('ee_lib/Passive/Resistor', cellPath + "/Gate_Pulldown", 'Position',[700 280 760 360]);
-set_param(cellPath + "/Gate_Pulldown", 'R','100000', 'R_unit','Ohm');
+set_param(cellPath + "/Gate_Pulldown", 'R','10000', 'R_unit','Ohm');
 set_param(cellPath + "/Gate_Pulldown", 'Orientation','down');
+add_block('ee_lib/Semiconductors & Converters/Diode', cellPath + "/Zgs_BZT52C15", 'Position',[700 365 750 395]);
+set_param(cellPath + "/Zgs_BZT52C15", 'ModelType','ee.enum.diode.modelType.pwl', ...
+    'Vf','0.60', 'Vf_unit','V', 'Ron','0.30', 'Ron_unit','Ohm', ...
+    'ZenerEnable','true', 'BV','15', 'BV_unit','V', 'Rz','1', 'Rz_unit','Ohm');
 add_block('ee_lib/Passive/Resistor', cellPath + "/DS_Snubber_R", 'Position',[535 460 615 490]);
 set_param(cellPath + "/DS_Snubber_R", 'R','6.8', 'R_unit','Ohm');
 add_block('ee_lib/Passive/Capacitor', cellPath + "/DS_Snubber_C", 'Position',[705 430 765 500]);
@@ -457,13 +468,17 @@ add_line(cellPath, 'GateCmd_0_10/1', 'GateScale/1', 'autorouting','on');
 add_line(cellPath, 'GateScale/1', 'GateBias/1', 'autorouting','on');
 add_line(cellPath, 'GateBias/1', 'Gate_PS/1', 'autorouting','on');
 connect(cellPath, "Gate_PS", "RConn", 1, "Driver_Vgs_Source", "RConn", 1);
-connect(cellPath, "Driver_Vgs_Source", "LConn", 1, "Rg_On", "LConn", 1);
+connect(cellPath, "Driver_Vgs_Source", "LConn", 1, "UCC_Rout_Source_1p15Ohm", "LConn", 1);
+connect(cellPath, "UCC_Rout_Source_1p15Ohm", "RConn", 1, "Rg_On", "LConn", 1);
 connect(cellPath, "Rg_On", "RConn", 1, "G", "RConn", 1);
 connect(cellPath, "G", "RConn", 1, "Rg_Off", "LConn", 1);
 connect(cellPath, "Rg_Off", "RConn", 1, "FastOff_Diode", "LConn", 1);
-connect(cellPath, "FastOff_Diode", "RConn", 1, "Driver_Vgs_Source", "LConn", 1);
+connect(cellPath, "FastOff_Diode", "RConn", 1, "UCC_Rout_Sink_0p55Ohm", "LConn", 1);
+connect(cellPath, "UCC_Rout_Sink_0p55Ohm", "RConn", 1, "Driver_Vgs_Source", "LConn", 1);
 connect(cellPath, "G", "RConn", 1, "Gate_Pulldown", "LConn", 1);
 connect(cellPath, "Gate_Pulldown", "RConn", 1, "S", "RConn", 1);
+connect(cellPath, "S", "RConn", 1, "Zgs_BZT52C15", "LConn", 1);
+connect(cellPath, "Zgs_BZT52C15", "RConn", 1, "G", "RConn", 1);
 connect(cellPath, "Driver_Vgs_Source", "RConn", 2, "S", "RConn", 1);
 connect(cellPath, "D", "RConn", 1, "DS_Snubber_R", "LConn", 1);
 connect(cellPath, "DS_Snubber_R", "RConn", 1, "DS_Snubber_C", "LConn", 1);

@@ -5,6 +5,14 @@ clear;
 clc;
 
 modelName = 'DAB_RA8P1_Final_Physical_MOSFET';
+rootDir = fileparts(mfilename('fullpath'));
+notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
+modelFile = fullfile(notesDir, [modelName '.slx']);
+if bdIsLoaded(modelName)
+    close_system(modelName, 0);
+end
+load_system(modelFile);
+
 runCount = 3;
 windowStart_s = 6e-3;
 windowEnd_s = 10e-3;
@@ -73,8 +81,7 @@ assert(strcmp(get_param(commonModeCore, 'L1_unit'), 'mH'));
 assert(str2double(get_param(commonModePositiveDcr, 'R')) == 0.0035);
 assert(str2double(get_param(commonModeNegativeDcr, 'R')) == 0.0035);
 
-outputFolder = fullfile('DAB_RA8P1_PCB_Notes', ...
-    'final_physical_models_screenshots');
+outputFolder = fullfile(notesDir, 'final_physical_models_screenshots');
 if ~isfolder(outputFolder)
     mkdir(outputFolder);
 end
@@ -85,3 +92,4 @@ writetable(evidence, outputFile);
 fprintf('PASS: three runs meet the voltage and ripple requirements.\n');
 fprintf('PASS: transformer and common-mode choke values remain locked.\n');
 fprintf('Evidence: %s\n', outputFile);
+close_system(modelName, 0);
