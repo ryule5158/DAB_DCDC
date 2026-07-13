@@ -1,0 +1,13 @@
+# MATLAB and Simulink generated files
+slprj/
+*.slxc
+*.autosave
+*.asv
+*.m~
+
+# Local editor and OS files
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
