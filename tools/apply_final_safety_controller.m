@@ -5,7 +5,7 @@ function apply_final_safety_controller()
 %   domain uses a current-guarded, 10 ns-quantized EPS pair revalidated on
 %   the physical model. Both normal modes require the hardware fault latch.
 
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 modelFile = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes', ...
     'DAB_RA8P1_Final_Physical_MOSFET.slx');
 mdl = 'DAB_RA8P1_Final_Physical_MOSFET';

@@ -1,6 +1,6 @@
 function results = validate_h1p7_startup_voltage_stages()
 %VALIDATE_H1P7_STARTUP_VOLTAGE_STAGES Check startup progress toward NORMAL_SPS.
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if ~bdIsLoaded(mdl)
@@ -77,7 +77,7 @@ end
 
 results = struct2table(rows);
 disp(results);
-writetable(results, fullfile(notesDir, 'final_physical_models_screenshots', ...
+writetable(results, fullfile(notesDir, 'validation_results', ...
     'DAB_RA8P1_H1p7_Startup_Voltage_Stages.csv'));
 assert(all(results.Pass), 'H1.7 startup voltage-stage validation failed.');
 fprintf('PASS: H1.7 startup voltage stages.\n');

@@ -3,9 +3,9 @@ function summary = validate_h1p7_merged_physical_model()
 %   Runs a long 300 W regulation case, a transient OC latch case, and a
 %   5 ns gate/Vds case. Each case starts from a fresh simulation state.
 
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
-outDir = fullfile(notesDir, 'final_physical_models_screenshots');
+outDir = fullfile(notesDir, 'validation_results');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if bdIsLoaded(mdl)
     close_system(mdl, 0);

@@ -4,7 +4,7 @@ function results = compare_dab_model_versions()
 %   RUN asserted, and their saved controller. The result is evidence for
 %   version selection; it is not a cold-start qualification.
 
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 otherRoot = 'C:\Users\26488\Desktop\Electric Simulation _02\Electric Simulation';
 cases = {
@@ -21,7 +21,7 @@ end
 results = struct2table(rows);
 disp(results);
 
-outDir = fullfile(notesDir, 'final_physical_models_screenshots');
+outDir = fullfile(notesDir, 'validation_results');
 if ~exist(outDir, 'dir')
     mkdir(outDir);
 end

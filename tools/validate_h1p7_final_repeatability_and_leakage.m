@@ -3,7 +3,7 @@ function results = validate_h1p7_final_repeatability_and_leakage()
 %   All cases use the final physical model, 24 V input, 300 W load, 48 V
 %   precharge, minimum-tolerance OC thresholds, and a 28-30 ms tail window.
 
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if bdIsLoaded(mdl)
@@ -33,7 +33,7 @@ results.RepeatVppSpread_uV(1:3) = ...
     1e6*(max(nominal.VoutP2P_V)-min(nominal.VoutP2P_V));
 disp(results);
 
-outDir = fullfile(notesDir, 'final_physical_models_screenshots');
+outDir = fullfile(notesDir, 'validation_results');
 writetable(results, fullfile(outDir, ...
     'DAB_RA8P1_H1p7_Final_ThreeRun_Leakage_Corners.csv'));
 assert(all(results.Pass), 'Final repeatability or leakage-corner case failed.');

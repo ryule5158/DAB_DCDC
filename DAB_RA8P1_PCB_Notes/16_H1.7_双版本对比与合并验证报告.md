@@ -180,15 +180,15 @@ T1 的 0.50uH 是副边测得值，板上仍不增加外接传输电感。最终
 
 ## 11. 可复现文件
 
-- `compare_dab_model_versions.m`：统一条件比较两套原始模型。
-- `merge_h1p7_physical_protection_model.m`：把测量/保护结构合入物理模型。
-- `apply_final_safety_controller.m`：安装最终启动、SPS/EPS 和 10ns 时基。
-- `validate_h1p7_merged_physical_model.m`：额定长稳态、故障锁存和 5ns 栅极/Vds 验证。
-- `validate_h1p7_final_repeatability_and_leakage.m`：三次重复和 0.40/0.60uH 漏感角点。
-- `validate_h1p7_hardware_freeze.m`：模型、BOM 和权威文档一致性冻结审计。
-- `final_physical_models_screenshots/DAB_RA8P1_H1p7_Merged_300W_Long.csv`：额定稳态证据。
-- `final_physical_models_screenshots/DAB_RA8P1_H1p7_Merged_Gate_Vds.csv`：栅极/Vds 证据。
-- `final_physical_models_screenshots/DAB_RA8P1_H1p7_Merged_Fault_Latch.csv`：锁存证据。
-- `final_physical_models_screenshots/DAB_RA8P1_H1p7_Final_ThreeRun_Leakage_Corners.csv`：重复性和漏感角点证据。
+- `tools/compare_dab_model_versions.m`：统一条件比较两套原始模型。
+- `tools/merge_h1p7_physical_protection_model.m`：把测量/保护结构合入物理模型。
+- `tools/apply_final_safety_controller.m`：安装最终启动、SPS/EPS 和 10ns 时基。
+- `tools/validate_h1p7_merged_physical_model.m`：额定长稳态、故障锁存和 5ns 栅极/Vds 验证。
+- `tools/validate_h1p7_final_repeatability_and_leakage.m`：三次重复和 0.40/0.60uH 漏感角点。
+- `tools/validate_h1p7_hardware_freeze.m`：模型、BOM 和权威文档一致性冻结审计。
+- `validation_results/DAB_RA8P1_H1p7_Merged_300W_Long.csv`：额定稳态证据。
+- `validation_results/DAB_RA8P1_H1p7_Merged_Gate_Vds.csv`：栅极/Vds 证据。
+- `validation_results/DAB_RA8P1_H1p7_Merged_Fault_Latch.csv`：锁存证据。
+- `validation_results/DAB_RA8P1_H1p7_Final_ThreeRun_Leakage_Corners.csv`：重复性和漏感角点证据。
 
 最终用于 Git 和 PCB 文档的唯一模型仍为 `DAB_RA8P1_Final_Physical_MOSFET.slx`；`_02` 目录只作为比较来源，不再作为画板基准。

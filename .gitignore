@@ -8,6 +8,9 @@ slprj/
 *.log
 *.mat
 
+# Accidental copy suffixes created by repeated file imports.
+*_1.*
+
 # Codex and local tool scratch state
 .codex/
 .agents/

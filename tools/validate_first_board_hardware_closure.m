@@ -4,6 +4,7 @@
 
 clear;
 clc;
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 
 %% Fixed magnetics: declaration only, never optimized here
 transformerPrimaryTurns = 3;
@@ -176,8 +177,8 @@ loutCopperLoss500W36V_W = shortTestOutputCurrentAt36V_A^2 * loutDcrMax_Ohm;
 mosfetVdsRating_V = 100;
 repetitiveVdsDesignLimit_V = 80;
 bridgeBusLoopTarget_nH = 10;
-busSweepFile = fullfile('DAB_RA8P1_PCB_Notes', ...
-    'final_physical_models_screenshots', ...
+busSweepFile = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes', ...
+    'validation_results', ...
     'DAB_RA8P1_H1p6_Bus_Loop_Sweep.csv');
 assert(isfile(busSweepFile), 'Run validate_h1p6_bus_loop_sweep first.');
 busSweep = readtable(busSweepFile);
@@ -365,8 +366,8 @@ unit = {
 evidence = table(metric, value, unit);
 disp(evidence);
 
-outputFolder = fullfile('DAB_RA8P1_PCB_Notes', ...
-    'final_physical_models_screenshots');
+outputFolder = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes', ...
+    'validation_results');
 outputFile = fullfile(outputFolder, ...
     'DAB_RA8P1_FirstBoard_HardwareClosure.csv');
 writetable(evidence, outputFile);

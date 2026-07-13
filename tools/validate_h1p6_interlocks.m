@@ -1,6 +1,6 @@
 function results = validate_h1p6_interlocks()
 %VALIDATE_H1P6_INTERLOCKS Verify safe entry and lockout behavior.
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if ~bdIsLoaded(mdl)
@@ -57,7 +57,7 @@ end
 results = struct2table(rows);
 disp(results);
 assert(all(results.Pass), 'H1.6 interlock validation failed.');
-writetable(results, fullfile(notesDir, 'final_physical_models_screenshots', ...
+writetable(results, fullfile(notesDir, 'validation_results', ...
     'DAB_RA8P1_H1p6_Interlock_Check.csv'));
 fprintf('PASS: H1.6 interlock behavior.\n');
 end

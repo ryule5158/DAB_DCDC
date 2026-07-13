@@ -1,6 +1,6 @@
 function results = validate_h1p6_bus_loop_sweep()
 %VALIDATE_H1P6_BUS_LOOP_SWEEP Establish the PCB commutation-loop limit.
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if ~bdIsLoaded(mdl)
@@ -87,7 +87,7 @@ end
 
 results = struct2table(rows);
 disp(results);
-writetable(results, fullfile(notesDir, 'final_physical_models_screenshots', ...
+writetable(results, fullfile(notesDir, 'validation_results', ...
     'DAB_RA8P1_H1p6_Bus_Loop_Sweep.csv'));
 assert(all(diff(results.VdsRepeatMax_V) > 0), ...
     'Vds peak must increase monotonically with bus-loop inductance.');

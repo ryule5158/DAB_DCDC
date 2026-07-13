@@ -1,6 +1,6 @@
 function results = validate_h1p7_cold_start_corners()
 %VALIDATE_H1P7_COLD_START_CORNERS Check limited startup over Vin and Llk.
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if ~bdIsLoaded(mdl)
@@ -81,7 +81,7 @@ end
 results = struct2table(rows);
 disp(results);
 assert(all(results.Pass), 'H1.7 cold-start corner validation failed.');
-writetable(results, fullfile(notesDir, 'final_physical_models_screenshots', ...
+writetable(results, fullfile(notesDir, 'validation_results', ...
     'DAB_RA8P1_H1p7_Cold_Start_Corners.csv'));
 fprintf('PASS: H1.7 cold-start Vin/leakage corners.\n');
 end

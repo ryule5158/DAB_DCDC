@@ -1,6 +1,6 @@
 function results = validate_h1p6_gate_fine()
 %VALIDATE_H1P6_GATE_FINE Run 5 ns gate/Vds checks inside entry hysteresis.
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if ~bdIsLoaded(mdl)
@@ -77,7 +77,7 @@ end
 results = struct2table(rows);
 disp(results);
 assert(all(results.Pass), 'H1.6 fine gate validation failed.');
-writetable(results, fullfile(notesDir, 'final_physical_models_screenshots', ...
+writetable(results, fullfile(notesDir, 'validation_results', ...
     'DAB_RA8P1_H1p6_Gate_Fine_Check.csv'));
 fprintf('PASS: H1.6 fine gate/Vds behavior.\n');
 end

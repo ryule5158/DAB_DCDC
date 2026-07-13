@@ -5,7 +5,7 @@ function merge_h1p7_physical_protection_model()
 %   and independent driver-enable gates. It also installs the EPS branch
 %   revalidated on this physical model. The operation is idempotent.
 
-rootDir = fileparts(mfilename('fullpath'));
+rootDir = fileparts(fileparts(mfilename('fullpath')));
 modelFile = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes', ...
     'DAB_RA8P1_Final_Physical_MOSFET.slx');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
@@ -227,78 +227,6 @@ for q = 1:8
     add_line(mdl, "HW_GATE_Q" + qText + "/1", ...
         "Isolated_Gate_Drive_Interface/" + qText, 'autorouting', 'on');
 end
-end
-
-function install_physical_eps_branch(mdl)
-rt = sfroot;
-chart = rt.find('-isa', 'Stateflow.EMChart', ...
-    'Path', char(mdl + "/RA8P1_Realtime_Voltage_PI"));
-assert(~isempty(chart), 'RA8P1 controller chart was not found.');
-script = string(chart.Script);
-if contains(script, 'Physical-model EPS')
-    if ~contains(script, 'epsPhase = min(max(0.305e-6 + trim')
-        apply_final_safety_controller();
-        chart = rt.find('-isa', 'Stateflow.EMChart', ...
-            'Path', char(mdl + "/RA8P1_Realtime_Voltage_PI"));
-    end
-    chart.ChartUpdate = 'DISCRETE';
-    chart.SampleTime = '1e-8';
-    return;
-end
-old = strjoin([
-    "if normalEnabled && faultOk"
-    "    phase = normalRamp*(base_phase(Vref, vinFilt, iFilt) + trim);"
-    "    phase = min(max(phase, -0.55e-6), 0.46e-6);"
-    "    [a,an] = halfbridge(t,T,deadTime);"
-    "    [b,bn] = halfbridge(t+T/2,T,deadTime);"
-    "    [c,cn] = halfbridge(t-phase,T,deadTime);"
-    "    [d,dn] = halfbridge(t-phase+T/2,T,deadTime);"
-    "    g1 = 10*a;  g2 = 10*an;"
-    "    g3 = 10*b;  g4 = 10*bn;"
-    "    g5 = 10*c;  g6 = 10*cn;"
-    "    g7 = 10*d;  g8 = 10*dn;"
-    "    PhaseUs = phase*1e6;"
-    ], newline);
-new = strjoin([
-    "if normalEnabled && faultOk && iFilt >= 4"
-    "    % Physical-model EPS PI around a 0.305 us measured feed-forward point."
-    "    % The final phase is limited and quantized to the 10 ns PWM timer."
-    "    if iPriPeakHold < 50 && iSecPeakHold < 28"
-    "        inner = 0.20e-6;"
-    "        epsPhase = min(max(0.305e-6 + trim,0.28e-6),0.34e-6);"
-    "        phase = round(epsPhase/10e-9)*10e-9;"
-    "        [a,an] = halfbridge(t,T,deadTime);"
-    "        [b,bn] = halfbridge(t+T/2-inner,T,deadTime);"
-    "        [c,cn] = halfbridge(t-phase,T,deadTime);"
-    "        [d,dn] = halfbridge(t-phase+T/2,T,deadTime);"
-    "        g1 = 10*a;  g2 = 10*an;"
-    "        g3 = 10*b;  g4 = 10*bn;"
-    "        g5 = 10*c;  g6 = 10*cn;"
-    "        g7 = 10*d;  g8 = 10*dn;"
-    "        PhaseUs = phase*1e6;"
-    "    else"
-    "        g1 = 0; g2 = 0; g3 = 0; g4 = 0;"
-    "        g5 = 0; g6 = 0; g7 = 0; g8 = 0;"
-    "        PhaseUs = 0;"
-    "    end"
-    "elseif normalEnabled && faultOk"
-    "    phase = normalRamp*(base_phase(Vref, vinFilt, iFilt) + trim);"
-    "    phase = min(max(phase, -0.55e-6), 0.46e-6);"
-    "    [a,an] = halfbridge(t,T,deadTime);"
-    "    [b,bn] = halfbridge(t+T/2,T,deadTime);"
-    "    [c,cn] = halfbridge(t-phase,T,deadTime);"
-    "    [d,dn] = halfbridge(t-phase+T/2,T,deadTime);"
-    "    g1 = 10*a;  g2 = 10*an;"
-    "    g3 = 10*b;  g4 = 10*bn;"
-    "    g5 = 10*c;  g6 = 10*cn;"
-    "    g7 = 10*d;  g8 = 10*dn;"
-    "    PhaseUs = phase*1e6;"
-    ], newline);
-assert(count(script, old) == 1, ...
-    'Expected exactly one unmodified NORMAL_SPS output branch.');
-chart.Script = char(replace(script, old, new));
-chart.ChartUpdate = 'DISCRETE';
-chart.SampleTime = '1e-8';
 end
 
 function remove_previous_merge(mdl)
