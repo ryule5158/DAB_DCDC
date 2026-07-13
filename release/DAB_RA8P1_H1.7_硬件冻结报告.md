@@ -114,7 +114,7 @@ TLV77333输出3V3_AFE
 
 ### 4.1 静态冻结审计
 
-`validate_h1p7_hardware_freeze.m` 共检查 68 项，全部通过：
+`tools/validate_h1p7_hardware_freeze.m` 共检查 86 项，全部通过：
 
 - 变压器 `57.5/230uH`、1:2 匝比和 `0.50uH` 副边漏感未改变。
 - 4 条 PCB 母线寄生各为 `5nH`，对应单桥正负母线换流环路约 `10nH`。
@@ -125,7 +125,7 @@ TLV77333输出3V3_AFE
 
 ### 4.2 精细栅极与 Vds 四工况
 
-`validate_h1p6_gate_fine.m` 使用 `5ns` 最大步长复核 4 个代表工况：
+`tools/validate_h1p6_gate_fine.m` 使用 `5ns` 最大步长复核 4 个代表工况：
 
 | 指标 | 结果 | 判据 |
 |---|---:|---:|
@@ -153,7 +153,7 @@ TLV77333输出3V3_AFE
 
 ### 4.4 联锁五状态
 
-`validate_h1p6_interlocks.m` 全部通过：
+`tools/validate_h1p6_interlocks.m` 全部通过：
 
 - 默认 RUN 关闭时不产生开关动作。
 - 正常预充且 RUN/FAULT 有效时允许开关。

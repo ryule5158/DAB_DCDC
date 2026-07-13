@@ -1,13 +1,26 @@
-# MATLAB and Simulink generated files
+# MATLAB and Simulink generated caches
 slprj/
+**/slprj/
 *.slxc
-*.autosave
 *.asv
-*.m~
+*.autosave
+*.tmp
+*.log
+*.mat
 
-# Local editor and OS files
-.vs/
-.vscode/
-.idea/
-Thumbs.db
-Desktop.ini
+# Accidental copy suffixes created by repeated file imports.
+*_1.*
+
+# Codex and local tool scratch state
+.codex/
+.agents/
+.codex-remote-attachments/
+.tmp_*/
+
+# The obsolete nested project was removed; never recreate it here.
+/Electric Simulation/
+
+# Spreadsheet QA scratch files. Keep the final H1.7 workbook and builder.
+outputs/**/node_modules/
+outputs/**/*.inspect.ndjson
+outputs/**/preview_*.png
