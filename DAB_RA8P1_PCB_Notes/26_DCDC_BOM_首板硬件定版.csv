@@ -1,6 +1,6 @@
 系统,位号,数量,首选型号,关键参数或数值,封装,装配状态,作用,布局与下单备注,资料
-主功率,Q1-Q8,8,AONS66917T,100V;Rds最大3.5mΩ@25°C/5.8mΩ@125°C;Qg典型80nC/最大115nC,DFN5x6-8L,必装,原副边两个全桥的8只主开关,模型简称AONS66917;同批次采购;底部漏极散热;强迫风冷;Vds重复峰值目标小于80V,https://www.aosmd.com/sites/default/files/res/datasheets/AONS66917T.pdf
-驱动,UDRV1-UDRV4,4,UCC21520DWR,4A拉高;6A拉低;5.7kVrms;DIS高关断,SOIC-16宽体,必装,每颗驱动一个半桥,四块小板完全相同;隔离带下开槽,https://www.ti.com/lit/ds/symlink/ucc21520.pdf
+主功率,Q1-Q8,8,AONS66917T,100V;Rds最大3.5mΩ@25°C/5.8mΩ@125°C;Qg典型80nC/最大115nC,AOS DFN5x6_8L_EP1_P,必装,原副边两个全桥的8只主开关,模型简称AONS66917;必须按AOS官方EP1_P焊盘建库;同批次采购;底部漏极散热;强迫风冷;Vds重复峰值目标小于80V,https://www.aosmd.com/sites/default/files/res/datasheets/AONS66917T.pdf
+驱动,UDRV1-UDRV4,4,UCC21520DWR,4A拉高;6A拉低;5.7kVrms;DIS高关断,TI DW宽体SOIC-16,必装,每颗驱动一个半桥,锁定卷带DWR订货后缀;按TI DW推荐焊盘;四块小板完全相同;隔离带下开槽,https://www.ti.com/lit/ds/symlink/ucc21520.pdf
 驱动隔离电源,UISO1-UISO4,4,UCC33421QDHARQ1,5V转隔离5V;1.5W;5kVrms;强化隔离,DHA-16,必装,给每个半桥提供受控隔离电源,SEL接VCC选择5.0V;EN/FLT按数据手册,https://www.ti.com/lit/ds/symlink/ucc33421-q1.pdf
 驱动隔离电源,CISO_IN_HF1-4,4,15nF 50V X7R,15nF,0402或0603,必装,UCC33421输入第一去耦,直接跨VINP-GNDP且贴引脚,https://www.ti.com/lit/ds/symlink/ucc33421-q1.pdf
 驱动隔离电源,CISO_IN1-4,4,10uF 10V X7R,10uF,0805或1206,必装,UCC33421输入储能,直接跨VINP-GNDP,https://www.ti.com/lit/ds/symlink/ucc33421-q1.pdf
@@ -49,7 +49,7 @@
 输入保护,F1,1,142.5631.5502,58VDC;50A;BF1/MIDI,M5螺栓,必装,线束和灾难短路保护,电子OCP仍是保护MOS的主通路,
 输入保护,FH1,1,04980902ZXT,58V;MIDI保险座,螺栓式,必装,固定保险丝,靠近输入连接器,
 输入保护,DTVS_IN,1,SMCJ33A,33V反向工作;约53V钳位,SMC,必装,输入浪涌钳位,放在保险丝后和共模扼流圈前,
-输入EMI,LCM1,1,定制48mm双绕组磁环,2mH每绕组;30A;DCR≤3.5mΩ;12匝;2.3mm线,定制THT,已购锁定/实测验收,抑制输入共模噪声,不得改参数;不设置旁路铜桥;核对绕向和200mA共模饱和指标;500W只短时测温,
+输入EMI,LCM1,1,定制48mm双绕组磁环,2mH每绕组;30A;DCR≤3.5mΩ;12匝;2.3mm线,按实物孔径脚距自建THT,已购锁定/实测验收,抑制输入共模噪声,不得使用通用磁环封装;按实物线径和镀层公差定孔;不得改参数;不设置旁路铜桥;核对绕向和200mA共模饱和指标;500W只短时测温,
 输入储能,CIN1-CIN4,4,EKZN630ELL102ML25S,1000uF;63V;低ESR,径向THT,必装,输入低频储能,对称布置且远离热源,
 输入高频,CIN_HF1-10,10,C5750X7S2A226M280KB,22uF;100V;X7S,2220,必装,原边半桥局部300kHz换流,按直流偏压有效容量而非名义容量计算,https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C5750X7S2A226M280KB
 输入中频,CIN_FILM,1,WIMA或同级MKP,2.2uF;100VDC以上;低ESR,THT15或22.5mm脚距,必装,填补MLCC与电解之间频段,预留兼容双脚距封装,
@@ -58,9 +58,9 @@
 输入阻尼,CDAMP,4,C5750X7S2A106K230KE,10uF;100V;软端头,2220,调试件,形成约40uF阻尼电容,首板按波形调整数量,
 输入阻尼,CDAMP_DNP1-6,6,C5750X7S2A106K230KE兼容焊盘,10uF;100V;X7S,2220,DNP,把输入阻尼电容扩展到100uF,首板只装CDAMP1-4;实测输入谐振后再增加,
 输入泄放,RBLEED_IN1-4,4,20.0kΩ 1% 0.5W,四只并联总5.00kΩ,2512,必装,输入断电快速泄放,跨LCM后的输入电容星点;32V总功耗约0.205W,
-变压器,T1,1,定制PQ4040 PC95,3:6匝;Lm=57.5/230uH;总Llk_sec=0.50uH;DCR≤0.95/3mΩ,PQ4040,已购锁定/实测验收,DAB隔离和1:2升压,不得改匝数/Lm/漏感标称;按08二维工作域运行;保留4kVAC/温升/匝间电容实测,
-快速原边电流,U_IPRI,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,SOIC-10 DVG,必装,测原边变压器双向高频电流并快速过流,串在原边交流线;大铜面和热过孔,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
-快速副边电流,U_ISEC,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,SOIC-10 DVG,必装,测副边变压器双向高频电流并快速过流,与原边统一料号;串在副边交流线;大铜面和热过孔,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
+变压器,T1,1,定制PQ4040 PC95,3:6匝;Lm=57.5/230uH;总Llk_sec=0.50uH;DCR≤0.95/3mΩ,按实物骨架夹具自建PTH,已购锁定/实测验收,DAB隔离和1:2升压,禁止使用PQ4040通用封装;按实物引脚排布/直径/固定夹具建库;不得改匝数/Lm/漏感标称;按08二维工作域运行;保留4kVAC/温升/匝间电容实测,
+快速原边电流,U_IPRI,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,TI DVG SOIC-10,必装,测原边变压器双向高频电流并快速过流,按TI DVG推荐焊盘;串在原边交流线;大铜面和热过孔,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
+快速副边电流,U_ISEC,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,TI DVG SOIC-10,必装,测副边变压器双向高频电流并快速过流,按TI DVG推荐焊盘;与原边统一料号;串在副边交流线;大铜面和热过孔,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
 快速电流阈值,RVOC_TOP_PRI,1,10.0kΩ 0.1%,10kΩ,0603,必装,原边VOC上臂,与1.91kΩ配合得到约0.522V,
 快速电流阈值,RVOC_BOT_PRI,1,1.91kΩ 0.1%,1.91kΩ,0603,必装,原边VOC下臂,原边硬件门限约65.3A,
 快速电流阈值,RVOC_TOP_SEC,1,9.24kΩ 0.1%,9.24kΩ,0603,必装,次级VOC上臂,与1.00kΩ配合得到约0.320V,
@@ -134,7 +134,7 @@ ADC温度输出,CADC_TEMP1-5,5,100nF 10V X7R,100nF,0603,必装,五路温度ADC�
 输出局部高频,CSEC_HF1-8,8,C5750X7S2A106K230KE,10uF;100V;X7S;软端头,2220,必装,副边桥300kHz局部换流电容,每个副边半桥4只;全部位于LOUT前;48V有效总容目标至少40uF,https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C5750X7S2A106K230KE
 输出局部高频,CSEC_HF_DNP1-4,4,C5750X7S2A106K230KE兼容焊盘,10uF;100V;X7S,2220,DNP,副边局部容量扩展,根据直流偏压实测和振铃再装,
 输出局部保护,ZBUS_SEC,1,SMCJ48A,48V反向工作;约77V最大钳位,SMC,必装,副边桥局部母线钳位,跨SEC_LOCAL_P-SEC_PGND且位于LOUT前;贴近CSEC_HF,
-输出电感,LOUT,1,SER2915H-222KL,2.2uH±10%;DCR最大2.05mΩ;10%降感40A;20%/30%降感100A;Irms20A/30A对应20°C/40°C温升,约28x28x15.4mm,必装,输出后级滤波,重29.7g需机械固定;禁止设置旁路铜排或0Ω短接位,https://www.coilcraft.com/en-us/products/power/shielded-inductors/high-current-flat-wire/ser/ser29xx/ser2915h-222/
+输出电感,LOUT,1,SER2915H-222KL,2.2uH±10%;DCR最大2.05mΩ;10%降感40A;20%/30%降感100A;Irms20A/30A对应20°C/40°C温升,Coilcraft SER2915H官方焊盘;约28x28x15.4mm,必装,输出后级滤波,必须按Coilcraft推荐land pattern建库;重29.7g需机械固定;禁止设置旁路铜排或0Ω短接位,https://www.coilcraft.com/en-us/products/power/shielded-inductors/high-current-flat-wire/ser/ser29xx/ser2915h-222/
 输出高频,COUT_HF1-8,8,C5750X7S2A106K230KE,10uF;100V;X7S;软端头,2220,必装,LOUT后300kHz高频电容,与CSEC_HF为不同一组;48V有效总容目标40-50uF,https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C5750X7S2A106K230KE
 输出储能,COUT1-8,8,UR080M102J35TC97S00A,1000uF;80V;每只约3.4A纹波,D16x35 THT,必装,合计8000uF输出储能,首次上电先装4只;最终对称装8只,
 输出保险,FOUT,1,PV-15A10-2P,15A;1000VDC;50kA分断;gPV,10x38mm双PCB脚,必装,切断8mF输出储能向外部短路放电,COUT星点后且输出分流器前;留更换和风道空间,https://www.eaton.com/at/en-gb/skuPage.PV-15A10-2P.html
