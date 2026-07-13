@@ -34,8 +34,8 @@ Input bleed 32V to 5V,37.1259598073125,s
 300W output current at 36V,8.33333333333333,A
 500W output current at 36V,13.8888888888889,A
 LOUT inductance nominal,2.2,uH
-LOUT 10 percent inductance-drop current,40,A
-LOUT 20 percent inductance-drop current,100,A
+LOUT 10 percent inductance-drop current,100,A
+LOUT 20/30 percent inductance-drop current lower bound,100,A
 LOUT copper loss at 300W 36V,0.142361111111111,W
 LOUT copper loss at 500W 36V,0.395447530864198,W
 Validated repetitive Vds at 10nH loop,60.8690710492879,V

@@ -164,8 +164,10 @@ outputFuseRating_A = 15;
 %% Output inductor and switching-node stress declarations
 loutInductance_uH = 2.2;
 loutDcrMax_Ohm = 2.05e-3;
-loutIsat10Percent_A = 40;
-loutIsat20Percent_A = 100;
+loutIsat10Percent_A = 100;
+% The datasheet specifies both the 20% and 30% drop currents as >100 A.
+% Store 100 A here as the conservative numeric lower bound for evidence export.
+loutIsat20And30PercentLowerBound_A = 100;
 loutIrms20Rise_A = 20;
 loutIrms40Rise_A = 30;
 loutCopperLoss300W36V_W = continuousOutputCurrentAt36V_A^2 * loutDcrMax_Ohm;
@@ -208,7 +210,8 @@ assert(outputBleedTo5V_s < 100);
 assert(continuousOutputCurrentAt36V_A < 0.60 * outputFuseRating_A);
 assert(shortTestOutputCurrentAt36V_A < outputFuseRating_A);
 assert(shortTestOutputCurrentAt36V_A < loutIrms20Rise_A);
-assert(loutIsat10Percent_A >= 40);
+assert(loutIsat10Percent_A >= 100);
+assert(loutIsat20And30PercentLowerBound_A >= 100);
 assert(validatedVdsAt10nH_V < repetitiveVdsDesignLimit_V);
 assert(validatedIpriAt10nH_A >= 60 && validatedIsecAt10nH_A >= 30);
 assert(~busSweep.Pass80V(negativeBusRow));
@@ -252,7 +255,7 @@ metric = {
     '500W output current at 36V'
     'LOUT inductance nominal'
     'LOUT 10 percent inductance-drop current'
-    'LOUT 20 percent inductance-drop current'
+    'LOUT 20/30 percent inductance-drop current lower bound'
     'LOUT copper loss at 300W 36V'
     'LOUT copper loss at 500W 36V'
     'Validated repetitive Vds at 10nH loop'
@@ -300,7 +303,7 @@ value = [
     shortTestOutputCurrentAt36V_A
     loutInductance_uH
     loutIsat10Percent_A
-    loutIsat20Percent_A
+    loutIsat20And30PercentLowerBound_A
     loutCopperLoss300W36V_W
     loutCopperLoss500W36V_W
     validatedVdsAt10nH_V

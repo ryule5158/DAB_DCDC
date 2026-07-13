@@ -28,7 +28,7 @@
 驱动逻辑,RPD_FAULT_LOCAL1-4,4,47kΩ 1%,47kΩ,0603,必装,FAULT_LATCH_N断线时本板DIS,每块驱动板靠近UDIS,
 驱动逻辑,RPD_ESTOP_LOCAL1-4,4,47kΩ 1%,47kΩ,0603,必装,ESTOP_N断线时本板DIS,每块驱动板靠近UDIS,
 驱动逻辑,RPU_DIS1-4,4,10kΩ 1%,10kΩ,0603,必装,UDIS异常或未焊时DIS默认高,从DIS上拉到3V3_DRV,
-驱动死区,RDT1-4,4,10.0kΩ 1%,典型100ns;约80-120ns,0603,必装,UCC21520硬件最小死区,MCU初始死区约120ns,
+驱动死区,RDT1-4,4,10.0kΩ 1%,典型100ns;约80-120ns,0603,必装,UCC21520硬件最小死区,MCU命令死区120ns;模型控制时基10ns;实机按GPT时钟量化复核,
 驱动死区,CDT1-4,4,330pF C0G,330pF,0603,必装,DT引脚抗噪和通道匹配,不得超过1nF,
 驱动去耦,CVCCI_HF1-4,4,100nF 25V X7R,100nF,0603,必装,UCC21520控制侧去耦,距离VCCI小于3mm,
 驱动去耦,CVCCI1-4,4,1uF 10V X7R,1uF,0603或0805,必装,UCC21520控制侧储能,并联100nF,
@@ -59,8 +59,8 @@
 输入阻尼,CDAMP_DNP1-6,6,C5750X7S2A106K230KE兼容焊盘,10uF;100V;X7S,2220,DNP,把输入阻尼电容扩展到100uF,首板只装CDAMP1-4;实测输入谐振后再增加,
 输入泄放,RBLEED_IN1-4,4,20.0kΩ 1% 0.5W,四只并联总5.00kΩ,2512,必装,输入断电快速泄放,跨LCM后的输入电容星点;32V总功耗约0.205W,
 变压器,T1,1,定制PQ4040 PC95,3:6匝;Lm=57.5/230uH;总Llk_sec=0.50uH;DCR≤0.95/3mΩ,按实物骨架夹具自建PTH,已购锁定/实测验收,DAB隔离和1:2升压,禁止使用PQ4040通用封装;按实物引脚排布/直径/固定夹具建库;不得改匝数/Lm/漏感标称;按08二维工作域运行;保留4kVAC/温升/匝间电容实测,
-快速原边电流,U_IPRI,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,TI DVG SOIC-10,必装,测原边变压器双向高频电流并快速过流,按TI DVG推荐焊盘;串在原边交流线;大铜面和热过孔,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
-快速副边电流,U_ISEC,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,TI DVG SOIC-10,必装,测副边变压器双向高频电流并快速过流,按TI DVG推荐焊盘;与原边统一料号;串在副边交流线;大铜面和热过孔,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
+快速原边电流,U_IPRI,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,TI DVG SOIC-10,必装,测原边变压器双向高频电流并快速过流,按TI DVG推荐焊盘;串在原边交流线;模型120ns模拟延迟和1.1MHz带宽及250ns最坏OC延迟均为芯片行为不是新增料件,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
+快速副边电流,U_ISEC,1,TMCS1133B7AQDVGR,20mV/A;3.3V时约±77.5A;OC,TI DVG SOIC-10,必装,测副边变压器双向高频电流并快速过流,按TI DVG推荐焊盘;与原边统一料号;串在副边交流线;模型120ns模拟延迟和1.1MHz带宽及250ns最坏OC延迟均为芯片行为不是新增料件,https://www.ti.com/lit/ds/symlink/tmcs1133.pdf
 快速电流阈值,RVOC_TOP_PRI,1,10.0kΩ 0.1%,10kΩ,0603,必装,原边VOC上臂,与1.91kΩ配合得到约0.522V,
 快速电流阈值,RVOC_BOT_PRI,1,1.91kΩ 0.1%,1.91kΩ,0603,必装,原边VOC下臂,原边硬件门限约65.3A,
 快速电流阈值,RVOC_TOP_SEC,1,9.24kΩ 0.1%,9.24kΩ,0603,必装,次级VOC上臂,与1.00kΩ配合得到约0.320V,
@@ -114,7 +114,7 @@ ADC温度输出,CADC_TEMP1-5,5,100nF 10V X7R,100nF,0603,必装,五路温度ADC�
 硬件过压,ROVP_VIN_HYS,1,1.00MΩ 1%,1MΩ,0603,必装,TLV3202原始VIN输出到VIN_THR,正反馈迟滞约0.26V输入,
 硬件过压,ROVP_VOUT_REF,1,4.99kΩ 0.1%,4.99kΩ,0603,必装,VBIAS_1V65到VOUT_THR,使1M迟滞真实生效,
 硬件过压,ROVP_VOUT_HYS,1,1.00MΩ 1%,1MΩ,0603,必装,TLV3202原始VOUT输出到VOUT_THR,约52.01V跳闸和51.49V释放,
-故障锁存,U_LATCH,1,SN74LVC1G74DCTR,带异步预置和清零,DCT-8 SSOP,必装,过流或过压后保持关断,固定pin3=/Q;pin5=Q;pin6=/CLR;pin7=/PRE,https://www.ti.com/lit/ds/symlink/sn74lvc1g74.pdf
+故障锁存,U_LATCH,1,SN74LVC1G74DCTR,带异步预置和清零,DCT-8 SSOP,必装,过流或过压后保持关断,固定pin3=/Q;pin5=Q;pin6=/CLR;pin7=/PRE;实板只能由FAULT_RESET_N独立20us开漏脉冲复位,https://www.ti.com/lit/ds/symlink/sn74lvc1g74.pdf
 故障总线,RFAULT_PU,1,4.7kΩ,4.7kΩ,0603,必装,RAW_FAULT_N上拉到3V3_DRV,总线电容默认不装且最多100pF,
 故障总线,CFAULT_DNP,1,47pF C0G,0-100pF,0603,DNP,RAW_FAULT_N抗尖峰调试,默认不装;不得用nF级拖慢关断,
 驱动电源故障,U_FAULT_OD,1,SN74LVC07APWR,六路5V容忍输入开漏缓冲,TSSOP-14,必装,CH1-4汇四路PWRFLT到AUX_PG_N;CH5把AUX_PG_N汇RAW;CH6把ESTOP_N汇RAW,3V3_DRV供电;未用输入不得悬空,https://www.ti.com/product/SN74LVC07A
@@ -134,7 +134,7 @@ ADC温度输出,CADC_TEMP1-5,5,100nF 10V X7R,100nF,0603,必装,五路温度ADC�
 输出局部高频,CSEC_HF1-8,8,C5750X7S2A106K230KE,10uF;100V;X7S;软端头,2220,必装,副边桥300kHz局部换流电容,每个副边半桥4只;全部位于LOUT前;48V有效总容目标至少40uF,https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C5750X7S2A106K230KE
 输出局部高频,CSEC_HF_DNP1-4,4,C5750X7S2A106K230KE兼容焊盘,10uF;100V;X7S,2220,DNP,副边局部容量扩展,根据直流偏压实测和振铃再装,
 输出局部保护,ZBUS_SEC,1,SMCJ48A,48V反向工作;约77V最大钳位,SMC,必装,副边桥局部母线钳位,跨SEC_LOCAL_P-SEC_PGND且位于LOUT前;贴近CSEC_HF,
-输出电感,LOUT,1,SER2915H-222KL,2.2uH±10%;DCR最大2.05mΩ;10%降感40A;20%/30%降感100A;Irms20A/30A对应20°C/40°C温升,Coilcraft SER2915H官方焊盘;约28x28x15.4mm,必装,输出后级滤波,必须按Coilcraft推荐land pattern建库;重29.7g需机械固定;禁止设置旁路铜排或0Ω短接位,https://www.coilcraft.com/en-us/products/power/shielded-inductors/high-current-flat-wire/ser/ser29xx/ser2915h-222/
+输出电感,LOUT,1,SER2915H-222KL,2.2uH±10%;DCR最大2.05mΩ;10%降感100A;20%/30%降感均大于100A;Irms20A/30A对应20°C/40°C温升,Coilcraft SER2915H官方焊盘;约28x28x15.4mm,必装,输出后级滤波,必须按Coilcraft推荐land pattern建库;重29.7g需机械固定;禁止设置旁路铜排或0Ω短接位,https://www.coilcraft.com/en-us/products/power/shielded-inductors/high-current-flat-wire/ser/ser29xx/ser2915h-222/
 输出高频,COUT_HF1-8,8,C5750X7S2A106K230KE,10uF;100V;X7S;软端头,2220,必装,LOUT后300kHz高频电容,与CSEC_HF为不同一组;48V有效总容目标40-50uF,https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C5750X7S2A106K230KE
 输出储能,COUT1-8,8,UR080M102J35TC97S00A,1000uF;80V;每只约3.4A纹波,D16x35 THT,必装,合计8000uF输出储能,首次上电先装4只;最终对称装8只,
 输出保险,FOUT,1,PV-15A10-2P,15A;1000VDC;50kA分断;gPV,10x38mm双PCB脚,必装,切断8mF输出储能向外部短路放电,COUT星点后且输出分流器前;留更换和风道空间,https://www.eaton.com/at/en-gb/skuPage.PV-15A10-2P.html

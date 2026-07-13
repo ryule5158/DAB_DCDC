@@ -1,8 +1,9 @@
 function apply_final_safety_controller()
-%APPLY_FINAL_SAFETY_CONTROLLER Install fail-safe startup and NORMAL_SPS control.
+%APPLY_FINAL_SAFETY_CONTROLLER Install startup plus protected SPS/EPS control.
 %   The saved model defaults to no switching. Cold start uses alternating
-%   primary three-level pulses with measured IPRI/ISEC limits. NORMAL_SPS
-%   requires RUN_REQ, RAW_FAULT_N, 20 valid samples, and the voltage domain.
+%   primary three-level pulses with measured IPRI/ISEC limits. The 300 W
+%   domain uses a current-guarded, 10 ns-quantized EPS pair revalidated on
+%   the physical model. Both normal modes require the hardware fault latch.
 
 rootDir = fileparts(mfilename('fullpath'));
 modelFile = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes', ...
@@ -19,7 +20,8 @@ chart = rt.find('-isa', 'Stateflow.EMChart', ...
 assert(~isempty(chart), 'RA8P1 controller MATLAB Function was not found.');
 chart.Script = controller_script();
 chart.ChartUpdate = 'DISCRETE';
-chart.SampleTime = '1e-7';
+chart.SampleTime = '1e-8';
+set_param(mdl, 'MaxStep', '1e-8');
 save_system(mdl, modelFile);
 fprintf('UPDATED_CONTROLLER=%s\n', modelFile);
 end
@@ -29,8 +31,9 @@ lines = [
 "function [g1,g2,g3,g4,g5,g6,g7,g8,PhaseUs] = f(t,Vout,VrefCmd,Vin,Iout,Ipri,Isec,RunReq,RawFaultN)"
 "%#codegen"
 "% Cold start: alternating primary three-level pulses, secondary gates off."
-"% NORMAL_SPS starts only after 20 consecutive voltage-domain samples."
-"persistent trim prevErr lastTick vFilt vinFilt iFilt permitCount normalEnabled startupEnabled startupCycle startupPulseAllowed startupPolarity normalRamp iPriPeakHold iSecPeakHold startupPulseCmd startupIpriCyclePeak startupIsecCyclePeak"
+"% NORMAL mode starts only after 20 consecutive voltage-domain samples."
+"% RawFaultN is the modeled hardware FAULT_LATCH_N signal."
+"persistent trim prevErr lastTick vFilt vinFilt iFilt permitCount normalEnabled startupEnabled startupCycle startupPulseAllowed startupPolarity normalRamp iPriPeakHold iSecPeakHold startupPulseCmd startupIpriCyclePeak startupIsecCyclePeak epsTrim epsQuantAcc epsPhaseCmd"
 "if isempty(trim)"
 "    trim = 0;"
 "    prevErr = 0;"
@@ -50,6 +53,9 @@ lines = [
 "    startupPulseCmd = 100e-9;"
 "    startupIpriCyclePeak = 0;"
 "    startupIsecCyclePeak = 0;"
+"    epsTrim = 0;"
+"    epsQuantAcc = 0;"
+"    epsPhaseCmd = 0.30e-6;"
 "end"
 "fs = 300e3;"
 "T = 1/fs;"
@@ -83,7 +89,7 @@ lines = [
 "    entryOk = faultOk && vinFilt >= 18 && vinFilt <= 28 && ..."
 "        vFilt >= 36 && vFilt <= 48 && entryRatioOk;"
 "    holdOk = faultOk && vinFilt >= 18 && vinFilt <= 28 && ..."
-"        vFilt >= 36 && vFilt <= 48 && holdRatioOk;"
+"        vFilt >= 36 && vFilt <= 49.0 && holdRatioOk;"
 "    if normalEnabled"
 "        if ~holdOk"
 "            normalEnabled = false;"
@@ -140,15 +146,53 @@ lines = [
 "        end"
 "        trim = min(max(trim, -trimLimit), trimLimit);"
 "        prevErr = err;"
+"        if iFilt >= 4"
+"            epsTrim = min(max(epsTrim + 0.5e-9*err,-25e-9),25e-9);"
+"            epsDesired = min(max(0.295e-6 + epsTrim + 0.20e-6*err,0.28e-6),0.32e-6);"
+"            epsLow = floor(epsDesired/10e-9)*10e-9;"
+"            epsQuantAcc = epsQuantAcc + (epsDesired-epsLow)/10e-9;"
+"            epsPhaseCmd = epsLow;"
+"            if epsQuantAcc >= 1"
+"                epsPhaseCmd = epsLow + 10e-9;"
+"                epsQuantAcc = epsQuantAcc - 1;"
+"            end"
+"        else"
+"            epsTrim = 0;"
+"            epsQuantAcc = 0;"
+"            epsPhaseCmd = 0.30e-6;"
+"        end"
 "    else"
 "        trim = 0;"
 "        normalRamp = 0;"
+"        epsTrim = 0;"
+"        epsQuantAcc = 0;"
+"        epsPhaseCmd = 0.30e-6;"
 "    end"
 "    iPriPeakHold = abs(Ipri);"
 "    iSecPeakHold = abs(Isec);"
 "    lastTick = tick;"
 "end"
-"if normalEnabled && faultOk"
+"if normalEnabled && faultOk && iFilt >= 4"
+"    % Physical-model EPS PI around the measured 0.295 us balance point."
+"    % epsPhaseCmd uses 10 ns timer quantization with pulse-density dither."
+"    if iPriPeakHold < 50 && iSecPeakHold < 28"
+"        inner = 0.20e-6;"
+"        phase = epsPhaseCmd;"
+"        [a,an] = halfbridge(t,T,deadTime);"
+"        [b,bn] = halfbridge(t+T/2-inner,T,deadTime);"
+"        [c,cn] = halfbridge(t-phase,T,deadTime);"
+"        [d,dn] = halfbridge(t-phase+T/2,T,deadTime);"
+"        g1 = 10*a;  g2 = 10*an;"
+"        g3 = 10*b;  g4 = 10*bn;"
+"        g5 = 10*c;  g6 = 10*cn;"
+"        g7 = 10*d;  g8 = 10*dn;"
+"        PhaseUs = phase*1e6;"
+"    else"
+"        g1 = 0; g2 = 0; g3 = 0; g4 = 0;"
+"        g5 = 0; g6 = 0; g7 = 0; g8 = 0;"
+"        PhaseUs = 0;"
+"    end"
+"elseif normalEnabled && faultOk"
 "    phase = normalRamp*(base_phase(Vref, vinFilt, iFilt) + trim);"
 "    phase = min(max(phase, -0.55e-6), 0.46e-6);"
 "    [a,an] = halfbridge(t,T,deadTime);"

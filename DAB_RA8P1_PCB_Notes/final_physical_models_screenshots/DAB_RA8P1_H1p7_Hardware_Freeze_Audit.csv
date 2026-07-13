@@ -23,6 +23,19 @@ TMCS conductor SID 408 Ohm,"0.0007","0.0007 +/- 1e-12",1
 TMCS conductor SID 412 Ohm,"0.0007","0.0007 +/- 1e-12",1
 Saved RUN_REQ default,"0","0 +/- 0",1
 Saved RAW_FAULT_N default,"1","1 +/- 0",1
+Merged protection named blocks,"11","11",1
+TMCS IPRI analog delay s,"1.2e-07","1.2e-07 +/- 1e-15",1
+TMCS ISEC analog delay s,"1.2e-07","1.2e-07 +/- 1e-15",1
+TMCS IPRI OC worst-case delay s,"2.5e-07","2.5e-07 +/- 1e-15",1
+TMCS ISEC OC worst-case delay s,"2.5e-07","2.5e-07 +/- 1e-15",1
+Two TMCS 1.1 MHz LPFs,"true","first-order pole at 2*pi*1.1e6 rad/s",1
+IPRI saved hardware OC threshold A,"65.3","65.3 +/- 1e-12",1
+ISEC saved hardware OC threshold A,"40","40 +/- 1e-12",1
+Eight independent hardware-gated commands,"true","HW_GATE_Q1..Q8 are two-input Product blocks",1
+Hardware fault-latch model timing,"true","discrete at 10 ns",1
+RA8P1 controller model timing,"true","discrete at 10 ns",1
+Saved model maximum step s,"1e-08","1e-08 +/- 1e-15",1
+Canonical EPS/controller source tokens,"true","integral+dither EPS, 49 V hold boundary, 10 ns timing",1
 Eight gate command scales,"8 blocks, values=[1.018 1.018 1.018 1.018 1.018 1.018 1.018 1.018]","8 blocks at 1.018",1
 Eight gate command biases,"8 blocks, values=[0 0 0 0 0 0 0 0]","8 blocks at 0",1
 Eight turn-on resistors,"8 blocks, values=[4.7 4.7 4.7 4.7 4.7 4.7 4.7 4.7]","8 blocks at 4.7",1
@@ -60,10 +73,15 @@ Forbidden BOM text: Isat大于100A,"false","false",1
 BOM contains 5V_SENSE AMC wiring,"true","true",1
 BOM forbids LOUT bypass,"true","true",1
 BOM locks 470pF snubber first fit,"true","true",1
+BOM marks TMCS dynamics as no extra parts,"true","two TMCS rows",1
+BOM locks independent fault-reset pulse,"true","true",1
 Authoritative documents mention 5V_SENSE,"9","9",1
 Stale document phrase: Isat>100A,"false","false",1
-Stale document phrase: 10% 电感下降电流约 100A,"false","false",1
+Stale document phrase: 10% 电感下降电流约 40A,"false","false",1
 Stale document phrase: 保留 LOUT 铜排旁路,"false","false",1
 Stale document phrase: LOUT 两端必须留低电感铜排旁路位,"false","false",1
+Dual-version comparison report present,"true","true",1
+Dual-version report evidence tokens,"true","nominal, leakage corners, latch, and no new BOM parts",1
+Pin table separates model behavior from PCB parts,"true","TMCS delays, real reset, timer and EPS boundaries",1
 Old H1.5 workbook removed,"false","false",1
 Old pre-H1.7 workbook removed,"false","false",1
