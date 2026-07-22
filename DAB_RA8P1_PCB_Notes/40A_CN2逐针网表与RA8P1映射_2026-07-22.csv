@@ -1,0 +1,121 @@
+﻿cn2_pin,schematic_net,pcb1_net,pcb3_net,pcb_match,match_method,logical_net,ra8p1_pin,developer_board_header,direction,role,status
+1,2adcaa01:NC$14,,,True,schematic NC and PCB pad has no net,NC,NC,do not connect,—,reserved/no-connect,native NC
+2,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+3,ETH_RXD0,ETH_RXD0,ETH_RXD0,True,exact native net-name equality,ETH_RXD0,P906,P6.30,MCU input,RMII1 RXD0,new
+4,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+5,ETH_RX_ER,ETH_RX_ER,ETH_RX_ER,True,exact native net-name equality,ETH_RX_ER,P312,P6.37,MCU input,RMII1 RX_ER,new
+6,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+7,ETH_CRS_DV,ETH_CRS_DV,ETH_CRS_DV,True,exact native net-name equality,ETH_CRS_DV,P206,P4.11,MCU input,RMII1 CRS_DV,new
+8,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+9,ETH_RXD1,ETH_RXD1,ETH_RXD1,True,exact native net-name equality,ETH_RXD1,P907,P6.22,MCU input,RMII1 RXD1,new
+10,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+11,ETH_MDIO,ETH_MDIO,ETH_MDIO,True,exact native net-name equality,ETH_MDIO,P805,P6.36,bidirectional,RMII1 MDIO,new
+12,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+13,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+14,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+15,ETH_REF50CK,ETH_REF50CK,ETH_REF50CK,True,exact native net-name equality,ETH_REF50CK,P905,P6.33,MCU input,RMII1 50 MHz reference clock,new
+16,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+17,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+18,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+19,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+20,ETH_MDC,ETH_MDC,ETH_MDC,True,exact native net-name equality,ETH_MDC,P806,P6.34,MCU output,RMII1 MDC,new
+21,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+22,ETH_PHY_RESET_N,ETH_PHY_RESET_N,ETH_PHY_RESET_N,True,exact native net-name equality,ETH_PHY_RESET_N,P513,P6.32,MCU output,"PHY reset, active low",new
+23,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+24,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+25,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+26,ETH_TX_EN,ETH_TX_EN,ETH_TX_EN,True,exact native net-name equality,ETH_TX_EN,P310,P6.35,MCU output,RMII1 TX_EN,new
+27,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+28,ETH_TXD0,ETH_TXD0,ETH_TXD0,True,exact native net-name equality,ETH_TXD0,P307,P6.28,MCU output,RMII1 TXD0,new
+29,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+30,ETH_TXD1,ETH_TXD1,ETH_TXD1,True,exact native net-name equality,ETH_TXD1,P306,P4.13,MCU output,RMII1 TXD1,new
+31,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+32,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+33,ADC_TEMP_SEC,ADC_TEMP_SEC,ADC_TEMP_SEC,True,exact native net-name equality,ADC_TEMP_SEC,P004,P5.11,MCU analog input,secondary temperature ADC,tested
+34,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+35,PWM_SEC_A_H,PWM_SEC_A_H,PWM_SEC_A_H,True,exact native net-name equality,PWM_SEC_A_H,P915,P7.19,MCU output,GPT5 GTIOC5A,tested
+36,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+37,PWM_SEC_A_L,PWM_SEC_A_L,PWM_SEC_A_L,True,exact native net-name equality,PWM_SEC_A_L,P914,P7.2,MCU output,GPT5 GTIOC5B,tested
+38,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+39,PWM_SEC_B_H,PWM_SEC_B_H,PWM_SEC_B_H,True,exact native net-name equality,PWM_SEC_B_H,P605,P6.11,MCU output,GPT8 GTIOC8A,tested
+40,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+41,PWM_SEC_B_L,PWM_SEC_B_L,PWM_SEC_B_L,True,exact native net-name equality,PWM_SEC_B_L,P604,P6.9,MCU output,GPT8 GTIOC8B,tested
+42,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+43,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+44,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+45,OUT_PROT_EN,OUT_PROT_EN,OUT_PROT_EN,True,exact native net-name equality,OUT_PROT_EN,P706,P6.15,MCU output,secondary protection enable,tested
+46,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+47,PROT_RESET_N,PROT_RESET_N,PROT_RESET_N,True,exact native net-name equality,PROT_RESET_N,PB03,P6.16,MCU output,"protection reset, active low",tested
+48,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+49,SEC_HW_OK_CTRL,SEC_HW_OK_CTRL,SEC_HW_OK_CTRL,True,exact native net-name equality,SEC_HW_OK_CTRL,PB01,P6.19,MCU input,isolated secondary HW_OK feedback,new
+50,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+51,ADC_VOUT,ADC_VOUT,ADC_VOUT,True,exact native net-name equality,ADC_VOUT,P007,P5.6,MCU analog input,output voltage ADC,tested
+52,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+53,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+54,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+55,ISEC_OC_N,ISEC_OC_N,ISEC_OC_N,True,exact native net-name equality,ISEC_OC_N,P403,P7.11,MCU input,"secondary overcurrent, active low",tested
+56,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+57,RUN_REQ,RUN_REQ,RUN_REQ,True,exact native net-name equality,RUN_REQ,P707,P6.17,MCU output,gate run request,tested
+58,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+59,RAW_FAULT_N1,RAW_FAULT_N1,RAW_FAULT_N1,True,exact native net-name equality,RAW_FAULT_N1,P401,P8.8,MCU input,primary fault into POEG0 wired-OR,tested
+60,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+61,RAW_FAULT_N2,RAW_FAULT_N2,RAW_FAULT_N2,True,exact native net-name equality,RAW_FAULT_N2,P401,P8.8,MCU input,secondary fault into POEG0 wired-OR,tested
+62,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+63,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+64,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+65,ADC_IIN,ADC_IIN,ADC_IIN,True,exact native net-name equality,ADC_IIN,P002,P5.7,MCU analog input,input current ADC,tested
+66,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+67,ADC_IOUT,ADC_IOUT,ADC_IOUT,True,exact native net-name equality,ADC_IOUT,P008,P5.8,MCU analog input,output current ADC,tested
+68,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+69,ADC_VAFE_HALF,ADC_VAFE_HALF,ADC_VAFE_HALF,True,exact native net-name equality,ADC_VAFE_HALF,P003,P5.9,MCU analog input,analog front-end midpoint ADC,tested
+70,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+71,ADC_IPRI,ADC_IPRI,ADC_IPRI,True,exact native net-name equality,ADC_IPRI,P000,P5.3,MCU analog input,primary current ADC,tested
+72,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+73,ADC_ISEC,ADC_ISEC,ADC_ISEC,True,exact native net-name equality,ADC_ISEC,P006,P5.4,MCU analog input,secondary current ADC,tested
+74,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+75,2adcaa01:N$12,$1N1440,$1N1440,True,anonymous net matched by CN2.75-R49.2 topology,DAB_STATUS_LED,P402,P4.1,MCU output,"LED10 status output, active high through R49",tested
+76,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+77,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+78,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+79,IPRI_OC_N,IPRI_OC_N,IPRI_OC_N,True,exact native net-name equality,IPRI_OC_N,P400,P8.5,MCU input,"primary overcurrent, active low",tested
+80,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+81,PWM_PRI_A_L,PWM_PRI_A_L,PWM_PRI_A_L,True,exact native net-name equality,PWM_PRI_A_L,P414,P8.13,MCU output,GPT0 GTIOC0B,tested
+82,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+83,PWM_PRI_A_H,PWM_PRI_A_H,PWM_PRI_A_H,True,exact native net-name equality,PWM_PRI_A_H,P415,P8.4,MCU output,GPT0 GTIOC0A,tested
+84,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+85,PWM_PRI_B_L,PWM_PRI_B_L,PWM_PRI_B_L,True,exact native net-name equality,PWM_PRI_B_L,P104,P7.3,MCU output,GPT1 GTIOC1B,tested
+86,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+87,PWM_PRI_B_H,PWM_PRI_B_H,PWM_PRI_B_H,True,exact native net-name equality,PWM_PRI_B_H,P105,P7.1,MCU output,GPT1 GTIOC1A,tested
+88,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+89,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+90,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+91,ADC_TEMP_PRI,ADC_TEMP_PRI,ADC_TEMP_PRI,True,exact native net-name equality,ADC_TEMP_PRI,P009,P5.10,MCU analog input,primary temperature ADC,tested
+92,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+93,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+94,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+95,PRI_HW_OK_CTRL,PRI_HW_OK_CTRL,PRI_HW_OK_CTRL,True,exact native net-name equality,PRI_HW_OK_CTRL,PB06,P6.18,MCU input,isolated primary HW_OK feedback,new
+96,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+97,IN_PRECHARGE_EN,IN_PRECHARGE_EN,IN_PRECHARGE_EN,True,exact native net-name equality,IN_PRECHARGE_EN,PB00,P6.13,MCU output,input precharge enable,tested
+98,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+99,IN_MAIN_EN,IN_MAIN_EN,IN_MAIN_EN,True,exact native net-name equality,IN_MAIN_EN,PB02,P6.14,MCU output,input main relay enable,tested
+100,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+101,ADC_VIN,ADC_VIN,ADC_VIN,True,exact native net-name equality,ADC_VIN,P001,P5.5,MCU analog input,input voltage ADC,tested
+102,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+103,3V3_RA,3V3_RA,3V3_RA,True,exact native net-name equality,3V3_RA,VCC,P9.1,power,3.3 V supply,native
+104,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+105,3V3_RA,3V3_RA,3V3_RA,True,exact native net-name equality,3V3_RA,VCC,P9.2,power,3.3 V supply,native
+106,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+107,CAN_RX_MCU,CAN_RX_MCU,CAN_RX_MCU,True,exact native net-name equality,CAN_RX_MCU,P705,P6.21,MCU input,CANFD0 CRX0,new
+108,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+109,CAN_TX_MCU,CAN_TX_MCU,CAN_TX_MCU,True,exact native net-name equality,CAN_TX_MCU,P704,P4.2,MCU output,CANFD0 CTX0,new
+110,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+111,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+112,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+113,FAN,FAN,FAN,True,exact native net-name equality,FAN,PB04,P6.12,MCU output,fan control,tested
+114,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+115,TEMP_AMB_OT_N,TEMP_AMB_OT_N,TEMP_AMB_OT_N,True,exact native net-name equality,TEMP_AMB_OT_N,PB05,P6.20,MCU input,"ambient overtemperature alert, active low",new
+116,GND,GND,GND,True,exact native net-name equality,GND,GND,P10.1-P10.8 / GND plane,power return,ground,native
+117,I2C_SDA,I2C_SDA,I2C_SDA,True,exact native net-name equality,I2C_SDA,P514,P4.3,bidirectional,IIC2 SDA2,tested
+118,3V3_RA,3V3_RA,3V3_RA,True,exact native net-name equality,3V3_RA,VCC,P9.3,power,3.3 V supply,native
+119,I2C_SCL,I2C_SCL,I2C_SCL,True,exact native net-name equality,I2C_SCL,P515,P4.4,bidirectional,IIC2 SCL2,tested
+120,3V3_RA,3V3_RA,3V3_RA,True,exact native net-name equality,3V3_RA,VCC,P9.4,power,3.3 V supply,native

@@ -1,0 +1,3247 @@
+{
+  "generated_at": "2026-07-22",
+  "source_epro2": "C:\\Users\\LENOVO\\Desktop\\ProPrj_瑞萨杯_2026-07-22.epro2",
+  "source_epro2_sha256": "c6d90663ec2088818d16fa19e336f9ebebf1cf69b4acf9753e3d5aa48a866b16",
+  "source_epru": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\_cn2_current_source_20260722_154406\\瑞萨杯.epru",
+  "source_epru_sha256": "4b551876beb33cc7015adcf5d8cd91e87924bcb9f89a79e8086b0469080fd48f",
+  "developer_board_source": "C:\\Users\\LENOVO\\Desktop\\瑞萨CPKHMI-RA8P1扩展板 (1).eprj2",
+  "developer_board_source_sha256": "d872622b5486dcff12822c6b8b155669a527298f4aed82b82b3663f49ae50e8f",
+  "ra_cfg": "C:\\Users\\LENOVO\\e2_studio\\workspace\\RA8P1_Project1\\ra_cfg.txt",
+  "configuration_xml": "C:\\Users\\LENOVO\\e2_studio\\workspace\\RA8P1_Project1\\configuration.xml",
+  "pin_data": "C:\\Users\\LENOVO\\e2_studio\\workspace\\RA8P1_Project1\\ra_gen\\pin_data.c",
+  "schematic_cn2_component_id": "9c8a0518d2c5727d",
+  "pcb_cn2_instances": [
+    {
+      "pcb_uuid": "2e443d39c78011f1",
+      "pcb_title": "PCB1",
+      "component_id": "31b1d2de8c4407f3"
+    },
+    {
+      "pcb_uuid": "ab46fc1910caa8ca",
+      "pcb_title": "PCB3",
+      "component_id": "7477aceb4c752f06"
+    }
+  ],
+  "counts": {
+    "cn2_pins": 120,
+    "ground_pins": 69,
+    "power_3v3_pins": 4,
+    "connected_signal_pins": 46,
+    "no_connect_pins": 1,
+    "unique_ra_signal_pins": 45
+  },
+  "expected_counts": {
+    "cn2_pins": 120,
+    "ground_pins": 69,
+    "power_3v3_pins": 4,
+    "connected_signal_pins": 46,
+    "no_connect_pins": 1,
+    "unique_ra_signal_pins": 45
+  },
+  "named_or_topology_mismatches": [],
+  "anonymous_topology_checks": [
+    {
+      "pcb": "PCB1",
+      "pin": 75,
+      "pcb_net": "$1N1440",
+      "members": [
+        "CN2.75",
+        "R49.2"
+      ],
+      "method": "full PCB topology CN2.75-R49.2",
+      "ok": true
+    },
+    {
+      "pcb": "PCB3",
+      "pin": 75,
+      "pcb_net": "$1N1440",
+      "members": [
+        "CN2.75"
+      ],
+      "method": "connector-only PCB copy uses the same native PCB net as PCB1",
+      "ok": true
+    }
+  ],
+  "developer_board_breakout_checks": [
+    {
+      "cn2_pin": 3,
+      "logical_net": "ETH_RXD0",
+      "ra_pin": "P906",
+      "header": "P6.30",
+      "standalone_schematic_net": "P906",
+      "standalone_pcb_net": "P906",
+      "embedded_pcb_nets": [
+        "P906"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 5,
+      "logical_net": "ETH_RX_ER",
+      "ra_pin": "P312",
+      "header": "P6.37",
+      "standalone_schematic_net": "P312",
+      "standalone_pcb_net": "P312",
+      "embedded_pcb_nets": [
+        "P312"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 7,
+      "logical_net": "ETH_CRS_DV",
+      "ra_pin": "P206",
+      "header": "P4.11",
+      "standalone_schematic_net": "P206",
+      "standalone_pcb_net": "P206",
+      "embedded_pcb_nets": [
+        "P206"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 9,
+      "logical_net": "ETH_RXD1",
+      "ra_pin": "P907",
+      "header": "P6.22",
+      "standalone_schematic_net": "P907",
+      "standalone_pcb_net": "P907",
+      "embedded_pcb_nets": [
+        "P907"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 11,
+      "logical_net": "ETH_MDIO",
+      "ra_pin": "P805",
+      "header": "P6.36",
+      "standalone_schematic_net": "P805",
+      "standalone_pcb_net": "P805",
+      "embedded_pcb_nets": [
+        "P805"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 15,
+      "logical_net": "ETH_REF50CK",
+      "ra_pin": "P905",
+      "header": "P6.33",
+      "standalone_schematic_net": "P905",
+      "standalone_pcb_net": "P905",
+      "embedded_pcb_nets": [
+        "P905"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 20,
+      "logical_net": "ETH_MDC",
+      "ra_pin": "P806",
+      "header": "P6.34",
+      "standalone_schematic_net": "P806",
+      "standalone_pcb_net": "P806",
+      "embedded_pcb_nets": [
+        "P806"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 22,
+      "logical_net": "ETH_PHY_RESET_N",
+      "ra_pin": "P513",
+      "header": "P6.32",
+      "standalone_schematic_net": "P513",
+      "standalone_pcb_net": "P513",
+      "embedded_pcb_nets": [
+        "P513"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 26,
+      "logical_net": "ETH_TX_EN",
+      "ra_pin": "P310",
+      "header": "P6.35",
+      "standalone_schematic_net": "P310",
+      "standalone_pcb_net": "P310",
+      "embedded_pcb_nets": [
+        "P310"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 28,
+      "logical_net": "ETH_TXD0",
+      "ra_pin": "P307",
+      "header": "P6.28",
+      "standalone_schematic_net": "P307",
+      "standalone_pcb_net": "P307",
+      "embedded_pcb_nets": [
+        "P307"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 30,
+      "logical_net": "ETH_TXD1",
+      "ra_pin": "P306",
+      "header": "P4.13",
+      "standalone_schematic_net": "P306",
+      "standalone_pcb_net": "P306",
+      "embedded_pcb_nets": [
+        "P306"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 33,
+      "logical_net": "ADC_TEMP_SEC",
+      "ra_pin": "P004",
+      "header": "P5.11",
+      "standalone_schematic_net": "P004",
+      "standalone_pcb_net": "P004",
+      "embedded_pcb_nets": [
+        "P004"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 35,
+      "logical_net": "PWM_SEC_A_H",
+      "ra_pin": "P915",
+      "header": "P7.19",
+      "standalone_schematic_net": "P915",
+      "standalone_pcb_net": "P915",
+      "embedded_pcb_nets": [
+        "P915"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 37,
+      "logical_net": "PWM_SEC_A_L",
+      "ra_pin": "P914",
+      "header": "P7.2",
+      "standalone_schematic_net": "P914",
+      "standalone_pcb_net": "P914",
+      "embedded_pcb_nets": [
+        "P914"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 39,
+      "logical_net": "PWM_SEC_B_H",
+      "ra_pin": "P605",
+      "header": "P6.11",
+      "standalone_schematic_net": "P605",
+      "standalone_pcb_net": "P605",
+      "embedded_pcb_nets": [
+        "P605"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 41,
+      "logical_net": "PWM_SEC_B_L",
+      "ra_pin": "P604",
+      "header": "P6.9",
+      "standalone_schematic_net": "P604",
+      "standalone_pcb_net": "P604",
+      "embedded_pcb_nets": [
+        "P604"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 45,
+      "logical_net": "OUT_PROT_EN",
+      "ra_pin": "P706",
+      "header": "P6.15",
+      "standalone_schematic_net": "P706",
+      "standalone_pcb_net": "P706",
+      "embedded_pcb_nets": [
+        "P706"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 47,
+      "logical_net": "PROT_RESET_N",
+      "ra_pin": "PB03",
+      "header": "P6.16",
+      "standalone_schematic_net": "PB03",
+      "standalone_pcb_net": "PB03",
+      "embedded_pcb_nets": [
+        "PB03"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 49,
+      "logical_net": "SEC_HW_OK_CTRL",
+      "ra_pin": "PB01",
+      "header": "P6.19",
+      "standalone_schematic_net": "PB01",
+      "standalone_pcb_net": "PB01",
+      "embedded_pcb_nets": [
+        "PB01"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 51,
+      "logical_net": "ADC_VOUT",
+      "ra_pin": "P007",
+      "header": "P5.6",
+      "standalone_schematic_net": "P007",
+      "standalone_pcb_net": "P007",
+      "embedded_pcb_nets": [
+        "P007"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 55,
+      "logical_net": "ISEC_OC_N",
+      "ra_pin": "P403",
+      "header": "P7.11",
+      "standalone_schematic_net": "P403",
+      "standalone_pcb_net": "P403",
+      "embedded_pcb_nets": [
+        "P403"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 57,
+      "logical_net": "RUN_REQ",
+      "ra_pin": "P707",
+      "header": "P6.17",
+      "standalone_schematic_net": "P707",
+      "standalone_pcb_net": "P707",
+      "embedded_pcb_nets": [
+        "P707"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 59,
+      "logical_net": "RAW_FAULT_N1",
+      "ra_pin": "P401",
+      "header": "P8.8",
+      "standalone_schematic_net": "P401",
+      "standalone_pcb_net": "P401",
+      "embedded_pcb_nets": [
+        "P401"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 61,
+      "logical_net": "RAW_FAULT_N2",
+      "ra_pin": "P401",
+      "header": "P8.8",
+      "standalone_schematic_net": "P401",
+      "standalone_pcb_net": "P401",
+      "embedded_pcb_nets": [
+        "P401"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 65,
+      "logical_net": "ADC_IIN",
+      "ra_pin": "P002",
+      "header": "P5.7",
+      "standalone_schematic_net": "P002",
+      "standalone_pcb_net": "P002",
+      "embedded_pcb_nets": [
+        "P002"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 67,
+      "logical_net": "ADC_IOUT",
+      "ra_pin": "P008",
+      "header": "P5.8",
+      "standalone_schematic_net": "P008",
+      "standalone_pcb_net": "P008",
+      "embedded_pcb_nets": [
+        "P008"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 69,
+      "logical_net": "ADC_VAFE_HALF",
+      "ra_pin": "P003",
+      "header": "P5.9",
+      "standalone_schematic_net": "P003",
+      "standalone_pcb_net": "P003",
+      "embedded_pcb_nets": [
+        "P003"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 71,
+      "logical_net": "ADC_IPRI",
+      "ra_pin": "P000",
+      "header": "P5.3",
+      "standalone_schematic_net": "P000",
+      "standalone_pcb_net": "P000",
+      "embedded_pcb_nets": [
+        "P000"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 73,
+      "logical_net": "ADC_ISEC",
+      "ra_pin": "P006",
+      "header": "P5.4",
+      "standalone_schematic_net": "P006",
+      "standalone_pcb_net": "P006",
+      "embedded_pcb_nets": [
+        "P006"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 75,
+      "logical_net": "DAB_STATUS_LED",
+      "ra_pin": "P402",
+      "header": "P4.1",
+      "standalone_schematic_net": "P402",
+      "standalone_pcb_net": "P402",
+      "embedded_pcb_nets": [
+        "P402"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 79,
+      "logical_net": "IPRI_OC_N",
+      "ra_pin": "P400",
+      "header": "P8.5",
+      "standalone_schematic_net": "P400",
+      "standalone_pcb_net": "P400",
+      "embedded_pcb_nets": [
+        "P400"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 81,
+      "logical_net": "PWM_PRI_A_L",
+      "ra_pin": "P414",
+      "header": "P8.13",
+      "standalone_schematic_net": "P414",
+      "standalone_pcb_net": "P414",
+      "embedded_pcb_nets": [
+        "P414"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 83,
+      "logical_net": "PWM_PRI_A_H",
+      "ra_pin": "P415",
+      "header": "P8.4",
+      "standalone_schematic_net": "P415",
+      "standalone_pcb_net": "P415",
+      "embedded_pcb_nets": [
+        "P415"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 85,
+      "logical_net": "PWM_PRI_B_L",
+      "ra_pin": "P104",
+      "header": "P7.3",
+      "standalone_schematic_net": "P104",
+      "standalone_pcb_net": "P104",
+      "embedded_pcb_nets": [
+        "P104"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 87,
+      "logical_net": "PWM_PRI_B_H",
+      "ra_pin": "P105",
+      "header": "P7.1",
+      "standalone_schematic_net": "P105",
+      "standalone_pcb_net": "P105",
+      "embedded_pcb_nets": [
+        "P105"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 91,
+      "logical_net": "ADC_TEMP_PRI",
+      "ra_pin": "P009",
+      "header": "P5.10",
+      "standalone_schematic_net": "P009",
+      "standalone_pcb_net": "P009",
+      "embedded_pcb_nets": [
+        "P009"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 95,
+      "logical_net": "PRI_HW_OK_CTRL",
+      "ra_pin": "PB06",
+      "header": "P6.18",
+      "standalone_schematic_net": "PB06",
+      "standalone_pcb_net": "PB06",
+      "embedded_pcb_nets": [
+        "PB06"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 97,
+      "logical_net": "IN_PRECHARGE_EN",
+      "ra_pin": "PB00",
+      "header": "P6.13",
+      "standalone_schematic_net": "PB00",
+      "standalone_pcb_net": "PB00",
+      "embedded_pcb_nets": [
+        "PB00"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 99,
+      "logical_net": "IN_MAIN_EN",
+      "ra_pin": "PB02",
+      "header": "P6.14",
+      "standalone_schematic_net": "PB02",
+      "standalone_pcb_net": "PB02",
+      "embedded_pcb_nets": [
+        "PB02"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 101,
+      "logical_net": "ADC_VIN",
+      "ra_pin": "P001",
+      "header": "P5.5",
+      "standalone_schematic_net": "P001",
+      "standalone_pcb_net": "P001",
+      "embedded_pcb_nets": [
+        "P001"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 107,
+      "logical_net": "CAN_RX_MCU",
+      "ra_pin": "P705",
+      "header": "P6.21",
+      "standalone_schematic_net": "P705",
+      "standalone_pcb_net": "P705",
+      "embedded_pcb_nets": [
+        "P705"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 109,
+      "logical_net": "CAN_TX_MCU",
+      "ra_pin": "P704",
+      "header": "P4.2",
+      "standalone_schematic_net": "P704",
+      "standalone_pcb_net": "P704",
+      "embedded_pcb_nets": [
+        "P704"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 113,
+      "logical_net": "FAN",
+      "ra_pin": "PB04",
+      "header": "P6.12",
+      "standalone_schematic_net": "PB04",
+      "standalone_pcb_net": "PB04",
+      "embedded_pcb_nets": [
+        "PB04"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 115,
+      "logical_net": "TEMP_AMB_OT_N",
+      "ra_pin": "PB05",
+      "header": "P6.20",
+      "standalone_schematic_net": "PB05",
+      "standalone_pcb_net": "PB05",
+      "embedded_pcb_nets": [
+        "PB05"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 117,
+      "logical_net": "I2C_SDA",
+      "ra_pin": "P514",
+      "header": "P4.3",
+      "standalone_schematic_net": "P514",
+      "standalone_pcb_net": "P514",
+      "embedded_pcb_nets": [
+        "P514"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 119,
+      "logical_net": "I2C_SCL",
+      "ra_pin": "P515",
+      "header": "P4.4",
+      "standalone_schematic_net": "P515",
+      "standalone_pcb_net": "P515",
+      "embedded_pcb_nets": [
+        "P515"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 103,
+      "logical_net": "3V3_RA",
+      "ra_pin": "VCC",
+      "header": "P9.1",
+      "standalone_schematic_net": "VCC",
+      "standalone_pcb_net": "VCC",
+      "embedded_pcb_nets": [
+        "VCC"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 105,
+      "logical_net": "3V3_RA",
+      "ra_pin": "VCC",
+      "header": "P9.2",
+      "standalone_schematic_net": "VCC",
+      "standalone_pcb_net": "VCC",
+      "embedded_pcb_nets": [
+        "VCC"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 118,
+      "logical_net": "3V3_RA",
+      "ra_pin": "VCC",
+      "header": "P9.3",
+      "standalone_schematic_net": "VCC",
+      "standalone_pcb_net": "VCC",
+      "embedded_pcb_nets": [
+        "VCC"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": 120,
+      "logical_net": "3V3_RA",
+      "ra_pin": "VCC",
+      "header": "P9.4",
+      "standalone_schematic_net": "VCC",
+      "standalone_pcb_net": "VCC",
+      "embedded_pcb_nets": [
+        "VCC"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.1",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.2",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.3",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.4",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.5",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.6",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.7",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    },
+    {
+      "cn2_pin": "all GND",
+      "logical_net": "GND",
+      "ra_pin": "GND",
+      "header": "P10.8",
+      "standalone_schematic_net": "GND",
+      "standalone_pcb_net": "GND",
+      "embedded_pcb_nets": [
+        "GND"
+      ],
+      "ok": true
+    }
+  ],
+  "mux_checks": [
+    {
+      "cn2_pin": 3,
+      "logical_net": "ETH_RXD0",
+      "ra_pin": "P906",
+      "required": "ESWM_RMII1: RMII1_RXD0",
+      "cfg_line": "P906 A13 - - - - Disabled - - \"ADC0(Digital): AD0FLAG1; CEU: VIO_D5; ESWM_GMII/MII1: ET1_RXD0; ESWM_RGMII1: RGMII1_RXD0; ESWM_RMII1: RMII1_RXD0; GLCDC: LCD_DATA20; GPT13: GTIOC13B; IRQ: IRQ9; PDM0: PDMDAT0; SCI6: CTS6; SSIE1: SSILRCK1; ULPT1: ULPTO1; USB FS: USB_ID\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 5,
+      "logical_net": "ETH_RX_ER",
+      "ra_pin": "P312",
+      "required": "ESWM_RMII1: RMII1_RX_ER",
+      "cfg_line": "P312 C13 - - - - Disabled - - \"AGT1: AGTOA1; CANFD0: CTX0; CEU: VIO_D7; ESWM_GMII/MII1: ET1_RX_ER; ESWM_RMII1: RMII1_RX_ER; GLCDC: LCD_DATA18; GPT: GTADSM0; GPT5: GTCPPO5; IRQ: IRQ22-DS; PDM2: PDMDAT2; SCI3: CTS_RTS3; SCI3: DE3\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 7,
+      "logical_net": "ETH_CRS_DV",
+      "ra_pin": "P206",
+      "required": "ESWM_RMII1: RMII1_CRS_DV",
+      "cfg_line": "P206 B15 - - - - Disabled - - \"BUS: CS7; CEU: VIO_D0; CLKOUT: CLKOUT; ESWM_GMII/MII1: ET1_RX_DV; ESWM_RGMII1: RGMII1_RX_CTL; ESWM_RMII1: RMII1_CRS_DV; GPT0: GTCPPO0; GPT_OPS: GTIU; IRQ: IRQ0-DS; SDHI0: SD0DAT7; SSIE1: SSIDATA1; ULPT1: ULPTOB1; USB FS: USB_VBUSEN\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 9,
+      "logical_net": "ETH_RXD1",
+      "ra_pin": "P907",
+      "required": "ESWM_RMII1: RMII1_RXD1",
+      "cfg_line": "P907 A15 - - - - Disabled - - \"ADC(Digital): ADSYNC; CEU: VIO_D4; ESWM_GMII/MII1: ET1_RXD1; ESWM_RGMII1: RGMII1_RXD1; ESWM_RMII1: RMII1_RXD1; GLCDC: LCD_DATA21; GPT13: GTIOC13A; IRQ: IRQ10; PDM2: PDMCLK2; SCI6: DE6; SCI6: SCK6; SSIE1: SSIBCK1; ULPT1: ULPTEE1; USB FS: USB_EXICEN\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 11,
+      "logical_net": "ETH_MDIO",
+      "ra_pin": "P805",
+      "required": "ESWM_RMII1: ET1_MDIO",
+      "cfg_line": "P805 P12 - - - - Disabled - - \"ACMPHS: IVCMP0; ADC0: AN017; ADC1: AN017; CEU: VIO_D15; ESWM_GMII/MII: ET1_MDIO; ESWM_RGMII1: ET1_MDIO; ESWM_RMII1: ET1_MDIO; GLCDC: LCD_TCON1; IRQ: IRQ30; SCI8: TXD8\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 15,
+      "logical_net": "ETH_REF50CK",
+      "ra_pin": "P905",
+      "required": "ESWM_RMII1: RMII1_REF50CK",
+      "cfg_line": "P905 A14 - - - - Disabled - - \"ADC1(Digital): AD1FLAG1; CEU: VIO_D6; ESWM_GMII/MII1: ET1_RX_CLK; ESWM_RGMII1: RGMII1_RXC; ESWM_RMII1: RMII1_REF50CK; GLCDC: LCD_DATA19; GPT13: GTCPPO13; IRQ: IRQ8; PDM1: PDMDAT1; SCI3: RXD3\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 20,
+      "logical_net": "ETH_MDC",
+      "ra_pin": "P806",
+      "required": "ESWM_RMII1: ET1_MDC",
+      "cfg_line": "P806 T14 - - - - Disabled - - \"ADC0: AN018; ADC1: AN018; CEU: VIO_D14; ESWM_GMII/MII: ET1_MDC; ESWM_RGMII1: ET1_MDC; ESWM_RMII1: ET1_MDC; GLCDC: LCD_TCON0; IRQ: IRQ0; SCI8: RXD8\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 22,
+      "logical_net": "ETH_PHY_RESET_N",
+      "ra_pin": "P513",
+      "required": "GPIO capability",
+      "cfg_line": "P513 R13 - - - - Disabled - - \"ACMPHS: IVCMP0; ADC0: AN016; ADC1: AN016; CEU: VIO_FLD; ESWM_GMII/MII: ET0_INT; ESWM_RGMII0: ET0_INT; ESWM_RMII0: ET0_INT; GLCDC: LCD_TCON3; GPT13: GTIOC13B; IRQ: IRQ31; SCI8: DE8; SCI8: SCK8\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 26,
+      "logical_net": "ETH_TX_EN",
+      "ra_pin": "P310",
+      "required": "ESWM_RMII1: RMII1_TX_EN",
+      "cfg_line": "P310 E10 - - - - Disabled - - \"AGT1: AGTEE1; CEU: VIO_D9; ESWM_GMII/MII1: ET1_TX_EN; ESWM_RGMII1: RGMII1_TX_CTL; ESWM_RMII1: RMII1_TX_EN; GLCDC: LCD_DATA16; GPT7: GTCPPO7; IRQ: IRQ24-DS; SCI3: TXD3\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 28,
+      "logical_net": "ETH_TXD0",
+      "ra_pin": "P307",
+      "required": "ESWM_RMII1: RMII1_TXD0",
+      "cfg_line": "P307 C11 - - - - Disabled - - \"CEU: VIO_D12; ESWM_GMII/MII1: ET1_TXD0; ESWM_RGMII1: RGMII1_TXD0; ESWM_RMII1: RMII1_TXD0; GPT10: GTCPPO10; GPT_OPS: GTIV; IRQ: IRQ27-DS; SCI6: CTS_RTS6; SCI6: DE6; SDHI0: SD0CMD; TRACE: TDATA0; ULPT1: ULPTOA1\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 30,
+      "logical_net": "ETH_TXD1",
+      "ra_pin": "P306",
+      "required": "ESWM_RMII1: RMII1_TXD1",
+      "cfg_line": "P306 D11 - - - - Disabled - - \"CEU: VIO_D13; ESWM_GMII/MII1: ET1_TXD1; ESWM_RGMII1: RGMII1_TXD1; ESWM_RMII1: RMII1_TXD1; GPT11: GTCPPO11; GPT_OPS: GTIW; IRQ: IRQ28-DS; SDHI0: SD0CD; TRACE: TDATA1; ULPT1: ULPTEVI1\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 33,
+      "logical_net": "ADC_TEMP_SEC",
+      "ra_pin": "P004",
+      "required": "ADC0: AN004",
+      "cfg_line": "P004 T11 - - - - Disabled - - \"ACMPHS: IVCMP2; ADC0: AN004; IRQ: IRQ9-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 35,
+      "logical_net": "PWM_SEC_A_H",
+      "ra_pin": "P915",
+      "required": "GPT5: GTIOC5A",
+      "cfg_line": "P915 A6 - - - - Disabled - - \"GLCDC: LCD_DATA1; GPT5: GTIOC5A; IRQ: IRQ8; SCI6: CTS6\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 37,
+      "logical_net": "PWM_SEC_A_L",
+      "ra_pin": "P914",
+      "required": "GPT5: GTIOC5B",
+      "cfg_line": "P914 E5 - - - - Disabled - - \"GLCDC: LCD_DATA0; GPT5: GTIOC5B; IRQ: IRQ9; SCI6: CTS_RTS6; SCI6: DE6\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 39,
+      "logical_net": "PWM_SEC_B_H",
+      "ra_pin": "P605",
+      "required": "GPT8: GTIOC8A",
+      "cfg_line": "P605 N1 - - - - Disabled - - \"GPT8: GTIOC8A; IRQ: IRQ25; OSPI1: OM_1_SIO1; SCI0: CTS0\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 41,
+      "logical_net": "PWM_SEC_B_L",
+      "ra_pin": "P604",
+      "required": "GPT8: GTIOC8B",
+      "cfg_line": "P604 N2 - - - - Disabled - - \"GPT8: GTIOC8B; IRQ: IRQ26; OSPI1: OM_1_SIO7; SCI0: CTS_RTS0; SCI0: DE0\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 45,
+      "logical_net": "OUT_PROT_EN",
+      "ra_pin": "P706",
+      "required": "GPIO capability",
+      "cfg_line": "P706 E17 - - - - Disabled - - \"AGT0: AGTIO0; CEU: VIO_D10; ESWM_GMII/MII0: ET0_GTX_CLK; ESWM_RGMII0: RGMII0_TXC; ETHPHYCLK: ETHPHYCLK; GPT2: GTCPPO2; IRQ: IRQ7; PDM0: PDMDAT0; SCI1: RXD1; USB HS: USBHS_OVRCURB-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 47,
+      "logical_net": "PROT_RESET_N",
+      "ra_pin": "PB03",
+      "required": "GPIO capability",
+      "cfg_line": "PB03 D16 - - - - Disabled - - \"ADC(Digital): ADSYNC; CEU: VIO_HD; ESWM_GMII/MII0: ET0_TXD2; ESWM_RGMII0: RGMII0_TXD2; GLCDC: LCD_DATA15; GPT1: GTCPPO1; IRQ: IRQ13; SCI5: TXD5\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 49,
+      "logical_net": "SEC_HW_OK_CTRL",
+      "ra_pin": "PB01",
+      "required": "IRQ: IRQ12",
+      "cfg_line": "PB01 D17 - - - - Disabled - - \"ADC1(Digital): AD1FLAG1; BUS: ALE; CEU: VIO_FLD; ESWM_GMII/MII0: ET0_TX_CLK; GLCDC: LCD_DATA13; GPT2: GTCPPO2; IRQ: IRQ12; SCI1: CTS_RTS1; SCI1: DE1\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 51,
+      "logical_net": "ADC_VOUT",
+      "ra_pin": "P007",
+      "required": "ADC1: AN007",
+      "cfg_line": "P007 T12 - - - - Disabled - - \"ACMPHS: IVCMP3; ADC1: AN007; IRQ: IRQ28\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 55,
+      "logical_net": "ISEC_OC_N",
+      "ra_pin": "P403",
+      "required": "IRQ: IRQ14-DS",
+      "cfg_line": "P403 H13 - - - - Disabled - - \"ADC0(Digital): AD0FLAG1; ESWM_GMII/MII: ET1_WOL; ESWM_RGMII1: ET1_WOL; ESWM_RMII1: ET1_WOL; GPT3: GTIOC3A; IRQ: IRQ14-DS; RTC: RTCIC1; SCI1: CTS_RTS1; SCI1: DE1; SDHI1: SD1DAT1; SSIE0: SSIBCK0\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 57,
+      "logical_net": "RUN_REQ",
+      "ra_pin": "P707",
+      "required": "GPIO capability",
+      "cfg_line": "P707 F16 - - - - Disabled - - \"CEU: VIO_D11; ESWM_GMII/MII0: ET0_TX_ER; ETHPHYCLK: ETHPHYCLK; GLCDC: LCD_DATA18; GPT3: GTCPPO3; IRQ: IRQ8; PDM1: PDMDAT1; SCI1: TXD1; USB HS: USBHS_OVRCURA-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 59,
+      "logical_net": "RAW_FAULT_N1",
+      "ra_pin": "P401",
+      "required": "GPT_POEGA: GTETRGA",
+      "cfg_line": "P401 N17 - - - - Disabled - - \"CANFD0: CTX0; CEU: VIO_D1; GPT6: GTIOC6B; GPT_POEGA: GTETRGA; I3C0: I3C_SDA0; IRQ: IRQ5-DS; SCI1: RXD1; SDHI1: SD1CMD\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 61,
+      "logical_net": "RAW_FAULT_N2",
+      "ra_pin": "P401",
+      "required": "GPT_POEGA: GTETRGA",
+      "cfg_line": "P401 N17 - - - - Disabled - - \"CANFD0: CTX0; CEU: VIO_D1; GPT6: GTIOC6B; GPT_POEGA: GTETRGA; I3C0: I3C_SDA0; IRQ: IRQ5-DS; SCI1: RXD1; SDHI1: SD1CMD\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 65,
+      "logical_net": "ADC_IIN",
+      "ra_pin": "P002",
+      "required": "ADC0: AN002",
+      "cfg_line": "P002 U14 - - - - Disabled - - \"ACMPHS: IVCMP2; ADC0: AN002; IRQ: IRQ8-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 67,
+      "logical_net": "ADC_IOUT",
+      "ra_pin": "P008",
+      "required": "ADC1: AN008",
+      "cfg_line": "P008 U11 - - - - Disabled - - \"ACMPHS: IVREF0; ADC1: AN008; IRQ: IRQ12-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 69,
+      "logical_net": "ADC_VAFE_HALF",
+      "ra_pin": "P003",
+      "required": "ADC0: AN003",
+      "cfg_line": "P003 R12 - - - - Disabled - - \"ACMPHS: IVCMP3; ADC0: AN003; IRQ: IRQ29\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 71,
+      "logical_net": "ADC_IPRI",
+      "ra_pin": "P000",
+      "required": "ADC0: AN000",
+      "cfg_line": "P000 U13 - - - - Disabled - - \"ACMPHS: IVCMP2; ADC0: AN000; IRQ: IRQ6-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 73,
+      "logical_net": "ADC_ISEC",
+      "ra_pin": "P006",
+      "required": "ADC1: AN006",
+      "cfg_line": "P006 U12 - - - - Disabled - - \"ACMPHS: IVCMP2; ADC1: AN006; IRQ: IRQ11-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 75,
+      "logical_net": "DAB_STATUS_LED",
+      "ra_pin": "P402",
+      "required": "GPIO capability",
+      "cfg_line": "P402 L14 - - - - Disabled - - \"CAC: CACREF; CANFD0: CRX0; ESWM_GMII/MII: ET0_LINKSTA; ESWM_RGMII0: ET0_LINKSTA; ESWM_RMII0: ET0_LINKSTA; IRQ: IRQ4-DS; RTC: RTCIC0; SCI1: DE1; SCI1: SCK1; SDHI1: SD1DAT0; SSIE: AUDIO_CLK\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 79,
+      "logical_net": "IPRI_OC_N",
+      "ra_pin": "P400",
+      "required": "IRQ: IRQ0",
+      "cfg_line": "P400 P17 - - - - Disabled - - \"ADC1(Digital): ADTRG1; AGT1: AGTIO1; CEU: VIO_D0; GPT6: GTIOC6A; I3C0: I3C_SCL0; IRQ: IRQ0; SCI1: TXD1; SDHI1: SD1CLK; SSIE: AUDIO_CLK\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 81,
+      "logical_net": "PWM_PRI_A_L",
+      "ra_pin": "P414",
+      "required": "GPT0: GTIOC0B",
+      "cfg_line": "P414 L13 - - - - Disabled - - \"BUS: A23; CANFD1: CRX1; CEU: VIO_CLK; ESWM_GMII/MII: ET1_MDIO; ESWM_RGMII1: ET1_MDIO; ESWM_RMII1: ET1_MDIO; GPT0: GTIOC0B; IRQ: IRQ9; SCI4: RXD4; SPI1: SSLB0\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 83,
+      "logical_net": "PWM_PRI_A_H",
+      "ra_pin": "P415",
+      "required": "GPT0: GTIOC0A",
+      "cfg_line": "P415 R15 - - - - Disabled - - \"BUS: WAIT; CANFD1: CTX1; CEU: VIO_HD; ESWM_GMII/MII: ET1_MDC; ESWM_RGMII1: ET1_MDC; ESWM_RMII1: ET1_MDC; GPT0: GTIOC0A; IRQ: IRQ8; SCI4: TXD4; SPI1: RSPCK1\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 85,
+      "logical_net": "PWM_PRI_B_L",
+      "ra_pin": "P104",
+      "required": "GPT1: GTIOC1B",
+      "cfg_line": "P104 M6 - - - - Disabled - - \"ADC0(Digital): AD0FLAG1; ESWM_GMII/MII: GPTP0_MATCH; ESWM_RGMII0: GPTP0_MATCH; ESWM_RMII0: GPTP0_MATCH; GPT1: GTIOC1B; GPT_POEGB: GTETRGB; IRQ: IRQ1; OSPI0: OM_0_CS1; SCI9: CTS9; SPI1: SSLB1\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 87,
+      "logical_net": "PWM_PRI_B_H",
+      "ra_pin": "P105",
+      "required": "GPT1: GTIOC1A",
+      "cfg_line": "P105 N7 - - - - Disabled - - \"ADC(Digital): ADSYNC; ESWM_GMII/MII: GPTP0_CAPTURE; ESWM_RGMII0: GPTP0_CAPTURE; ESWM_RMII0: GPTP0_CAPTURE; GPT1: GTIOC1A; IRQ: IRQ0; OSPI0: OM_0_ECSINT1; SCI8: CTS_RTS8; SCI8: DE8; SPI1: SSLB2; ULPT1: ULPTO1-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 91,
+      "logical_net": "ADC_TEMP_PRI",
+      "ra_pin": "P009",
+      "required": "ADC1: AN009",
+      "cfg_line": "P009 P11 - - - - Disabled - - \"ACMPHS: IVREF1; ADC1: AN009; IRQ: IRQ13-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 95,
+      "logical_net": "PRI_HW_OK_CTRL",
+      "ra_pin": "PB06",
+      "required": "IRQ: IRQ0",
+      "cfg_line": "PB06 E14 - - - - Disabled - - \"ESWM_GMII/MII0: ET0_TXD6; GLCDC: LCD_DATA11; GPT9: GTIOC9A; IRQ: IRQ0; SCI5: CTS_RTS5; SCI5: DE5\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 97,
+      "logical_net": "IN_PRECHARGE_EN",
+      "ra_pin": "PB00",
+      "required": "GPIO capability",
+      "cfg_line": "PB00 E16 - - - - Disabled - - \"ADC0(Digital): ADST0; ESWM_GMII/MII0: ET0_TXD0; ESWM_RGMII0: RGMII0_TXD0; ESWM_RMII0: RMII0_TXD0; GLCDC: LCD_DATA17; GPT4: GTCPPO4; IRQ: IRQ10; PDM2: PDMDAT2; SCI1: DE1; SCI1: SCK1; USB HS: USBHS_VBUSEN\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 99,
+      "logical_net": "IN_MAIN_EN",
+      "ra_pin": "PB02",
+      "required": "GPIO capability",
+      "cfg_line": "PB02 E13 - - - - Disabled - - \"ADC1(Digital): ADST1; CEU: VIO_VD; ESWM_GMII/MII0: ET0_TXD1; ESWM_RGMII0: RGMII0_TXD1; ESWM_RMII0: RMII0_TXD1; GLCDC: LCD_DATA16; GPT0: GTCPPO0; IRQ: IRQ11; SCI5: RXD5\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 101,
+      "logical_net": "ADC_VIN",
+      "ra_pin": "P001",
+      "required": "ADC0: AN001",
+      "cfg_line": "P001 T13 - - - - Disabled - - \"ACMPHS: IVCMP3; ADC0: AN001; IRQ: IRQ7-DS\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 107,
+      "logical_net": "CAN_RX_MCU",
+      "ra_pin": "P705",
+      "required": "CANFD0: CRX0",
+      "cfg_line": "P705 F17 - - - - Disabled - - \"AGT0: AGTIO0; CANFD0: CRX0; CEU: VIO_D9; ESWM_GMII/MII0: ET0_TX_EN; ESWM_RGMII0: RGMII0_TX_CTL; ESWM_RMII0: RMII0_TX_EN; GPT: GTADSM1; GPT1: GTCPPO1; IRQ: IRQ19; PDM2: PDMCLK2; SCI1: CTS1; SPI0: SSLA2\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 109,
+      "logical_net": "CAN_TX_MCU",
+      "ra_pin": "P704",
+      "required": "CANFD0: CTX0",
+      "cfg_line": "P704 G13 - - - - Disabled - - \"AGT0: AGTO0; CANFD0: CTX0; CEU: VIO_D8; ESWM_GMII/MII0: ET0_RX_ER; ESWM_RMII0: RMII0_RX_ER; GPT: GTADSM0; GPT0: GTCPPO0; IRQ: IRQ26; PDM1: PDMCLK1; SDHI1: SD1DAT7; SPI0: SSLA1\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 113,
+      "logical_net": "FAN",
+      "ra_pin": "PB04",
+      "required": "GPIO capability",
+      "cfg_line": "PB04 D13 - - - - Disabled - - \"ADC0(Digital): AD0FLAG1; CEU: VIO_CLK; ESWM_GMII/MII0: ET0_TXD3; ESWM_RGMII0: RGMII0_TXD3; GLCDC: LCD_DATA14; GPT3: GTCPPO3; IRQ: IRQ9; SCI5: DE5; SCI5: SCK5\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 115,
+      "logical_net": "TEMP_AMB_OT_N",
+      "ra_pin": "PB05",
+      "required": "IRQ: IRQ15",
+      "cfg_line": "PB05 D15 - - - - Disabled - - \"ESWM_GMII/MII0: ET0_TXD7; GLCDC: LCD_DATA12; GPT4: GTCPPO4; IRQ: IRQ15; SCI5: CTS5\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 117,
+      "logical_net": "I2C_SDA",
+      "ra_pin": "P514",
+      "required": "IIC2: SDA2",
+      "cfg_line": "P514 R14 - - - - Disabled - - \"ESWM_GMII/MII: ET_TAS_STA1; ESWM_RGMII: ET_TAS_STA1; ESWM_RMII: ET_TAS_STA1; GLCDC: LCD_EXTCLK; GPT13: GTIOC13B; IIC2: SDA2; IRQ: IRQ13; SCI4: DE4; SCI4: SCK4\" - None - -",
+      "ok": true
+    },
+    {
+      "cn2_pin": 119,
+      "logical_net": "I2C_SCL",
+      "ra_pin": "P515",
+      "required": "IIC2: SCL2",
+      "cfg_line": "P515 P15 - - - - Disabled - - \"ESWM_GMII/MII: ET_TAS_STA0; ESWM_RGMII: ET_TAS_STA0; ESWM_RMII: ET_TAS_STA0; GLCDC: LCD_CLK; GPT13: GTIOC13A; IIC2: SCL2; IRQ: IRQ12; SCI4: CTS_RTS4; SCI4: DE4\" - None - -",
+      "ok": true
+    }
+  ],
+  "duplicate_port_errors": [],
+  "e2studio_comment_checks": [
+    {
+      "ra_pin": "P000",
+      "expected_cn2": "CN2.71",
+      "logical_nets": [
+        "ADC_IPRI"
+      ],
+      "comment": "CN2.71 ADC_IPRI",
+      "ok": true
+    },
+    {
+      "ra_pin": "P001",
+      "expected_cn2": "CN2.101",
+      "logical_nets": [
+        "ADC_VIN"
+      ],
+      "comment": "CN2.101 ADC_VIN",
+      "ok": true
+    },
+    {
+      "ra_pin": "P002",
+      "expected_cn2": "CN2.65",
+      "logical_nets": [
+        "ADC_IIN"
+      ],
+      "comment": "CN2.65 ADC_IIN",
+      "ok": true
+    },
+    {
+      "ra_pin": "P003",
+      "expected_cn2": "CN2.69",
+      "logical_nets": [
+        "ADC_VAFE_HALF"
+      ],
+      "comment": "CN2.69 ADC_VAFE_HALF",
+      "ok": true
+    },
+    {
+      "ra_pin": "P004",
+      "expected_cn2": "CN2.33",
+      "logical_nets": [
+        "ADC_TEMP_SEC"
+      ],
+      "comment": "CN2.33 ADC_TEMP_SEC",
+      "ok": true
+    },
+    {
+      "ra_pin": "P006",
+      "expected_cn2": "CN2.73",
+      "logical_nets": [
+        "ADC_ISEC"
+      ],
+      "comment": "CN2.73 ADC_ISEC",
+      "ok": true
+    },
+    {
+      "ra_pin": "P007",
+      "expected_cn2": "CN2.51",
+      "logical_nets": [
+        "ADC_VOUT"
+      ],
+      "comment": "CN2.51 ADC_VOUT",
+      "ok": true
+    },
+    {
+      "ra_pin": "P008",
+      "expected_cn2": "CN2.67",
+      "logical_nets": [
+        "ADC_IOUT"
+      ],
+      "comment": "CN2.67 ADC_IOUT",
+      "ok": true
+    },
+    {
+      "ra_pin": "P009",
+      "expected_cn2": "CN2.91",
+      "logical_nets": [
+        "ADC_TEMP_PRI"
+      ],
+      "comment": "CN2.91 ADC_TEMP_PRI",
+      "ok": true
+    },
+    {
+      "ra_pin": "P104",
+      "expected_cn2": "CN2.85",
+      "logical_nets": [
+        "PWM_PRI_B_L"
+      ],
+      "comment": "CN2.85 PWM_PRI_B_L",
+      "ok": true
+    },
+    {
+      "ra_pin": "P105",
+      "expected_cn2": "CN2.87",
+      "logical_nets": [
+        "PWM_PRI_B_H"
+      ],
+      "comment": "CN2.87 PWM_PRI_B_H",
+      "ok": true
+    },
+    {
+      "ra_pin": "P206",
+      "expected_cn2": "CN2.7",
+      "logical_nets": [
+        "ETH_CRS_DV"
+      ],
+      "comment": "CN2.7 ETH_CRS_DV",
+      "ok": true
+    },
+    {
+      "ra_pin": "P306",
+      "expected_cn2": "CN2.30",
+      "logical_nets": [
+        "ETH_TXD1"
+      ],
+      "comment": "CN2.30 ETH_TXD1",
+      "ok": true
+    },
+    {
+      "ra_pin": "P307",
+      "expected_cn2": "CN2.28",
+      "logical_nets": [
+        "ETH_TXD0"
+      ],
+      "comment": "CN2.28 ETH_TXD0",
+      "ok": true
+    },
+    {
+      "ra_pin": "P310",
+      "expected_cn2": "CN2.26",
+      "logical_nets": [
+        "ETH_TX_EN"
+      ],
+      "comment": "CN2.26 ETH_TX_EN",
+      "ok": true
+    },
+    {
+      "ra_pin": "P312",
+      "expected_cn2": "CN2.5",
+      "logical_nets": [
+        "ETH_RX_ER"
+      ],
+      "comment": "CN2.5 ETH_RX_ER",
+      "ok": true
+    },
+    {
+      "ra_pin": "P400",
+      "expected_cn2": "CN2.79",
+      "logical_nets": [
+        "IPRI_OC_N"
+      ],
+      "comment": "CN2.79 IPRI_OC_N",
+      "ok": true
+    },
+    {
+      "ra_pin": "P401",
+      "expected_cn2": "CN2.59+61",
+      "logical_nets": [
+        "RAW_FAULT_N1",
+        "RAW_FAULT_N2"
+      ],
+      "comment": "CN2.59+61 RAW_FAULT_N1/N2 wired-OR",
+      "ok": true
+    },
+    {
+      "ra_pin": "P402",
+      "expected_cn2": "CN2.75",
+      "logical_nets": [
+        "DAB_STATUS_LED"
+      ],
+      "comment": "CN2.75 DAB_STATUS_LED",
+      "ok": true
+    },
+    {
+      "ra_pin": "P403",
+      "expected_cn2": "CN2.55",
+      "logical_nets": [
+        "ISEC_OC_N"
+      ],
+      "comment": "CN2.55 ISEC_OC_N",
+      "ok": true
+    },
+    {
+      "ra_pin": "P414",
+      "expected_cn2": "CN2.81",
+      "logical_nets": [
+        "PWM_PRI_A_L"
+      ],
+      "comment": "CN2.81 PWM_PRI_A_L",
+      "ok": true
+    },
+    {
+      "ra_pin": "P415",
+      "expected_cn2": "CN2.83",
+      "logical_nets": [
+        "PWM_PRI_A_H"
+      ],
+      "comment": "CN2.83 PWM_PRI_A_H",
+      "ok": true
+    },
+    {
+      "ra_pin": "P513",
+      "expected_cn2": "CN2.22",
+      "logical_nets": [
+        "ETH_PHY_RESET_N"
+      ],
+      "comment": "CN2.22 ETH_PHY_RESET_N",
+      "ok": true
+    },
+    {
+      "ra_pin": "P514",
+      "expected_cn2": "CN2.117",
+      "logical_nets": [
+        "I2C_SDA"
+      ],
+      "comment": "CN2.117 I2C_SDA",
+      "ok": true
+    },
+    {
+      "ra_pin": "P515",
+      "expected_cn2": "CN2.119",
+      "logical_nets": [
+        "I2C_SCL"
+      ],
+      "comment": "CN2.119 I2C_SCL",
+      "ok": true
+    },
+    {
+      "ra_pin": "P604",
+      "expected_cn2": "CN2.41",
+      "logical_nets": [
+        "PWM_SEC_B_L"
+      ],
+      "comment": "CN2.41 PWM_SEC_B_L",
+      "ok": true
+    },
+    {
+      "ra_pin": "P605",
+      "expected_cn2": "CN2.39",
+      "logical_nets": [
+        "PWM_SEC_B_H"
+      ],
+      "comment": "CN2.39 PWM_SEC_B_H",
+      "ok": true
+    },
+    {
+      "ra_pin": "P704",
+      "expected_cn2": "CN2.109",
+      "logical_nets": [
+        "CAN_TX_MCU"
+      ],
+      "comment": "CN2.109 CAN_TX_MCU",
+      "ok": true
+    },
+    {
+      "ra_pin": "P705",
+      "expected_cn2": "CN2.107",
+      "logical_nets": [
+        "CAN_RX_MCU"
+      ],
+      "comment": "CN2.107 CAN_RX_MCU",
+      "ok": true
+    },
+    {
+      "ra_pin": "P706",
+      "expected_cn2": "CN2.45",
+      "logical_nets": [
+        "OUT_PROT_EN"
+      ],
+      "comment": "CN2.45 OUT_PROT_EN",
+      "ok": true
+    },
+    {
+      "ra_pin": "P707",
+      "expected_cn2": "CN2.57",
+      "logical_nets": [
+        "RUN_REQ"
+      ],
+      "comment": "CN2.57 RUN_REQ",
+      "ok": true
+    },
+    {
+      "ra_pin": "P805",
+      "expected_cn2": "CN2.11",
+      "logical_nets": [
+        "ETH_MDIO"
+      ],
+      "comment": "CN2.11 ETH_MDIO",
+      "ok": true
+    },
+    {
+      "ra_pin": "P806",
+      "expected_cn2": "CN2.20",
+      "logical_nets": [
+        "ETH_MDC"
+      ],
+      "comment": "CN2.20 ETH_MDC",
+      "ok": true
+    },
+    {
+      "ra_pin": "P905",
+      "expected_cn2": "CN2.15",
+      "logical_nets": [
+        "ETH_REF50CK"
+      ],
+      "comment": "CN2.15 ETH_REF50CK",
+      "ok": true
+    },
+    {
+      "ra_pin": "P906",
+      "expected_cn2": "CN2.3",
+      "logical_nets": [
+        "ETH_RXD0"
+      ],
+      "comment": "CN2.3 ETH_RXD0",
+      "ok": true
+    },
+    {
+      "ra_pin": "P907",
+      "expected_cn2": "CN2.9",
+      "logical_nets": [
+        "ETH_RXD1"
+      ],
+      "comment": "CN2.9 ETH_RXD1",
+      "ok": true
+    },
+    {
+      "ra_pin": "P914",
+      "expected_cn2": "CN2.37",
+      "logical_nets": [
+        "PWM_SEC_A_L"
+      ],
+      "comment": "CN2.37 PWM_SEC_A_L",
+      "ok": true
+    },
+    {
+      "ra_pin": "P915",
+      "expected_cn2": "CN2.35",
+      "logical_nets": [
+        "PWM_SEC_A_H"
+      ],
+      "comment": "CN2.35 PWM_SEC_A_H",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB00",
+      "expected_cn2": "CN2.97",
+      "logical_nets": [
+        "IN_PRECHARGE_EN"
+      ],
+      "comment": "CN2.97 IN_PRECHARGE_EN",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB01",
+      "expected_cn2": "CN2.49",
+      "logical_nets": [
+        "SEC_HW_OK_CTRL"
+      ],
+      "comment": "CN2.49 SEC_HW_OK_CTRL (input)",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB02",
+      "expected_cn2": "CN2.99",
+      "logical_nets": [
+        "IN_MAIN_EN"
+      ],
+      "comment": "CN2.99 IN_MAIN_EN",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB03",
+      "expected_cn2": "CN2.47",
+      "logical_nets": [
+        "PROT_RESET_N"
+      ],
+      "comment": "CN2.47 PROT_RESET_N",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB04",
+      "expected_cn2": "CN2.113",
+      "logical_nets": [
+        "FAN"
+      ],
+      "comment": "CN2.113 FAN",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB05",
+      "expected_cn2": "CN2.115",
+      "logical_nets": [
+        "TEMP_AMB_OT_N"
+      ],
+      "comment": "CN2.115 TEMP_AMB_OT_N",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB06",
+      "expected_cn2": "CN2.95",
+      "logical_nets": [
+        "PRI_HW_OK_CTRL"
+      ],
+      "comment": "CN2.95 PRI_HW_OK_CTRL (input)",
+      "ok": true
+    }
+  ],
+  "e2studio_direction_checks": [
+    {
+      "ra_pin": "PB01",
+      "configuration_input": true,
+      "pin_data_block": "{ .pin = BSP_IO_PORT_11_PIN_01, .pin_cfg = ((uint32_t) IOPORT_CFG_PORT_DIRECTION_INPUT) }",
+      "ok": true
+    },
+    {
+      "ra_pin": "PB06",
+      "configuration_input": true,
+      "pin_data_block": "{ .pin = BSP_IO_PORT_11_PIN_06, .pin_cfg = ((uint32_t) IOPORT_CFG_PORT_DIRECTION_INPUT) }",
+      "ok": true
+    }
+  ],
+  "uart9_preserved": true,
+  "intentional_shared_port": {
+    "P401": [
+      "CN2.59 RAW_FAULT_N1",
+      "CN2.61 RAW_FAULT_N2"
+    ],
+    "reason": "main-board BAT54 diode isolation forms POEG0 wired-OR"
+  },
+  "all_checks_pass": true,
+  "cn2_rows": [
+    {
+      "cn2_pin": 1,
+      "schematic_net": "2adcaa01:NC$14",
+      "pcb1_net": "",
+      "pcb3_net": "",
+      "pcb_match": true,
+      "match_method": "schematic NC and PCB pad has no net",
+      "logical_net": "NC",
+      "ra8p1_pin": "NC",
+      "developer_board_header": "do not connect",
+      "direction": "—",
+      "role": "reserved/no-connect",
+      "status": "native NC"
+    },
+    {
+      "cn2_pin": 2,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 3,
+      "schematic_net": "ETH_RXD0",
+      "pcb1_net": "ETH_RXD0",
+      "pcb3_net": "ETH_RXD0",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_RXD0",
+      "ra8p1_pin": "P906",
+      "developer_board_header": "P6.30",
+      "direction": "MCU input",
+      "role": "RMII1 RXD0",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 4,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 5,
+      "schematic_net": "ETH_RX_ER",
+      "pcb1_net": "ETH_RX_ER",
+      "pcb3_net": "ETH_RX_ER",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_RX_ER",
+      "ra8p1_pin": "P312",
+      "developer_board_header": "P6.37",
+      "direction": "MCU input",
+      "role": "RMII1 RX_ER",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 6,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 7,
+      "schematic_net": "ETH_CRS_DV",
+      "pcb1_net": "ETH_CRS_DV",
+      "pcb3_net": "ETH_CRS_DV",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_CRS_DV",
+      "ra8p1_pin": "P206",
+      "developer_board_header": "P4.11",
+      "direction": "MCU input",
+      "role": "RMII1 CRS_DV",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 8,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 9,
+      "schematic_net": "ETH_RXD1",
+      "pcb1_net": "ETH_RXD1",
+      "pcb3_net": "ETH_RXD1",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_RXD1",
+      "ra8p1_pin": "P907",
+      "developer_board_header": "P6.22",
+      "direction": "MCU input",
+      "role": "RMII1 RXD1",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 10,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 11,
+      "schematic_net": "ETH_MDIO",
+      "pcb1_net": "ETH_MDIO",
+      "pcb3_net": "ETH_MDIO",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_MDIO",
+      "ra8p1_pin": "P805",
+      "developer_board_header": "P6.36",
+      "direction": "bidirectional",
+      "role": "RMII1 MDIO",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 12,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 13,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 14,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 15,
+      "schematic_net": "ETH_REF50CK",
+      "pcb1_net": "ETH_REF50CK",
+      "pcb3_net": "ETH_REF50CK",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_REF50CK",
+      "ra8p1_pin": "P905",
+      "developer_board_header": "P6.33",
+      "direction": "MCU input",
+      "role": "RMII1 50 MHz reference clock",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 16,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 17,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 18,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 19,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 20,
+      "schematic_net": "ETH_MDC",
+      "pcb1_net": "ETH_MDC",
+      "pcb3_net": "ETH_MDC",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_MDC",
+      "ra8p1_pin": "P806",
+      "developer_board_header": "P6.34",
+      "direction": "MCU output",
+      "role": "RMII1 MDC",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 21,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 22,
+      "schematic_net": "ETH_PHY_RESET_N",
+      "pcb1_net": "ETH_PHY_RESET_N",
+      "pcb3_net": "ETH_PHY_RESET_N",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_PHY_RESET_N",
+      "ra8p1_pin": "P513",
+      "developer_board_header": "P6.32",
+      "direction": "MCU output",
+      "role": "PHY reset, active low",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 23,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 24,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 25,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 26,
+      "schematic_net": "ETH_TX_EN",
+      "pcb1_net": "ETH_TX_EN",
+      "pcb3_net": "ETH_TX_EN",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_TX_EN",
+      "ra8p1_pin": "P310",
+      "developer_board_header": "P6.35",
+      "direction": "MCU output",
+      "role": "RMII1 TX_EN",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 27,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 28,
+      "schematic_net": "ETH_TXD0",
+      "pcb1_net": "ETH_TXD0",
+      "pcb3_net": "ETH_TXD0",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_TXD0",
+      "ra8p1_pin": "P307",
+      "developer_board_header": "P6.28",
+      "direction": "MCU output",
+      "role": "RMII1 TXD0",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 29,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 30,
+      "schematic_net": "ETH_TXD1",
+      "pcb1_net": "ETH_TXD1",
+      "pcb3_net": "ETH_TXD1",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ETH_TXD1",
+      "ra8p1_pin": "P306",
+      "developer_board_header": "P4.13",
+      "direction": "MCU output",
+      "role": "RMII1 TXD1",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 31,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 32,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 33,
+      "schematic_net": "ADC_TEMP_SEC",
+      "pcb1_net": "ADC_TEMP_SEC",
+      "pcb3_net": "ADC_TEMP_SEC",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_TEMP_SEC",
+      "ra8p1_pin": "P004",
+      "developer_board_header": "P5.11",
+      "direction": "MCU analog input",
+      "role": "secondary temperature ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 34,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 35,
+      "schematic_net": "PWM_SEC_A_H",
+      "pcb1_net": "PWM_SEC_A_H",
+      "pcb3_net": "PWM_SEC_A_H",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_SEC_A_H",
+      "ra8p1_pin": "P915",
+      "developer_board_header": "P7.19",
+      "direction": "MCU output",
+      "role": "GPT5 GTIOC5A",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 36,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 37,
+      "schematic_net": "PWM_SEC_A_L",
+      "pcb1_net": "PWM_SEC_A_L",
+      "pcb3_net": "PWM_SEC_A_L",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_SEC_A_L",
+      "ra8p1_pin": "P914",
+      "developer_board_header": "P7.2",
+      "direction": "MCU output",
+      "role": "GPT5 GTIOC5B",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 38,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 39,
+      "schematic_net": "PWM_SEC_B_H",
+      "pcb1_net": "PWM_SEC_B_H",
+      "pcb3_net": "PWM_SEC_B_H",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_SEC_B_H",
+      "ra8p1_pin": "P605",
+      "developer_board_header": "P6.11",
+      "direction": "MCU output",
+      "role": "GPT8 GTIOC8A",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 40,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 41,
+      "schematic_net": "PWM_SEC_B_L",
+      "pcb1_net": "PWM_SEC_B_L",
+      "pcb3_net": "PWM_SEC_B_L",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_SEC_B_L",
+      "ra8p1_pin": "P604",
+      "developer_board_header": "P6.9",
+      "direction": "MCU output",
+      "role": "GPT8 GTIOC8B",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 42,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 43,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 44,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 45,
+      "schematic_net": "OUT_PROT_EN",
+      "pcb1_net": "OUT_PROT_EN",
+      "pcb3_net": "OUT_PROT_EN",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "OUT_PROT_EN",
+      "ra8p1_pin": "P706",
+      "developer_board_header": "P6.15",
+      "direction": "MCU output",
+      "role": "secondary protection enable",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 46,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 47,
+      "schematic_net": "PROT_RESET_N",
+      "pcb1_net": "PROT_RESET_N",
+      "pcb3_net": "PROT_RESET_N",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PROT_RESET_N",
+      "ra8p1_pin": "PB03",
+      "developer_board_header": "P6.16",
+      "direction": "MCU output",
+      "role": "protection reset, active low",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 48,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 49,
+      "schematic_net": "SEC_HW_OK_CTRL",
+      "pcb1_net": "SEC_HW_OK_CTRL",
+      "pcb3_net": "SEC_HW_OK_CTRL",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "SEC_HW_OK_CTRL",
+      "ra8p1_pin": "PB01",
+      "developer_board_header": "P6.19",
+      "direction": "MCU input",
+      "role": "isolated secondary HW_OK feedback",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 50,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 51,
+      "schematic_net": "ADC_VOUT",
+      "pcb1_net": "ADC_VOUT",
+      "pcb3_net": "ADC_VOUT",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_VOUT",
+      "ra8p1_pin": "P007",
+      "developer_board_header": "P5.6",
+      "direction": "MCU analog input",
+      "role": "output voltage ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 52,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 53,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 54,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 55,
+      "schematic_net": "ISEC_OC_N",
+      "pcb1_net": "ISEC_OC_N",
+      "pcb3_net": "ISEC_OC_N",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ISEC_OC_N",
+      "ra8p1_pin": "P403",
+      "developer_board_header": "P7.11",
+      "direction": "MCU input",
+      "role": "secondary overcurrent, active low",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 56,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 57,
+      "schematic_net": "RUN_REQ",
+      "pcb1_net": "RUN_REQ",
+      "pcb3_net": "RUN_REQ",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "RUN_REQ",
+      "ra8p1_pin": "P707",
+      "developer_board_header": "P6.17",
+      "direction": "MCU output",
+      "role": "gate run request",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 58,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 59,
+      "schematic_net": "RAW_FAULT_N1",
+      "pcb1_net": "RAW_FAULT_N1",
+      "pcb3_net": "RAW_FAULT_N1",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "RAW_FAULT_N1",
+      "ra8p1_pin": "P401",
+      "developer_board_header": "P8.8",
+      "direction": "MCU input",
+      "role": "primary fault into POEG0 wired-OR",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 60,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 61,
+      "schematic_net": "RAW_FAULT_N2",
+      "pcb1_net": "RAW_FAULT_N2",
+      "pcb3_net": "RAW_FAULT_N2",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "RAW_FAULT_N2",
+      "ra8p1_pin": "P401",
+      "developer_board_header": "P8.8",
+      "direction": "MCU input",
+      "role": "secondary fault into POEG0 wired-OR",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 62,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 63,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 64,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 65,
+      "schematic_net": "ADC_IIN",
+      "pcb1_net": "ADC_IIN",
+      "pcb3_net": "ADC_IIN",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_IIN",
+      "ra8p1_pin": "P002",
+      "developer_board_header": "P5.7",
+      "direction": "MCU analog input",
+      "role": "input current ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 66,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 67,
+      "schematic_net": "ADC_IOUT",
+      "pcb1_net": "ADC_IOUT",
+      "pcb3_net": "ADC_IOUT",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_IOUT",
+      "ra8p1_pin": "P008",
+      "developer_board_header": "P5.8",
+      "direction": "MCU analog input",
+      "role": "output current ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 68,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 69,
+      "schematic_net": "ADC_VAFE_HALF",
+      "pcb1_net": "ADC_VAFE_HALF",
+      "pcb3_net": "ADC_VAFE_HALF",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_VAFE_HALF",
+      "ra8p1_pin": "P003",
+      "developer_board_header": "P5.9",
+      "direction": "MCU analog input",
+      "role": "analog front-end midpoint ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 70,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 71,
+      "schematic_net": "ADC_IPRI",
+      "pcb1_net": "ADC_IPRI",
+      "pcb3_net": "ADC_IPRI",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_IPRI",
+      "ra8p1_pin": "P000",
+      "developer_board_header": "P5.3",
+      "direction": "MCU analog input",
+      "role": "primary current ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 72,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 73,
+      "schematic_net": "ADC_ISEC",
+      "pcb1_net": "ADC_ISEC",
+      "pcb3_net": "ADC_ISEC",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_ISEC",
+      "ra8p1_pin": "P006",
+      "developer_board_header": "P5.4",
+      "direction": "MCU analog input",
+      "role": "secondary current ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 74,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 75,
+      "schematic_net": "2adcaa01:N$12",
+      "pcb1_net": "$1N1440",
+      "pcb3_net": "$1N1440",
+      "pcb_match": true,
+      "match_method": "anonymous net matched by CN2.75-R49.2 topology",
+      "logical_net": "DAB_STATUS_LED",
+      "ra8p1_pin": "P402",
+      "developer_board_header": "P4.1",
+      "direction": "MCU output",
+      "role": "LED10 status output, active high through R49",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 76,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 77,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 78,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 79,
+      "schematic_net": "IPRI_OC_N",
+      "pcb1_net": "IPRI_OC_N",
+      "pcb3_net": "IPRI_OC_N",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "IPRI_OC_N",
+      "ra8p1_pin": "P400",
+      "developer_board_header": "P8.5",
+      "direction": "MCU input",
+      "role": "primary overcurrent, active low",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 80,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 81,
+      "schematic_net": "PWM_PRI_A_L",
+      "pcb1_net": "PWM_PRI_A_L",
+      "pcb3_net": "PWM_PRI_A_L",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_PRI_A_L",
+      "ra8p1_pin": "P414",
+      "developer_board_header": "P8.13",
+      "direction": "MCU output",
+      "role": "GPT0 GTIOC0B",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 82,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 83,
+      "schematic_net": "PWM_PRI_A_H",
+      "pcb1_net": "PWM_PRI_A_H",
+      "pcb3_net": "PWM_PRI_A_H",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_PRI_A_H",
+      "ra8p1_pin": "P415",
+      "developer_board_header": "P8.4",
+      "direction": "MCU output",
+      "role": "GPT0 GTIOC0A",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 84,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 85,
+      "schematic_net": "PWM_PRI_B_L",
+      "pcb1_net": "PWM_PRI_B_L",
+      "pcb3_net": "PWM_PRI_B_L",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_PRI_B_L",
+      "ra8p1_pin": "P104",
+      "developer_board_header": "P7.3",
+      "direction": "MCU output",
+      "role": "GPT1 GTIOC1B",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 86,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 87,
+      "schematic_net": "PWM_PRI_B_H",
+      "pcb1_net": "PWM_PRI_B_H",
+      "pcb3_net": "PWM_PRI_B_H",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PWM_PRI_B_H",
+      "ra8p1_pin": "P105",
+      "developer_board_header": "P7.1",
+      "direction": "MCU output",
+      "role": "GPT1 GTIOC1A",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 88,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 89,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 90,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 91,
+      "schematic_net": "ADC_TEMP_PRI",
+      "pcb1_net": "ADC_TEMP_PRI",
+      "pcb3_net": "ADC_TEMP_PRI",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_TEMP_PRI",
+      "ra8p1_pin": "P009",
+      "developer_board_header": "P5.10",
+      "direction": "MCU analog input",
+      "role": "primary temperature ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 92,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 93,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 94,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 95,
+      "schematic_net": "PRI_HW_OK_CTRL",
+      "pcb1_net": "PRI_HW_OK_CTRL",
+      "pcb3_net": "PRI_HW_OK_CTRL",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "PRI_HW_OK_CTRL",
+      "ra8p1_pin": "PB06",
+      "developer_board_header": "P6.18",
+      "direction": "MCU input",
+      "role": "isolated primary HW_OK feedback",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 96,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 97,
+      "schematic_net": "IN_PRECHARGE_EN",
+      "pcb1_net": "IN_PRECHARGE_EN",
+      "pcb3_net": "IN_PRECHARGE_EN",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "IN_PRECHARGE_EN",
+      "ra8p1_pin": "PB00",
+      "developer_board_header": "P6.13",
+      "direction": "MCU output",
+      "role": "input precharge enable",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 98,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 99,
+      "schematic_net": "IN_MAIN_EN",
+      "pcb1_net": "IN_MAIN_EN",
+      "pcb3_net": "IN_MAIN_EN",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "IN_MAIN_EN",
+      "ra8p1_pin": "PB02",
+      "developer_board_header": "P6.14",
+      "direction": "MCU output",
+      "role": "input main relay enable",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 100,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 101,
+      "schematic_net": "ADC_VIN",
+      "pcb1_net": "ADC_VIN",
+      "pcb3_net": "ADC_VIN",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "ADC_VIN",
+      "ra8p1_pin": "P001",
+      "developer_board_header": "P5.5",
+      "direction": "MCU analog input",
+      "role": "input voltage ADC",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 102,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 103,
+      "schematic_net": "3V3_RA",
+      "pcb1_net": "3V3_RA",
+      "pcb3_net": "3V3_RA",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "3V3_RA",
+      "ra8p1_pin": "VCC",
+      "developer_board_header": "P9.1",
+      "direction": "power",
+      "role": "3.3 V supply",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 104,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 105,
+      "schematic_net": "3V3_RA",
+      "pcb1_net": "3V3_RA",
+      "pcb3_net": "3V3_RA",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "3V3_RA",
+      "ra8p1_pin": "VCC",
+      "developer_board_header": "P9.2",
+      "direction": "power",
+      "role": "3.3 V supply",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 106,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 107,
+      "schematic_net": "CAN_RX_MCU",
+      "pcb1_net": "CAN_RX_MCU",
+      "pcb3_net": "CAN_RX_MCU",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "CAN_RX_MCU",
+      "ra8p1_pin": "P705",
+      "developer_board_header": "P6.21",
+      "direction": "MCU input",
+      "role": "CANFD0 CRX0",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 108,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 109,
+      "schematic_net": "CAN_TX_MCU",
+      "pcb1_net": "CAN_TX_MCU",
+      "pcb3_net": "CAN_TX_MCU",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "CAN_TX_MCU",
+      "ra8p1_pin": "P704",
+      "developer_board_header": "P4.2",
+      "direction": "MCU output",
+      "role": "CANFD0 CTX0",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 110,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 111,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 112,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 113,
+      "schematic_net": "FAN",
+      "pcb1_net": "FAN",
+      "pcb3_net": "FAN",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "FAN",
+      "ra8p1_pin": "PB04",
+      "developer_board_header": "P6.12",
+      "direction": "MCU output",
+      "role": "fan control",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 114,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 115,
+      "schematic_net": "TEMP_AMB_OT_N",
+      "pcb1_net": "TEMP_AMB_OT_N",
+      "pcb3_net": "TEMP_AMB_OT_N",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "TEMP_AMB_OT_N",
+      "ra8p1_pin": "PB05",
+      "developer_board_header": "P6.20",
+      "direction": "MCU input",
+      "role": "ambient overtemperature alert, active low",
+      "status": "new"
+    },
+    {
+      "cn2_pin": 116,
+      "schematic_net": "GND",
+      "pcb1_net": "GND",
+      "pcb3_net": "GND",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "GND",
+      "ra8p1_pin": "GND",
+      "developer_board_header": "P10.1-P10.8 / GND plane",
+      "direction": "power return",
+      "role": "ground",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 117,
+      "schematic_net": "I2C_SDA",
+      "pcb1_net": "I2C_SDA",
+      "pcb3_net": "I2C_SDA",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "I2C_SDA",
+      "ra8p1_pin": "P514",
+      "developer_board_header": "P4.3",
+      "direction": "bidirectional",
+      "role": "IIC2 SDA2",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 118,
+      "schematic_net": "3V3_RA",
+      "pcb1_net": "3V3_RA",
+      "pcb3_net": "3V3_RA",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "3V3_RA",
+      "ra8p1_pin": "VCC",
+      "developer_board_header": "P9.3",
+      "direction": "power",
+      "role": "3.3 V supply",
+      "status": "native"
+    },
+    {
+      "cn2_pin": 119,
+      "schematic_net": "I2C_SCL",
+      "pcb1_net": "I2C_SCL",
+      "pcb3_net": "I2C_SCL",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "I2C_SCL",
+      "ra8p1_pin": "P515",
+      "developer_board_header": "P4.4",
+      "direction": "bidirectional",
+      "role": "IIC2 SCL2",
+      "status": "tested"
+    },
+    {
+      "cn2_pin": 120,
+      "schematic_net": "3V3_RA",
+      "pcb1_net": "3V3_RA",
+      "pcb3_net": "3V3_RA",
+      "pcb_match": true,
+      "match_method": "exact native net-name equality",
+      "logical_net": "3V3_RA",
+      "ra8p1_pin": "VCC",
+      "developer_board_header": "P9.4",
+      "direction": "power",
+      "role": "3.3 V supply",
+      "status": "native"
+    }
+  ]
+}
