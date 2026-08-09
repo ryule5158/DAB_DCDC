@@ -16,11 +16,16 @@ slprj/
 .agents/
 .codex-remote-attachments/
 .tmp_*/
+/tmp/
 
 # The obsolete nested project was removed; never recreate it here.
 /Electric Simulation/
+
+# RA6M5 firmware is an independent Git repository.
+/RA6M5_DAB_Test/
 
 # Spreadsheet QA scratch files. Keep the final H1.7 workbook and builder.
 outputs/**/node_modules/
 outputs/**/*.inspect.ndjson
 outputs/**/preview_*.png
+outputs/**/previews/

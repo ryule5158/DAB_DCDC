@@ -33,8 +33,8 @@ end
 function result = run_nominal(mdl)
 in = base_input(mdl, 300, 0.030, 1e-8, 48);
 % Minimum tolerance thresholds verify nuisance-trip margin.
-in = set_named(in, mdl, 'IPRI_HW_OC_Threshold_A', 'Value', '58.752');
-in = set_named(in, mdl, 'ISEC_HW_OC_Threshold_A', 'Value', '35.984');
+in = set_named(in, mdl, 'IPRI_HW_OC_Threshold_A', 'Value', '57.355284');
+in = set_named(in, mdl, 'ISEC_HW_OC_Threshold_A', 'Value', '35.252226');
 out = sim(in);
 vout = signal(out, mdl + "_vout");
 pin = signal(out, mdl + "_pin");
@@ -74,7 +74,7 @@ result = table(vMean, 1000*(vMean-48), vP2P, coefficients(1), ...
     'DriverEnableMinActive','Pass'});
 result.Pass = abs(result.VoutError_mV) <= 10 && ...
     result.VoutP2P_V < 0.1 && abs(result.VoutSlope_Vps) <= 1 && ...
-    result.IpriRawPeak_A < 58.752 && result.IsecRawPeak_A < 35.984 && ...
+    result.IpriRawPeak_A < 57.355284 && result.IsecRawPeak_A < 35.252226 && ...
     result.RawFaultNMin > 0.5 && result.FaultLatchNMin > 0.5 && ...
     result.DriverEnableMinActive > 0.5;
 disp(result);
@@ -111,8 +111,8 @@ end
 function result = run_gate_case(mdl)
 in = base_input(mdl, 300, 0.0004, 5e-9, 48);
 in = in.setModelParameter('RelTol', '5e-4', 'SimscapeLogType', 'all');
-in = set_named(in, mdl, 'IPRI_HW_OC_Threshold_A', 'Value', '58.752');
-in = set_named(in, mdl, 'ISEC_HW_OC_Threshold_A', 'Value', '35.984');
+in = set_named(in, mdl, 'IPRI_HW_OC_Threshold_A', 'Value', '57.355284');
+in = set_named(in, mdl, 'ISEC_HW_OC_Threshold_A', 'Value', '35.252226');
 out = sim(in);
 [mosNodes, driverNodes] = gate_nodes(out.simlog);
 highP01 = inf;
@@ -167,8 +167,8 @@ result = table(highP01, highMax, offMiller, turnOff*1e9, vdsMax, ...
 result.Pass = result.VgsHighP01_V >= 9.9 && ...
     result.VgsHighMax_V <= 10.5 && result.OffMillerMax_V < 1 && ...
     result.TurnOffTo1VMax_ns <= 120 && result.VdsRepeatMax_V < 80 && ...
-    result.NoGateOverlap && result.IpriRawPeak_A < 58.752 && ...
-    result.IsecRawPeak_A < 35.984 && result.RawFaultNMin > 0.5;
+    result.NoGateOverlap && result.IpriRawPeak_A < 57.355284 && ...
+    result.IsecRawPeak_A < 35.252226 && result.RawFaultNMin > 0.5;
 disp(result);
 end
 

@@ -1,42 +1,52 @@
-# DAB H1.7 定版工程
+# DAB 当前工作空间
 
-本目录只保留 PCB 设计、R2024b 仿真复现和首板验证需要的最终文件。不要从 Git 历史或其他旧目录恢复 `_1`、H1.6、候选扫参或缓存文件。
+本目录只保留当前硬件、首版固件、最终报告和唯一物理仿真基准。历史副本与可再生临时文件已移到：
 
-## 直接使用
+`C:\Users\LENOVO\Documents\DAB_Legacy_Archive_20260809`
 
-| 目的 | 唯一入口 |
-|---|---|
-| 打开最终仿真 | `DAB_RA8P1_PCB_Notes/DAB_RA8P1_Final_Physical_MOSFET.slx` |
-| 画完整原理图 | `DAB_RA8P1_PCB_Notes/11_完整原理图逐器件逐引脚接线表.md` |
-| 采购与放置元件 | `DAB_RA8P1_PCB_Notes/26_DCDC_BOM_首板硬件定版.csv` |
-| 判断能否发 Gerber | `DAB_RA8P1_PCB_Notes/14_H1.7_PCB打板前硬件冻结报告.md` |
-| 查看最终仿真结论 | `DAB_RA8P1_PCB_Notes/16_H1.7_双版本对比与合并验证报告.md` |
-| 从零理解电路 | `DAB_RA8P1_PCB_Notes/DAB_RA8P1_从零理解仿真与MCU控制.md` |
+## 当前唯一入口
 
-正式模型 SHA-256：`580E5A5A10FD5BF3788AD1598480B99ABF9739F4D72B83A485ABA804762194DF`。
+| 内容 | 路径 | 说明 |
+|---|---|---|
+| 最新硬件工程 | `ProPrj_瑞萨杯_2026-08-09.epro2` | 原理图、PCB和真实网表的最高优先级事实来源 |
+| RA6M5 首版固件 | `RA6M5_DAB_Test/` | 当前提交 `49acbf44706af8aeae76e57f28844d4a12479d48` |
+| RA8P1 首版固件 | `C:\Users\LENOVO\e2_studio\workspace\RA8P1_Project1` | 当前提交 `8c922dc67f540ba99f2d6078c5aeb9e4c3ad2d80` |
+| 唯一物理仿真 | `DAB_RA8P1_PCB_Notes/DAB_RA8P1_Final_Physical_MOSFET.slx` | 八只 AONS66917；仅作控制和工况参考，不能覆盖最新 EDA 网表 |
+| 首次上电清单 | `DAB_RA8P1_PCB_Notes/04_首次上电与硬件验收清单.md` | 低功率分阶段调试入口 |
+| 控制策略 | `DAB_RA8P1_PCB_Notes/RA8P1_DAB_Control_Strategy.md` | SPS/EPS/TPS、软启动与保护说明 |
+| 最终报告 | `49-合肥工业大学-何润宇-刘羽凡-林学鹏-智能光储隔离功率变换器/` | 最终 DOCX、PDF及作品简介 |
 
-## 目录说明
+## 固件状态
 
-- `DAB_RA8P1_PCB_Notes/`：唯一正式模型、编号硬件文档、BOM 和最终器件资料。
-- `DAB_RA8P1_PCB_Notes/validation_results/`：只保存当前 H1.7 硬件/控制结论仍引用的最终 CSV 证据。
-- `tools/`：模型安装、结构合并和最终验证脚本。所有脚本按 MATLAB R2024b 验证。
-- `outputs/h1p7_bom/`：由 26 号 CSV 生成的筛选版 H1.7 Excel BOM 及生成器。
-- `对话与工作记录.md`：本地工作记录，不上传 GitHub 发布目录。
+- RA6M5 与 RA8P1 都默认 SPS，上电不自动传输功率。
+- 串口支持 `mod sps`、`mod eps`、`mod tps`、`mod auto` 和 `mod show`。
+- 模式只允许在 READY、PWM和功率回路关闭时切换。
+- 首次功率测试顺序：`zero`、`power 20`、`control on`。
+- RA6M5 保留未提交的 Keil 用户配置 `FSP_Project.uvoptx`。
+- RA8P1 保留未提交的 e² studio 用户配置 `.settings/language.settings.xml`。
 
-## R2024b 验证
+## 仿真复核
 
-在本目录启动 MATLAB R2024b 后执行：
+MATLAB R2024b 在本目录运行：
 
 ```matlab
 addpath(fullfile(pwd, 'tools'));
-validate_h1p7_hardware_freeze
-validate_first_board_hardware_closure
+validate_h1p7_cold_start_corners
+validate_h1p7_startup_voltage_stages
 validate_h1p7_merged_physical_model
 validate_h1p7_final_repeatability_and_leakage
 ```
 
-额定验证结果为 24V 输入、300W 负载时 `48.000765V`、`4.479mVpp`；三次独立复跑一致。0.40uH 漏感角点为 `48.001229V`、`5.296mVpp`，属于已接受的轻微平均误差超差。
+仿真结果位于 `DAB_RA8P1_PCB_Notes/validation_results/`。它们是模型证据，不是实物功率、温升或效率证明。
 
-## 清理规则
+## 基准哈希
 
-以下内容不属于定版工程：`*_1.*`、`slprj/`、`*.slxc`、H1.6 覆盖文件、候选器件扫参、旧波形图片、旧 BOM、旧模型和嵌套仓库。MATLAB 重新生成的缓存由 `.gitignore` 排除，可随时删除。
+- `ProPrj_瑞萨杯_2026-08-09.epro2`：`3CCFE86BFF829EE4CE75A6BE83E0EE56066F4AC9F99CDBB7495A23E06B2CCB69`
+- `DAB_RA8P1_Final_Physical_MOSFET.slx`：`AC216A05E53BA401F579B2BEF2F419850748B5360258A5E6D021A49ECD0AA7C5`
+
+## 清理原则
+
+- 不在本目录保存 EasyEDA 解包、截图判断文件、DOCX 渲染缓存、依赖副本或旧固件 SREC。
+- 不复制 RA8P1 工程到本目录；以 e² studio 工作区中的工程为唯一源码。
+- 新的硬件判断必须以最新 `.epro2` 的原理图和 PCB 网表为准。
+- Git 中的历史只用于追溯，不把旧文件重新恢复到当前工作区。

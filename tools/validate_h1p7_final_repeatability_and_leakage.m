@@ -51,8 +51,8 @@ in = set_named(in, mdl, 'Rload_DC_Output', 'R', ...
     sprintf('%.12g', 48^2/300));
 in = set_named(in, mdl, 'RUN_REQ_Model', 'Value', '1');
 in = set_named(in, mdl, 'RAW_FAULT_N_Model', 'Value', '1');
-in = set_named(in, mdl, 'IPRI_HW_OC_Threshold_A', 'Value', '58.752');
-in = set_named(in, mdl, 'ISEC_HW_OC_Threshold_A', 'Value', '35.984');
+in = set_named(in, mdl, 'IPRI_HW_OC_Threshold_A', 'Value', '57.355284');
+in = set_named(in, mdl, 'ISEC_HW_OC_Threshold_A', 'Value', '35.252226');
 % The Simscape block stores this compile-time value in uH, parameter "l".
 in = set_named(in, mdl, 'Llk_Secondary_Transfer', 'l', ...
     sprintf('%.12g', leakageH*1e6));
@@ -97,7 +97,7 @@ if startsWith(label, "NOMINAL")
 end
 row.Pass = abs(row.VoutError_mV) <= errorLimit && ...
     row.VoutP2P_V < 0.1 && abs(row.VoutSlope_Vps) <= 1 && ...
-    row.IpriPeak_A < 58.752 && row.IsecPeak_A < 35.984 && ...
+    row.IpriPeak_A < 57.355284 && row.IsecPeak_A < 35.252226 && ...
     row.RawFaultNMin > 0.5 && row.FaultLatchNMin > 0.5;
 end
 
