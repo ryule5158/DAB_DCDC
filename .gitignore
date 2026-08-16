@@ -15,8 +15,15 @@ slprj/
 .codex/
 .agents/
 .codex-remote-attachments/
+.codex_tmp/
 .tmp_*/
 /tmp/
+
+# Local repository/archive metadata and source-document scratch extracts.
+/RA8P1_DAB_Feature_Showcase_Backups/
+**/.git.embedded-backup-*/
+/aons.pdf
+/aons.txt
 
 # The obsolete nested project was removed; never recreate it here.
 /Electric Simulation/

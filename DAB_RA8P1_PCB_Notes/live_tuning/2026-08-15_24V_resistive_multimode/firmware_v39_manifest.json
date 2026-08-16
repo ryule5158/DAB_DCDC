@@ -1,0 +1,44 @@
+{
+  "firmware": "2026-08-15-dualcore-energy-control-v39",
+  "algorithm_version": "2026-08-15-v39",
+  "build_timestamp": "2026-08-16T15:35:38+08:00",
+  "cpu0": {
+    "srec": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\RA8P1_DAB_DualCore_Solution_CPU0\\Debug\\RA8P1_DAB_DualCore_Solution_CPU0.srec",
+    "release_srec": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\live_tuning\\2026-08-15_24V_resistive_multimode\\firmware_v39\\RA8P1_DAB_DualCore_Solution_CPU0_v39.srec",
+    "sha256": "500D1A33EE6E7886479316473E10CF6877786717F51E847DA72F264A59DC47D8",
+    "bytes": 412370,
+    "text_bytes": 136922,
+    "data_bytes": 460,
+    "bss_bytes": 170681
+  },
+  "cpu1": {
+    "srec": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\RA8P1_DAB_DualCore_Solution_CPU1\\Debug\\RA8P1_DAB_DualCore_Solution_CPU1.srec",
+    "release_srec": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\live_tuning\\2026-08-15_24V_resistive_multimode\\firmware_v39\\RA8P1_DAB_DualCore_Solution_CPU1_v39.srec",
+    "sha256": "A254D7EDD6A46A766A053C7EF0EFC40CE69330D7447B608E8AD6F9B867100EE8",
+    "bytes": 51090,
+    "text_bytes": 16858,
+    "data_bytes": 132,
+    "bss_bytes": 9096
+  },
+  "features": [
+    "preserved v38 voltage PI, modulation, UART, Ethernet and DAB telemetry positions",
+    "legacy voltage PI and DAB-only save stream remain boot defaults; new control and ALG telemetry are UART opt-in",
+    "CPU0 frame-synchronous output-current PI with UART gains/reference/slew",
+    "CPU1 deterministic P&O, incremental-conductance and fixed-power MPPT",
+    "10S Li-ion, 12S LiFePO4, 18-cell 36V lead-acid and custom charging profiles",
+    "bounded AI current hint plus record-only modulation hint with independent confidence, TTL and freshness",
+    "reliable queued configuration IPC and stale-reference invalidation",
+    "training-friendly ALG telemetry joined to DAB by ADC sequence",
+    "runtime BENCH guard removing soft test interference while retaining absolute trips"
+  ],
+  "verification": {
+    "cpu0_build": "passed without warnings",
+    "cpu1_build": "passed without warnings",
+    "algorithm_test_compile": "test and implementation translation units passed -Wall -Wextra -Werror cross-compilation",
+    "algorithm_test_execution": "not run; no compatible host or ARM simulator available",
+    "binary_string_checks": "passed",
+    "reference_parity_command": "Verify-ReferenceParity.ps1 -RequireBuildArtifacts -AllowEthernetPhase1 -AllowEnergyControlV39",
+    "reference_parity": "passed"
+  },
+  "verification_boundary": "Build, linker, binary-string and static parity checks passed. No v39 flash, boot, UART, electronic-load, current-loop, MPPT or battery-emulator physical validation has been performed."
+}

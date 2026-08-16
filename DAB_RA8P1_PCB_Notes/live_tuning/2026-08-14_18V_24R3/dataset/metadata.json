@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "session_id": "2026-08-14_18V_24R3",
+  "date_local": "2026-08-14",
+  "timezone": "Asia/Shanghai",
+  "objective": "Tune a DAB converter over UART while preserving raw evidence and comparing SPS, EPS, TPS, and AUTO control concepts.",
+  "hardware": {
+    "controller": "Renesas RA8P1",
+    "topology": "dual-active-bridge",
+    "transformer_nominal_ratio": "1:2",
+    "switching_frequency_hz": 299760,
+    "firmware_deadtime_ns": 400,
+    "load_resistance_ohm": 24.3,
+    "input_supply_setpoint_v": 18.0,
+    "input_supply_mode": "CV",
+    "target_output_range_v": [36.0, 48.0]
+  },
+  "firmware": {
+    "version": "2026-08-14-live-phase-override-dt400-v32",
+    "uart": "COM4 115200-8N1",
+    "manual_phase_command": "ph 0..480",
+    "manual_stop_command": "off",
+    "poeg_role_during_session": "observe-only",
+    "application_auto_trip": "disabled for the explicitly authorized manual-stop test build"
+  },
+  "telemetry_units": {
+    "vin_v": "V",
+    "vout_v": "V",
+    "iin_a": "A",
+    "iout_a": "A",
+    "ipri_a": "A",
+    "isec_a": "A",
+    "tpri_c": "degC",
+    "tsec_c": "degC",
+    "pin_w": "W",
+    "pout_w": "W",
+    "vafe_v": "V",
+    "phase_ns": "ns",
+    "plimit_label_w": "open-loop command label, not independently measured power",
+    "vref_v": "V"
+  },
+  "categorical_codes": {
+    "mod_requested": {"0": "SPS", "1": "EPS", "2": "TPS", "3": "AUTO"},
+    "mod_effective": {"0": "SPS", "1": "EPS", "2": "TPS", "3": "AUTO"}
+  },
+  "provenance_and_trust": {
+    "raw_uart": "Primary evidence for commands, firmware state, and firmware ADC telemetry.",
+    "meter_annotations": "Independent user-reported physical measurements; use as sparse labels.",
+    "firmware_vout": "Tracks the external meter but read approximately 0.45 V low near the 35.6 V operating point.",
+    "firmware_power": "Derived from firmware ADC channels; not an independent efficiency measurement.",
+    "simulation": "Model evidence only; never label it as physical validation."
+  },
+  "known_control_issue": {
+    "status": "confirmed by static audit; not yet corrected or physically revalidated",
+    "description": "EPS/TPS inner shifts change pulse centers without compensating raw outer phase. Effective power phase is outer + sec_inner/2 - pri_inner/2. Current EPS/TPS/AUTO must not be used for powered tests until fixed."
+  },
+  "additional_operating_configurations": [
+    {
+      "configuration_id": "21V_42V_30R_SPS",
+      "input_supply_display_v": 21.04,
+      "input_supply_mode": "CV",
+      "load_resistance_ohm": 30.0,
+      "manual_phase_ns": 52,
+      "external_meter_vout_v": 42.0,
+      "derived_resistive_pout_w": 58.8,
+      "status": "stable_then_explicitly_stopped"
+    }
+  ]
+}

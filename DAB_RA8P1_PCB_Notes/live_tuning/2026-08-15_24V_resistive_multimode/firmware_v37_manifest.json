@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "record_type": "firmware_build_manifest",
+  "timestamp": "2026-08-15T22:06:16+08:00",
+  "firmware": "2026-08-15-dualcore-schedule-jsonl-v37",
+  "build_status": "CPU0_CPU1_BUILD_PASSED",
+  "manual_flash_required": true,
+  "flash_verified": false,
+  "physical_power_verified": false,
+  "cpu0": {
+    "elf": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU0/Debug/RA8P1_DAB_DualCore_Solution_CPU0.elf",
+    "elf_size_bytes": 2355136,
+    "elf_sha256": "AD227E7875A667DA0FAB9FE234763D4B29ACEFE22B677D1F40E4995F25EB9507",
+    "srec": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU0/Debug/RA8P1_DAB_DualCore_Solution_CPU0.srec",
+    "srec_size_bytes": 359982,
+    "srec_sha256": "13E29B060EC11F90ECBD7C5C2D53C275B5606FEBB0CFE68EC63134B1E185A73B",
+    "llvm_size": {"text": 119484, "data": 440, "bss": 169893}
+  },
+  "cpu1": {
+    "elf": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU1/Debug/RA8P1_DAB_DualCore_Solution_CPU1.elf",
+    "elf_size_bytes": 515416,
+    "elf_sha256": "6ED8D664F64AF3137F459C6DA68B080D38CAAC757E875A3E71F7DEFBEECB9B90",
+    "srec": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU1/Debug/RA8P1_DAB_DualCore_Solution_CPU1.srec",
+    "srec_size_bytes": 35690,
+    "srec_sha256": "7848B4A9F54B2A0EAF4221D375EDB822C4687C701861B836C299A77F6A05B4AC",
+    "llvm_size": {"text": 11766, "data": 92, "bss": 6496},
+    "note": "CPU1 source was unchanged; build verification passed and the existing artifact remained current."
+  },
+  "safe_defaults": {
+    "power_transfer_after_reset": false,
+    "control_architecture": "VOLTAGE_PI_SINGLE_LOOP",
+    "kp_ns_per_v": 20.0,
+    "ki_us_per_vs": 5.0,
+    "kd_ns_s_per_v": 0.0,
+    "schedule_enabled": false,
+    "validated_table_entry_count": 0,
+    "voltage_ref_v": 44.0,
+    "bench_vin_set_v": 24.0,
+    "load_nominal_ohm": 10.0,
+    "requested_power_layer_w": 200.0
+  },
+  "validation_boundaries": {
+    "cascade_available": false,
+    "cascade_gate": "current sensing and loop validation required",
+    "automatic_parameter_schedule_available": false,
+    "schedule_gate": "promoted exact table entry required",
+    "application_auto_trip_enabled": false,
+    "manual_stop_test_image": true
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "profile": "matrix25_vin24",
+  "model_file": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\DAB_RA8P1_Final_Physical_MOSFET.slx",
+  "model_bytes": 1.529721E+6,
+  "model_timestamp": "2026-07-14 02:25:49",
+  "stop_time_s": 0.03,
+  "steady_window_s": 0.002,
+  "load_25ohm_note": "Fixed 25 ohm load; nominal target powers are 51.84 W at 36 V, 70.56 W at 42 V, and 92.16 W at 48 V.",
+  "rated300_note": "Target-dependent resistive load R=Vref^2/300 W.",
+  "convergence_rule": "abs(mean(Vout)-Vref)<=0.5 V, Vout p-p<=1.0 V, abs(Vout slope)<=100 V/s, driver enable>0.5, fault latch N>0.5, and observable normal-mode phase range in final 2 ms.",
+  "mode_rule": "Controller source selects EPS when filtered abs(Iout)>=4 A; otherwise SPS after normal-mode entry. Mode below is inferred from final Iout."
+}

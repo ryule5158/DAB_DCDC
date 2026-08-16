@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/CPATH/delimiter=;
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/CPATH/operation=remove
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/C_INCLUDE_PATH/delimiter=;
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/C_INCLUDE_PATH/operation=remove
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/LIBRARY_PATH/delimiter=;
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/LIBRARY_PATH/operation=remove
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/append=true
+environment/buildEnvironmentInclude/com.renesas.cdt.managedbuild.llvm.arm.configuration.debug.1313432878/appendContributed=true

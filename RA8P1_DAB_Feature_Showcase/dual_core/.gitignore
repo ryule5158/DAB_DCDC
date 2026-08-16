@@ -1,0 +1,17 @@
+/.metadata/
+/.metadata_failed_*/
+/.headless_verify_*/
+/**/Debug/
+/**/Release/
+/**/HardwareDebug/
+/**/build/
+/**/.api_xml
+/**/.clangd
+*.o
+*.d
+*.elf
+*.map
+*.srec
+*.hex
+*.bin
+*.sbd

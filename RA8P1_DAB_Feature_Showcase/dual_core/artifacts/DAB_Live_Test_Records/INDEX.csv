@@ -1,0 +1,8 @@
+"condition_file","sample_count","source_file_count","firmware_vin_avg_v","firmware_vout_avg_v","firmware_pin_avg_w","firmware_pout_avg_w","phase_min_ns","phase_max_ns"
+"FWVIN19p8V_FWVOUT38to39V_FWPOUT83to89W.csv","1583","9","19.782","38.665","92.022","86.24","16","160"
+"FWVIN19p9V_FWVOUT35V_FWPOUT150to152W.csv","768","4","19.916","34.983","164.616","151.152","16","80"
+"FWVIN21p3V_FWVOUT37p5V_FWPOUT173W.csv","203","1","21.343","37.481","188.876","173.045","80","80"
+"FWVIN22p6V_FWVOUT39p7V_FWPOUT194W.csv","202","1","22.617","39.646","211.693","193.612","80","80"
+"FWVIN22p8V_FWVOUT40p0V_FWPOUT196W.csv","202","1","22.843","40.035","215.013","196.47","80","80"
+"VIN18V_LOAD24p3ohm_POUT44to52W.csv","1551","21","16.959","34.518","51.973","48.34","4","160"
+"VIN21p04V_LOAD30ohm_POUT59W.csv","234","3","19.846","40.895","59.89","55.191","4","52"

@@ -1,0 +1,28 @@
+# e2 studio/FSP build outputs
+/Debug/
+/Release/
+/HardwareDebug/
+
+# Compiler, linker, and image artifacts (also catches custom build folders)
+*.o
+*.d
+*.elf
+*.map
+*.srec
+*.hex
+*.bin
+*.rpd
+*.sbd
+*.su
+
+# Probe/debug logs and transient IDE indexes
+JLinkLog.log
+*.log
+/.api_xml
+/.clangd
+/.metadata/
+/.git.embedded-backup-*/
+
+# Operating-system noise
+Thumbs.db
+.DS_Store

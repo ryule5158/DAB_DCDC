@@ -1,0 +1,10 @@
+{
+    "session_id":  "2026-08-14_18V_24R3",
+    "generated_at":  "2026-08-14T22:29:29.5736931+08:00",
+    "raw_log_count":  41,
+    "telemetry_sample_count":  5783,
+    "event_count":  525,
+    "command_count":  101,
+    "parse_error_count":  12,
+    "telemetry_schema_version":  "1.0.0"
+}

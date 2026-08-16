@@ -1,0 +1,58 @@
+{
+  "firmware": "2026-08-15-dualcore-protected-fullphase-v38",
+  "build_timestamp": "2026-08-15T23:04:54+08:00",
+  "physical_validation": false,
+  "manual_flash_required": true,
+  "changes": {
+    "power_phase_decoupled": true,
+    "power_command_semantics": "output power safety ceiling",
+    "closed_loop_phase_cap_command": "cap 0..480",
+    "normal_phase_cap_max_ns": 320,
+    "unlocked_phase_cap_max_ns": 480,
+    "cold_phase_gates_ns": [8, 80, 160],
+    "cold_phase_thresholds_v": [5, 15, 30],
+    "phase_rise_ns_per_ms": 0.04,
+    "automatic_software_trip": true,
+    "gpio_overcurrent_trip": true,
+    "adc_current_guards": true,
+    "vin_uv_trip": true,
+    "no_rise_trip": true,
+    "poeg_gpt_hardware_clamp": false,
+    "input_current_hard_limit_a": 26.0,
+    "output_current_hard_limit_a": 18.0,
+    "input_power_soft_multiplier": 1.25,
+    "power_hard_trip_multiplier": 1.35,
+    "temperature_trip_c": 70.0
+  },
+  "cpu0": {
+    "text_bytes": 122650,
+    "data_bytes": 444,
+    "bss_bytes": 169897,
+    "elf": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU0/Debug/RA8P1_DAB_DualCore_Solution_CPU0.elf",
+    "elf_size_bytes": 2358232,
+    "elf_sha256": "89F08E7D2BEFDE5CD6F9AE38AE8D57EB04543EB441988FFC62DAC1A124ADEA8E",
+    "srec": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU0/Debug/RA8P1_DAB_DualCore_Solution_CPU0.srec",
+    "srec_size_bytes": 369506,
+    "srec_sha256": "8DAEA7A1F12119FC420384C9C6CC70600A99B09C3BAD28EAB5F95E2A137B7F3B"
+  },
+  "cpu1": {
+    "text_bytes": 11766,
+    "data_bytes": 92,
+    "bss_bytes": 6496,
+    "elf": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU1/Debug/RA8P1_DAB_DualCore_Solution_CPU1.elf",
+    "elf_size_bytes": 515416,
+    "elf_sha256": "6ED8D664F64AF3137F459C6DA68B080D38CAAC757E875A3E71F7DEFBEECB9B90",
+    "srec": "RA8P1_DAB_Feature_Showcase/dual_core/RA8P1_DAB_DualCore_Solution_CPU1/Debug/RA8P1_DAB_DualCore_Solution_CPU1.srec",
+    "srec_size_bytes": 35690,
+    "srec_sha256": "7848B4A9F54B2A0EAF4221D375EDB822C4687C701861B836C299A77F6A05B4AC"
+  },
+  "binary_string_checks": [
+    "2026-08-15-dualcore-protected-fullphase-v38",
+    "v38-empty-validated-table",
+    "schema=v38",
+    "cap 0..480",
+    "automatic trips active",
+    "input-soft"
+  ],
+  "verification_boundary": "CPU0 and CPU1 build and binary string checks passed. No flash, boot, UART or power validation has been performed for v38."
+}
