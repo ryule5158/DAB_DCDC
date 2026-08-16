@@ -1,0 +1,1177 @@
+# DAB 首板完整原理图逐器件逐引脚接线表
+
+版本：H1.7-PINMAP-R2
+日期：2026-07-13
+适用模型：`DAB_RA8P1_Final_Physical_MOSFET.slx`
+适用硬件：固定 1:2 变压器、固定共模电感、AONS66917T 双有源全桥首板
+RA8P1 实物工程：`C:/Users/26488/Desktop/瑞萨杯/瑞萨CPKHMI-RA8P1扩展板.epro2`
+
+## 0. 先读结论
+
+这份文件不是把 Simulink 方块逐个照抄，而是把模型、H1.7 BOM 和器件官方数据手册转换成真正可画 PCB 的原理图连接表。画图时以本文件的网络名、引脚号和连接关系为准。
+
+必须同时接受以下边界：
+
+1. 不能仅凭仿真保证首板一次成功。仿真没有完整覆盖 PCB 寄生、器件离散性、热耦合、磁件高频损耗、共模路径和探头影响。首板仍必须做限流上电、双脉冲、吸收网络整定和温升测试。
+2. RA8P1 物理映射已经从实际 `.epro2` 工程读取，并按 `R7KA8P1KFLCAC` 的 289-pin LFBGA 官方引脚表复核。第 14 节给出的 P5/P6/P7/P10 焊盘号、Pxxx 端口名、GPT/POEG/ADC 功能和核心板 P1/P2/P3 追溯关系可以用于绘制转接板；送板前仍必须让 e2 studio/FSP Pin Configuration 无冲突通过。
+3. 变压器和共模电感已经购买，参数不得修改。输出电感可以从淘宝或厂家购买并自己画封装，不要求立创商城有完全相同型号。
+4. 输出电感替代件必须同时满足：`2.2uH`、DCR 不高于约 `2.05mOhm`、`10%` 降感电流不低于 `40A`、`40degC` 温升电流不低于 `30A`，并有 300kHz 条件下的损耗或温升证据。这里的 `40A` 是本项目对替代件设置的最低准入门槛，不是 SER2915H-222KL 的规格；该型号官方值为 10% 降感 `100A`，20%/30% 降感均大于 `100A`。
+5. 旧 BOM 的 `SN74LVC1G74DCKR / DCK-8` 订货信息作废。锁存器改为 `SN74LVC1G74DCTR / DCT-8`。
+6. 旧 BOM 将 12 路 ADC 滤波笼统写成 `47Ohm+1nF`，本文件改为：高速电压/电流及 VBIAS 通道使用 `47Ohm+1nF`；五路温度通道使用 `1kOhm+100nF`。
+
+位号书写约定：文中的 `x=1..4`、`x=1..8` 或 `PRI/SEC` 表示该接线模板对 BOM 中对应的整组位号逐个重复。例如 `UDRVx` 同时覆盖 `UDRV1-UDRV4`，`RGONx` 同时覆盖 `RGON1-RGON8`。不能只画一颗代表器件后就漏掉其余通道。
+
+## 1. 电气域和网络名
+
+### 1.1 四个必须区分的地
+
+| 网络 | 含义 | 是否允许与其他地直接相连 |
+|---|---|---|
+| `PRI_PGND` | 原边功率负端 | 不得接 `SEC_PGND`、`DGND_CTRL` |
+| `SEC_PGND` | 副边功率负端 | 不得接 `PRI_PGND`、`DGND_CTRL` |
+| `DGND_CTRL` | 控制岛数字地 | 只通过 `NT1` 与 `AGND_CTRL` 单点连接 |
+| `AGND_CTRL` | 控制岛模拟地 | 只通过 `NT1` 与 `DGND_CTRL` 单点连接 |
+
+`NT1` 使用原理图 Net-Tie 符号和专用 Net-Tie 封装，放在 `U_AFE/U_REF` 附近。它不是把控制岛接到任一功率地。原副边功率地与控制地之间只能通过规定的隔离器件连接。
+
+### 1.2 主要功率网络
+
+| 网络 | 定义 |
+|---|---|
+| `VIN_RAW_P/N` | JIN 刚进入主板的输入正/负 |
+| `VIN_FUSED_P` | F1 后、LCM1 前的输入正 |
+| `VIN_EMI_P/N` | LCM1 后、输入分流器前 |
+| `PRI_DC_P` | 输入分流器后、原边电容和原边桥正母线 |
+| `PRI_SW_A/B` | 原边 A/B 半桥中点 |
+| `SEC_SW_A/B` | 副边 A/B 半桥中点 |
+| `SEC_LOCAL_P` | 副边桥正母线、LOUT 前 |
+| `VOUT_LOCAL_P` | LOUT 后、FOUT 前的本地输出正 |
+| `VOUT_FUSED_P` | FOUT 后、输出分流器前 |
+| `VOUT_CONN_P` | 输出分流器后、JOUT 正端 |
+
+### 1.3 控制和驱动网络
+
+| 网络 | 定义 |
+|---|---|
+| `5V_CTRL` | URH 隔离输出 5V |
+| `5V_SENSE` | 5V_CTRL 经 FB_5V_SENSE 后的低噪声采样电源，供四颗 AMC 和 U_AFE_LDO |
+| `3V3_AFE` | TLV77333 输出的模拟 3.3V |
+| `3V3_DRV` | 3V3_AFE 经磁珠后的驱动逻辑 3.3V |
+| `ISO5V_HB1..4` | 四块驱动板各自隔离侧 5V |
+| `GATE10_HB1..4` | 四块驱动板各自约 10.18V 门极电源 |
+| `RAW_FAULT_N` | 开漏快速故障总线，低有效 |
+| `FAULT_LATCHED` | 锁存故障状态，高有效 |
+| `FAULT_LATCH_N` | 驱动允许条件之一，正常高、故障低 |
+| `RUN_REQ` | MCU 运行请求，高才允许 |
+| `ESTOP_N` | 急停许可，正常高、急停/断线低 |
+
+## 2. 仿真参数中哪些不能画成独立元件
+
+下列参数只写入相应器件属性或备注，不单独放元件：
+
+| 仿真参数 | 在实物中的含义 | 原理图处理 |
+|---|---|---|
+| MOSFET `Rds(on)` | MOS 导通电阻 | 写在 Q1-Q8 参数中，不画电阻 |
+| MOSFET 体二极管、Qrr、trr | MOS 内部体二极管特性 | 不另画并联二极管 |
+| 变压器 0.95/3mOhm DCR | 绕组铜阻 | 写入 T1 备注，不画电阻 |
+| 变压器 57.5/230uH | 励磁电感 | 是 T1 内部参数，不另画两只电感 |
+| 变压器 0.50uH 漏感 | 绕组和布局形成的传输漏感 | 写入 T1 验收参数；不另画外接电感、铜排跳线或预留接口 |
+| LCM1 每绕组 3.5mOhm DCR | 共模电感铜阻 | 写入 LCM1 属性，不画电阻 |
+| 电容 ESR | 电容内部等效串联阻抗 | 写入选型备注，不画串联电阻 |
+| LOUT 2.05mOhm DCR | 输出电感绕组电阻 | 写入 LOUT 属性，不画电阻 |
+| 走线/接插件寄生 L、R | PCB 和结构寄生 | 通过布局控制，不画成首板元件 |
+
+真正需要画出的阻尼电阻、门极电阻、分流器和 RC 吸收网络会在后文明确列出。
+
+## 3. 第 1 页：输入连接、保险、共模滤波和输入储能
+
+### 3.1 JIN、F1、FH1
+
+| 器件/引脚 | 接线 |
+|---|---|
+| `JIN-1 (+)` | `VIN_RAW_P` |
+| `JIN-2 (-)` | `VIN_RAW_N` |
+| `FH1-1` | `VIN_RAW_P` |
+| `FH1-2` | F1 一个端子 |
+| `F1-1` | FH1-2；若保险座符号已包含保险丝，则合并成一个两脚器件 |
+| `F1-2` | `VIN_FUSED_P` |
+
+`JIN` 使用 M5 铜柱/XT90S 线束，不使用普通 5.08mm 端子承担主电流。
+
+### 3.2 DTVS_IN
+
+`DTVS_IN=SMCJ33A`：
+
+- 阴极 K 接 `VIN_FUSED_P`。
+- 阳极 A 接 `VIN_RAW_N`。
+- 必须位于 F1 后、LCM1 前；TVS 短路后由 F1 隔离。
+
+### 3.3 LCM1 定制共模电感
+
+为自制符号固定四个引脚：
+
+| LCM1 引脚 | 接线 |
+|---|---|
+| 1，正线输入，点端 | `VIN_FUSED_P` |
+| 2，正线输出 | `VIN_EMI_P` |
+| 3，负线输入，点端 | `VIN_RAW_N` |
+| 4，负线输出 | `VIN_EMI_N`，随后直接成为 `PRI_PGND` |
+
+两个点端都放在连接器侧。自画封装前用电桥/低压交流确认实物绕向；若厂家引线编号不同，只改封装脚号映射，不改电气相位关系。
+
+### 3.4 RSHUNT_IN 四端输入分流器
+
+使用自定义四端符号，固定：`1=I+`、`2=K+`、`3=K-`、`4=I-`。
+
+| 引脚 | 接线 |
+|---|---|
+| 1 I+ 大电流端 | `VIN_EMI_P` |
+| 2 K+ Kelvin | `IIN_SHUNT_KP`，只去 U_IIN 输入滤波 |
+| 3 K- Kelvin | `IIN_SHUNT_KN`，只去 U_IIN 输入滤波 |
+| 4 I- 大电流端 | `PRI_DC_P` |
+
+`U_IIN` 的 HGND 还要用第三根独立 Kelvin 线接到 4 端附近的 `IIN_HGND_K`，不要复用大电流铜皮。
+
+### 3.5 输入电容和局部保护
+
+以下器件都跨 `PRI_DC_P` 与 `PRI_PGND`：
+
+| 器件 | 1/正端 | 2/负端 |
+|---|---|---|
+| `CIN1-CIN4` 1000uF/63V | `PRI_DC_P` | `PRI_PGND` |
+| `CIN_HF1-CIN_HF10` 22uF/100V | `PRI_DC_P` | `PRI_PGND` |
+| `CIN_FILM` 2.2uF/100V | `PRI_DC_P` | `PRI_PGND` |
+| `ZBUS_PRI=SMCJ33A` | K=`PRI_DC_P` | A=`PRI_PGND` |
+| `RBLEED_IN1-RBLEED_IN4` 20k | `PRI_DC_P` | `PRI_PGND` |
+
+四只 RBLEED_IN 是并联，不是串联。
+
+输入阻尼支路单独画成：
+
+```text
+PRI_DC_P -> RDAMP 0.33Ohm/2W -> DAMP_IN_MID
+DAMP_IN_MID -> CDAMP1..CDAMP10 并联 -> PRI_PGND
+```
+
+首板只装 `CDAMP1-4=4×10uF`，`CDAMP5-10` 默认 DNP，用于把阻尼容量扩展到 100uF；不得把 RDAMP 误串入主电流母线。
+
+## 4. 第 2 页：原边和副边双有源全桥
+
+### 4.1 AONS66917T 固定封装引脚
+
+Q1-Q8 的 DFN5x6 引脚统一为：
+
+| 引脚 | 功能 |
+|---:|---|
+| 1、2、3 | Source |
+| 4 | Gate |
+| 5、6、7、8 | Drain |
+| 底部散热焊盘 EP | Drain，必须与 5-8 同网 |
+
+体二极管已经在 MOS 内部，方向为 Source 到 Drain，不另画外部体二极管。
+
+### 4.2 八只 MOS 的逐管连接
+
+| MOS | 1-3 Source | 4 Gate | 5-8+EP Drain | 驱动板 |
+|---|---|---|---|---|
+| Q1 原边 A 高侧 | `PRI_SW_A`，另引 `Q1_SH_KELVIN` | `Q1_G` | `PRI_DC_P` | HB1/UDRV1 A |
+| Q2 原边 A 低侧 | `PRI_PGND`，另引 `Q2_SL_KELVIN` | `Q2_G` | `PRI_SW_A` | HB1/UDRV1 B |
+| Q3 原边 B 高侧 | `PRI_SW_B`，另引 `Q3_SH_KELVIN` | `Q3_G` | `PRI_DC_P` | HB2/UDRV2 A |
+| Q4 原边 B 低侧 | `PRI_PGND`，另引 `Q4_SL_KELVIN` | `Q4_G` | `PRI_SW_B` | HB2/UDRV2 B |
+| Q5 副边 A 高侧 | `SEC_SW_A`，另引 `Q5_SH_KELVIN` | `Q5_G` | `SEC_LOCAL_P` | HB3/UDRV3 A |
+| Q6 副边 A 低侧 | `SEC_PGND`，另引 `Q6_SL_KELVIN` | `Q6_G` | `SEC_SW_A` | HB3/UDRV3 B |
+| Q7 副边 B 高侧 | `SEC_SW_B`，另引 `Q7_SH_KELVIN` | `Q7_G` | `SEC_LOCAL_P` | HB4/UDRV4 A |
+| Q8 副边 B 低侧 | `SEC_PGND`，另引 `Q8_SL_KELVIN` | `Q8_G` | `SEC_SW_B` | HB4/UDRV4 B |
+
+Kelvin 网络与功率 Source 电气上同网，但必须从 MOS Source 焊盘单独走线到驱动接口，不能从大电流铜皮远端取样。
+
+### 4.3 每只 MOS 的门极终端网络
+
+对 Qx（x=1..8）都完全重复：
+
+```text
+UDRVx_OUT -> RGONx 4.7Ohm -> Qx_G
+UDRVx_OUT -> RGOFFx 2.2Ohm -> DGx阴极K
+DGx阳极A -> Qx_G
+Qx_G -> RGSx 10k -> Qx_KELVIN_SOURCE
+Qx_G -> ZGSx(BZT52C15)阴极K
+ZGSx阳极A -> Qx_KELVIN_SOURCE
+```
+
+这样开通主要经过 RGON，关断时电流从 Gate 经 DG 和 RGOFF 回到驱动器。门极器件全部放在主功率板 Qx 焊盘旁 2-3mm 内。
+
+### 4.4 每只 MOS 的 RC 吸收
+
+对每只 Qx：
+
+```text
+Qx_DRAIN -> RSNx 10Ohm/2W -> CSNx 470pF/C0G/100V或200V -> Qx_SOURCE_POWER
+```
+
+RSN/CSN 是真实调试元件，不是 MOS 寄生参数。首板八路统一安装 `470pF+10Ohm`，双脉冲实测后才允许逐路改值；不能在首次上电前擅自 DNP。高侧 Source 接开关节点，低侧 Source 接对应 PGND。
+
+### 4.5 T1、U_IPRI 和 U_ISEC 的功率引脚
+
+T1 自定义四脚符号：`P1`、`P2`、`S1`、`S2`，P1/S1 为同名点。
+
+```text
+PRI_SW_A -> U_IPRI pin1 IN+
+U_IPRI pin2 IN- -> T1 P1(点端)
+T1 P2 -> PRI_SW_B
+
+T1 S1(点端) -> U_ISEC pin1 IN+
+U_ISEC pin2 IN- -> SEC_SW_A
+T1 S2 -> SEC_SW_B
+```
+
+T1 的 0.50uH 副边折算总漏感直接承担 DAB 传输电感。副边交流路径必须短、宽、连续，禁止再串外置 0.1-0.3uH 电感，也不保留机械跳线接口；实测漏感超出 0.40-0.60uH 时只能调整软件工作域。
+
+## 5. 第 3 页：四块相同半桥驱动板
+
+### 5.1 四块驱动板对应关系
+
+| 驱动板 | PWM_H/L | 高/低 MOS | 本地参考地 |
+|---|---|---|---|
+| HB1 | `PWM_PRI_A_H/L` | Q1/Q2 | `Q2_SL_KELVIN` |
+| HB2 | `PWM_PRI_B_H/L` | Q3/Q4 | `Q4_SL_KELVIN` |
+| HB3 | `PWM_SEC_A_H/L` | Q5/Q6 | `Q6_SL_KELVIN` |
+| HB4 | `PWM_SEC_B_H/L` | Q7/Q8 | `Q8_SL_KELVIN` |
+
+下面以 HBx 表示四块都重复一次。
+
+### 5.2 JCTRL_DRVx 2×6 控制侧接口
+
+| 针脚 | 网络 |
+|---:|---|
+| 1 | `5V_CTRL` |
+| 2 | `DGND_CTRL` |
+| 3 | `3V3_DRV` |
+| 4 | `DGND_CTRL` |
+| 5 | 本半桥 `PWM_H` |
+| 6 | `DGND_CTRL` |
+| 7 | 本半桥 `PWM_L` |
+| 8 | `DGND_CTRL` |
+| 9 | `RUN_REQ` |
+| 10 | `FAULT_LATCH_N` |
+| 11 | `ESTOP_N` |
+| 12 | 本板 `PWRFLTx_N`，方向回主板 |
+
+### 5.3 UDISx=SN74LVC1G10 DBV-6
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | A | `RUN_REQ`；并用 `RPD_RUNx=10k` 下拉到 DGND |
+| 2 | GND | `DGND_CTRL` |
+| 3 | B | `FAULT_LATCH_N`；并用 47k 下拉 |
+| 4 | Y | `DIS_HBx`，接 UDRVx pin5；并用 10k 上拉到 3V3_DRV |
+| 5 | VCC | `3V3_DRV` |
+| 6 | C | `ESTOP_N`；并用 47k 下拉 |
+
+`CUDISx=100nF` 直接跨 pin5-pin2。`RPD_RUNx=10k`、`RPD_FAULT_LOCALx=47k`、`RPD_ESTOP_LOCALx=47k` 分别对应上述三路下拉，`RPU_DISx=10k` 对应 Y 的安全上拉。三输入全高时 Y 才为低，驱动才允许工作。
+
+### 5.4 UDRVx=UCC21520DWR
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | INA | PWM_H 经 `RINAx=33Ohm` 后；该点用 `RPD_INAx=10k` 下拉 DGND |
+| 2 | INB | PWM_L 经 `RINBx=33Ohm` 后；该点用 `RPD_INBx=10k` 下拉 DGND |
+| 3 | VCCI | `3V3_DRV` |
+| 4 | GND | `DGND_CTRL` |
+| 5 | DISABLE | `DIS_HBx` |
+| 6 | DT | `RDTx=10.0k` 和 `CDTx=330pF` 并联到 DGND |
+| 7 | NC | 悬空，不接铜 |
+| 8 | VCCI | 与 pin3 同接 `3V3_DRV` |
+| 9 | VSSB | 本半桥低侧 Kelvin Source，也等于 UISOx 的 GNDS |
+| 10 | OUTB | 去低侧 `JGATE_Lx-1` |
+| 11 | VDDB | `GATE10_HBx` |
+| 12 | NC | 悬空 |
+| 13 | NC | 悬空 |
+| 14 | VSSA | 高侧 MOS 的 `SH_KELVIN` |
+| 15 | OUTA | 去高侧 `JGATE_Hx-1` |
+| 16 | VDDA | `BOOT_HBx` |
+
+去耦：
+
+- `CVCCI_HFx=100nF` 与 `CVCCIx=1uF` 跨 pin3/8 到 pin4。
+- `CVDDB_HFx=100nF` 与 `CVDDBx=4.7uF` 跨 pin11 到 pin9。
+- `CBOOT_HFx=100nF` 与 `CBOOTx=1uF` 跨 pin16 到 pin14。
+
+### 5.5 UISOx=UCC33421QDHARQ1
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | EN/FLT | `PWRFLTx_N`；用 `RENFLTx=22k` 上拉到 `5V_CTRL` |
+| 2、3 | VINP | `5V_CTRL` |
+| 4、5、6、7、8 | GNDP | `DGND_CTRL` |
+| 9 | SEL | 经 `RSELx=0Ohm` 接 pin10/11 的 `ISO5V_HBx` |
+| 10、11 | VCC | `ISO5V_HBx` |
+| 12、13、14、15、16 | GNDS | 本半桥低侧 Kelvin Source |
+
+去耦：
+
+- `CISO_IN_HFx=15nF` 和 `CISO_INx=10uF` 跨 VINP-GNDP。
+- `CISO_OUT_HFx=15nF` 和唯一一颗 `CISO_OUTx=22uF` 跨 VCC-GNDS。
+- 输入侧和输出侧电容绝对不能共地。
+
+### 5.6 UBOOSTx=TLV61046ADBVR
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | SW | `LBOOSTx` 的开关端 |
+| 2 | GND | UISOx GNDS/低侧 Kelvin Source |
+| 3 | FB | `RFB_TOPx=118k` 下端与 `RFB_BOTx=10.0k` 上端 |
+| 4 | EN | `BOOST_EN_HBx` |
+| 5 | VOUT | `GATE10_HBx` |
+| 6 | VIN | `ISO5V_HBx` |
+
+外围接线：
+
+```text
+ISO5V_HBx -> LBOOSTx 15uH -> pin1 SW
+ISO5V_HBx -> RBOOST_EN_UPx 100k -> BOOST_EN_HBx
+BOOST_EN_HBx -> RBOOST_EN_DNx 100k -> GNDS
+BOOST_EN_HBx -> CBOOST_ENx 220nF -> GNDS
+DBOOST_ENx: 阳极A=BOOST_EN_HBx，阴极K=ISO5V_HBx
+GATE10_HBx -> RFB_TOPx 118k -> pin3 FB
+pin3 FB -> RFB_BOTx 10.0k -> GNDS
+```
+
+`CBOOST_INx=1uF`、`CBOOST_IN_HFx=100nF` 跨 pin6-pin2。`CBOOST_OUTx=2.2uF`、`CBOOST_OUT_HFx=100nF` 跨 pin5-pin2。
+
+### 5.7 高侧自举和门极功率接口
+
+```text
+GATE10_HBx -> DBOOTx阳极A
+DBOOTx阴极K -> RBOOTx 2.2Ohm -> BOOT_HBx -> UDRV pin16
+BOOT_HBx -> CBOOTx/CBOOT_HFx -> 高侧SH_KELVIN -> UDRV pin14
+```
+
+每个低矮功率接口固定为三触点：
+
+| 接口 | pin1 | pin2 | pin3 |
+|---|---|---|---|
+| `JGATE_Hx` | UDRV OUTA | 高侧 SH_KELVIN | 高侧 SH_KELVIN 冗余回流 |
+| `JGATE_Lx` | UDRV OUTB | 低侧 SL_KELVIN | 低侧 SL_KELVIN 冗余回流 |
+
+若购买的连接器有外壳或定位脚，外壳默认不接电；不要用长排针承担门极电流。
+
+## 6. 第 4 页：副边局部母线、输出滤波和输出接口
+
+### 6.1 LOUT 前的副边局部母线
+
+以下器件都位于副边桥与 LOUT 之间：
+
+| 器件 | 正/1端 | 负/2端 |
+|---|---|---|
+| `CSEC1-CSEC2` 47uF/100V | `SEC_LOCAL_P` | `SEC_PGND` |
+| `CSEC_HF1-CSEC_HF8` 10uF/100V | `SEC_LOCAL_P` | `SEC_PGND` |
+| `CSEC_HF_DNP1-4` | `SEC_LOCAL_P` | `SEC_PGND` |
+| `ZBUS_SEC=SMCJ48A` | K=`SEC_LOCAL_P` | A=`SEC_PGND` |
+
+两只 CSEC 电解并联，正端必须朝 `SEC_LOCAL_P`。CSEC_HF_DNP 只留焊盘，默认不装。
+
+### 6.2 LOUT
+
+| 引脚 | 接线 |
+|---|---|
+| LOUT-1 | `SEC_LOCAL_P` |
+| LOUT-2 | `VOUT_LOCAL_P` |
+
+若淘宝购买或定制，只需让你自画的封装脚 1/2 与实物两端一致。电感无极性；若实物标有绕组起始点，可把起始点定义为 pin1 便于批次一致。
+
+LOUT 是最终功率通路中的必装滤波器件。封装两端禁止再画粗铜排旁路孔、0Ω短接位或焊锡桥；机械加固只能使用非导电胶、压条或独立固定孔，不能形成电气旁路。
+
+### 6.3 LOUT 后输出储能
+
+以下器件都跨 `VOUT_LOCAL_P` 与 `SEC_PGND`：
+
+| 器件 | 正/1端 | 负/2端 |
+|---|---|---|
+| `COUT_HF1-COUT_HF8` 10uF/100V | `VOUT_LOCAL_P` | `SEC_PGND` |
+| `COUT1-COUT8` 1000uF/80V | `VOUT_LOCAL_P` | `SEC_PGND` |
+
+输出泄放为串联：
+
+```text
+VOUT_LOCAL_P -> RBLEED_OUT1 2.49k/1W -> BLEED_MID
+BLEED_MID -> RBLEED_OUT2 2.49k/1W -> SEC_PGND
+```
+
+`BLEED_MID` 不接其他网络。
+
+### 6.4 FOUT、输出分流器、DTVS_CONN 和 JOUT
+
+```text
+VOUT_LOCAL_P -> FOUT-1
+FOUT-2 -> VOUT_FUSED_P
+VOUT_FUSED_P -> RSHUNT_OUT1 -> SHUNT_OUT_MID -> RSHUNT_OUT2 -> VOUT_CONN_P
+VOUT_CONN_P -> JOUT-1(+)
+SEC_PGND -> JOUT-2(-)
+```
+
+两只输出分流器都使用四端符号：
+
+| 器件/引脚 | 接线 |
+|---|---|
+| RSHUNT_OUT1 pin1 I+ | `VOUT_FUSED_P` |
+| RSHUNT_OUT1 pin2 K+ | `IOUT_SHUNT_KP` |
+| RSHUNT_OUT1 pin3 K- | 不作为最终外端采样，接本体右 Kelvin 焊盘 |
+| RSHUNT_OUT1 pin4 I- | `SHUNT_OUT_MID` |
+| RSHUNT_OUT2 pin1 I+ | `SHUNT_OUT_MID` |
+| RSHUNT_OUT2 pin2 K+ | 不作为最终外端采样，接本体左 Kelvin 焊盘 |
+| RSHUNT_OUT2 pin3 K- | `IOUT_SHUNT_KN` |
+| RSHUNT_OUT2 pin4 I- | `VOUT_CONN_P` |
+
+U_IOUT 只从最外侧 `IOUT_SHUNT_KP/KN` 取样，总阻值 2mOhm。另从 RSHUNT_OUT2 pin4 附近单独引 `IOUT_HGND_K` 给 U_IOUT HGND。
+
+`DTVS_CONN=SMCJ48A`：阴极 K 接 `VOUT_CONN_P`，阳极 A 接 `SEC_PGND`，距 JOUT 小于约 10mm。它必须在 FOUT 后，短路失效时由 FOUT 隔离。
+
+## 7. 第 5 页：辅助隔离电源和控制岛电源
+
+### 7.1 F_AUX 和 TPS26600 输入
+
+```text
+VIN_FUSED_P -> F_AUX-1
+F_AUX-2 -> AUX_FUSED_P
+VIN_RAW_N = AUX_INPUT_GND
+```
+
+`CEF_IN=1uF/100V` 与 `CEF_IN_HF=100nF/100V` 跨 `AUX_FUSED_P` 和 `VIN_RAW_N`，贴近 TPS26600 pin1/2 和 pin9。
+
+### 7.2 U_AUX_PROT=TPS26600PWP，PWP-16
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1、2 | IN | `AUX_FUSED_P` |
+| 3 | UVLO | 直接接 pin8 `AUX_RTN`，启用内部约 15V UVLO |
+| 4 | NC | 悬空 |
+| 5 | OVP | `AUX_OVP` |
+| 6 | MODE | 悬空，TPS26600 自动重试模式 |
+| 7 | SHDN | 留测试点 `TP_AUX_SHDN`，正常悬空；不得接高压 VIN |
+| 8 | RTN | `AUX_RTN`，只接本芯片支持元件和 PowerPAD |
+| 9 | GND | `VIN_RAW_N` |
+| 10 | IMON | 不使用时悬空并留测试点 |
+| 11 | ILIM | 经 `RILIM_AUX=8.00k` 接 `AUX_RTN` |
+| 12 | dVdT | 经 `CDVDT_AUX=47nF` 接 `AUX_RTN` |
+| 13 | NC | 悬空 |
+| 14 | FLT | 留原边测试点 `TP_AUX_FLT`，不跨隔离带 |
+| 15、16 | OUT | `AUX_PROTECTED_P` |
+| PowerPAD | 散热焊盘 | 接 `AUX_RTN` 平面和热过孔；不能作为 RTN 唯一连接 |
+
+OVP 分压：
+
+```text
+AUX_FUSED_P -> ROVP_AUX_TOP 866k -> AUX_OVP(pin5)
+AUX_OVP -> ROVP_AUX_BOT 30.1k -> AUX_RTN(pin8)
+```
+
+`AUX_RTN` 与 `VIN_RAW_N` 禁止外部直接短接。TPS26600 内部含反接保护路径，外部短接会使反接保护失效。
+
+### 7.3 U_AUX=URH2405LP-20WR3 六脚模块
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | Ctrl | 正常悬空表示开启；留测试点，不跨隔离带 |
+| 2 | GND | `VIN_RAW_N` |
+| 3 | Vin | `AUX_PROTECTED_P` |
+| 4 | +Vo | `5V_CTRL` |
+| 5 | 0V | `DGND_CTRL` |
+| 6 | Trim | 不调压时悬空 |
+
+输入去耦：`C_AUX_IN=100uF/63V`、`C_AUX_IN_MID=1uF/63V`、`C_AUX_IN_HF=100nF/100V` 均跨 pin3-pin2。
+
+输出去耦：`C_AUX_OUT1/2=100uF/10V`、`C_AUX_OUT_MID=1uF`、`C_AUX_OUT_HF=100nF` 均跨 pin4-pin5。
+
+URH 输入侧属于 `PRI_POWER`，输出侧才是 `CTRL_ISLAND`。模块当前厂商页面提示 2024-05-01 后 UL 认证无效，只能按竞赛样机使用，不得宣称具备有效 UL 认证。
+
+### 7.4 5V_SENSE 采样电源分支
+
+```text
+5V_CTRL -> FB_5V_SENSE -> 5V_SENSE
+5V_SENSE -> C5V_SENSE_BULK 22uF -> AGND_CTRL
+5V_SENSE -> C5V_SENSE_HF 100nF -> AGND_CTRL
+```
+
+`FB_5V_SENSE` 选 `600Ohm@100MHz`、额定电流不低于 `500mA` 的低 DCR 磁珠。四颗 AMC 的最大供电电流合计约 `162mA`，它们的 pin12 VDD 全部接 `5V_SENSE`，不再由 TLV77333 的 3.3V 输出供电。这样把 AMC 内置隔离 DC/DC 的负载和噪声从 3.3V 模拟轨移走，也避免 SOT-23 LDO 过热。
+
+### 7.5 U_AFE_LDO=TLV77333PDBVR
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | IN | `5V_SENSE` |
+| 2 | GND | `AGND_CTRL` |
+| 3 | EN | 直接接 `5V_SENSE`，始终开启 |
+| 4 | NC | 接 AGND 可改善散热，原理图标注 NC/GND |
+| 5 | OUT | `3V3_AFE` |
+
+`CLDO_IN=1uF` 与 `CLDO_IN_HF=100nF` 跨 pin1-pin2；`CLDO_OUT=1uF` 与 `CLDO_OUT_HF=100nF` 跨 pin5-pin2。TLV77333 只给两颗 TMCS1133、TLV6004、REF2033、比较器、温度传感器和驱动逻辑供电，设计电流必须小于 `100mA`。
+
+`FB_3V3_DRV` 从 `3V3_AFE` 串到 `3V3_DRV`。磁珠后 `C3V3_DRV_BULK=4.7uF`、`C3V3_DRV_HF=100nF` 到 `DGND_CTRL`。
+
+## 8. 第 6 页：两路 TMCS1133 高频电流与快速过流
+
+U_IPRI、U_ISEC 都使用 TMCS1133B7AQDVGR，电流导体 pin1/2 属于功率路径，pin3-10 属于控制岛。
+
+### 8.1 U_IPRI 引脚
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | IN+ | `PRI_SW_A` |
+| 2 | IN- | `T1_P1_PATH`，再去 T1 P1 |
+| 3 | GND | `AGND_CTRL` |
+| 4 | ALERT | `IPRI_ALERT_N`，新增 10k 上拉到 3V3_AFE并留测试点；不用时可按数据手册接地 |
+| 5 | NC | 悬空或接 AGND，建议悬空 |
+| 6 | VOUT | `IPRI_VOUT`，经高速 ADC 滤波到 `ADC_IPRI_HF` |
+| 7 | OC | `IPRI_OC_N`，4.7k 上拉到 3V3_AFE |
+| 8 | VOC | `IPRI_VOC` |
+| 9、10 | VS | `3V3_AFE` |
+
+VOC：`3V3_AFE -> 10.0k -> IPRI_VOC -> 1.91k -> AGND`。`CVOC_PRI=10uF` 与新增 `CVOC_PRI_HF=100nF` 从 VOC 到 AGND。
+
+### 8.2 U_ISEC 引脚
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | IN+ | T1 S1 点端 |
+| 2 | IN- | 直接接 `SEC_SW_A` |
+| 3 | GND | `AGND_CTRL` |
+| 4 | ALERT | `ISEC_ALERT_N`，新增 10k 上拉并留测试点 |
+| 5 | NC | 悬空 |
+| 6 | VOUT | `ISEC_VOUT`，经高速 ADC 滤波到 `ADC_ISEC_HF` |
+| 7 | OC | `ISEC_OC_N`，4.7k 上拉到 3V3_AFE |
+| 8 | VOC | `ISEC_VOC` |
+| 9、10 | VS | `3V3_AFE` |
+
+VOC：`3V3_AFE -> 9.24k -> ISEC_VOC -> 1.00k -> AGND`。`CVOC_SEC=10uF` 与新增 `CVOC_SEC_HF=100nF` 从 VOC 到 AGND。
+
+### 8.3 两颗 TMCS 的真实新增去耦和故障汇入
+
+每颗 pin9/10 到 pin3 必须各放 `10uF+100nF`，新增位号建议：
+
+- `CTMCS_VS_PRI=10uF`、`CTMCS_VS_PRI_HF=100nF`。
+- `CTMCS_VS_SEC=10uF`、`CTMCS_VS_SEC_HF=100nF`。
+
+故障二极管：
+
+| 器件 | 阳极 A | 阴极 K |
+|---|---|---|
+| `DOC_OR_PRI` BAT54H | `RAW_FAULT_N` | `IPRI_OC_N` |
+| `DOC_OR_SEC` BAT54H | `RAW_FAULT_N` | `ISEC_OC_N` |
+
+最终物理模型中的 `TMCS_*_Analog_Delay=120ns`、`TMCS_*_1p1MHz_LPF` 和 `TMCS_*_OC_WorstCase_Delay=250ns` 是对 TMCS1133 模拟通道带宽及最坏过流响应时间的等效行为建模，**不是三组需要另画的 RC、LC 或延时芯片**。PCB 上仍只画本节列出的 TMCS1133、VS/VOC 去耦、OC 上拉、故障汇入二极管和前文规定的 ADC 滤波网络。模型保存的原边/副边 OC 阈值为 `65.3A/40.0A`；真实阈值必须按 TMCS1133 数据手册、VOC 分压实测值和器件容差在首次上电时复核，软件连续运行预警应更早动作。
+
+## 9. 第 7 页：AMC3302 输入/输出直流电流隔离采样
+
+U_IIN 与 U_IOUT 的 16 个引脚连接规则相同，只是高压侧 Kelvin 网络不同。
+
+### 9.1 AMC3302DWER 通用引脚
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | DCDC_OUT | 与 pin3 HLDO_IN 短接 |
+| 2 | DCDC_HGND | 与 pin8 HGND 在芯片旁短接 |
+| 3 | HLDO_IN | 与 pin1 短接 |
+| 4 | NC | 悬空或接本路 HGND，建议悬空 |
+| 5 | HLDO_OUT | 高侧模拟电源输出，只接规定去耦 |
+| 6 | INP | 经 10Ohm 接分流器 K+ |
+| 7 | INN | 经 10Ohm 接分流器 K- |
+| 8 | HGND | 第三根 Kelvin 线接分流器低端 |
+| 9 | GND | `AGND_CTRL`，并与 pin15 短接 |
+| 10 | OUTN | 去 U_AFE 对应通道的差分负输入网络 |
+| 11 | OUTP | 去 U_AFE 对应通道的差分正输入网络 |
+| 12 | VDD | `5V_SENSE` |
+| 13 | LDO_OUT | 与 pin16 DCDC_IN 短接；禁止带外部负载 |
+| 14 | DIAG | 新增 10k 上拉到 3V3_AFE，送测试点/慢速诊断 |
+| 15 | DCDC_GND | 与 pin9 AGND 短接 |
+| 16 | DCDC_IN | 与 pin13 短接 |
+
+### 9.2 U_IIN 高侧输入
+
+```text
+IIN_SHUNT_KP -> RI_FILTER_INP 10Ohm -> U_IIN pin6
+IIN_SHUNT_KN -> RI_FILTER_INN 10Ohm -> U_IIN pin7
+CI_FILTER_IIN 10nF 跨 pin6-pin7
+IIN_HGND_K -> U_IIN pin8
+```
+
+### 9.3 U_IOUT 高侧输入
+
+```text
+IOUT_SHUNT_KP -> RI_FILTER_OUTP 10Ohm -> U_IOUT pin6
+IOUT_SHUNT_KN -> RI_FILTER_OUTN 10Ohm -> U_IOUT pin7
+CI_FILTER_IOUT 10nF 跨 pin6-pin7
+IOUT_HGND_K -> U_IOUT pin8
+```
+
+### 9.4 每颗 AMC3302 必须补画的去耦
+
+| 位置 | 电容连接 |
+|---|---|
+| 高侧 DC/DC | pin1/3 到 pin2/8：1nF 和 1uF 并联 |
+| 高侧 HLDO | pin5 到 pin8：1nF 和 100nF 并联 |
+| 低侧 DC/DC | pin13/16 到 pin9/15：100nF |
+| 低侧 VDD | pin12 到 pin9：1nF 和 1uF 并联 |
+
+这些共 7 颗/每个 AMC 的去耦在旧 BOM 中没有逐一列出，必须作为真实元件补入原理图和更新后的 BOM。
+
+## 10. 第 8 页：AMC3330 输入/输出电压隔离采样
+
+U_VIN/U_VOUT 的 AMC3330 供电和去耦与 AMC3302 相同：pin12 VDD 接 `5V_SENSE`，DIAG 仍以 10k 上拉到 `3V3_AFE`。区别是 pin6/7 的分压输入。
+
+### 10.1 U_VIN 高侧
+
+```text
+PRI_DC_P -> RVT_PRI1 100k -> RVT_PRI2 100k -> VIN_DIV
+VIN_DIV -> RVB_VIN 5.62k -> PRI_PGND
+VIN_DIV -> U_VIN pin6 INP
+PRI_PGND -> U_VIN pin7 INN
+CVF_VIN 1nF 跨 pin6-pin7
+U_VIN pin8 HGND 用独立 Kelvin 线接 RVB_VIN 的 PRI_PGND 端
+```
+
+### 10.2 U_VOUT 高侧
+
+```text
+VOUT_LOCAL_P -> RVT_SEC1 100k -> RVT_SEC2 100k -> VOUT_DIV
+VOUT_DIV -> RVB_VOUT 3.24k -> SEC_PGND
+VOUT_DIV -> U_VOUT pin6 INP
+SEC_PGND -> U_VOUT pin7 INN
+CVF_VOUT 1nF 跨 pin6-pin7
+U_VOUT pin8 HGND 用独立 Kelvin 线接 RVB_VOUT 的 SEC_PGND 端
+```
+
+### 10.3 AMC3330 其余引脚
+
+| 引脚 | 接线 |
+|---:|---|
+| 1-5、8 | 与 AMC3302 同样连接自身 DCDC/HLDO 和高侧 HGND |
+| 9、15 | `AGND_CTRL`，芯片旁短接 |
+| 10 OUTN | 去 U_AFE 电压差分负网络 |
+| 11 OUTP | 去 U_AFE 电压差分正网络 |
+| 12 VDD | `5V_SENSE` |
+| 13 LDO_OUT | 只与 pin16 相连 |
+| 14 DIAG | 10k 上拉到 3V3_AFE并留测试点 |
+| 16 DCDC_IN | 只与 pin13 相连 |
+
+每颗同样补齐：高侧 DC/DC `1nF+1uF`、高侧 HLDO `1nF+100nF`、低侧 DC/DC `100nF`、VDD `1nF+1uF`。
+
+## 11. 第 9 页：TLV6004 差分转单端和 ADC 滤波
+
+### 11.1 U_AFE=TLV6004IPWR 引脚分配
+
+| 引脚 | 功能 | 本设计用途 |
+|---:|---|---|
+| 1 | OUTA | `AFE_IIN` |
+| 2 | -INA | IIN 反相节点 |
+| 3 | +INA | IIN 同相节点 |
+| 4 | V+ | `3V3_AFE` |
+| 5 | +INB | IOUT 同相节点 |
+| 6 | -INB | IOUT 反相节点 |
+| 7 | OUTB | `AFE_IOUT` |
+| 8 | OUTC | `AFE_VIN` |
+| 9 | -INC | VIN 反相节点 |
+| 10 | +INC | VIN 同相节点 |
+| 11 | V- | `AGND_CTRL` |
+| 12 | +IND | VOUT 同相节点 |
+| 13 | -IND | VOUT 反相节点 |
+| 14 | OUTD | `AFE_VOUT` |
+
+新增 `CUAFE_HF=100nF` 和 `CUAFE=1uF` 跨 pin4-pin11。
+
+### 11.2 A/B 两路电流调理
+
+对每一路电流通道，严格使用以下四电阻结构：
+
+```text
+AMC OUTN -> 4.02k -> 运放 IN-
+运放 OUT -> 3.01k -> 运放 IN-
+AMC OUTP -> 4.02k -> 运放 IN+
+VBIAS_1V65 -> 3.01k -> 运放 IN+
+```
+
+两个 `330pF C0G` 分别并联在“OUT 到 IN- 的 3.01k”和“VBIAS 到 IN+ 的 3.01k”两端。A 通道接 U_IIN，B 通道接 U_IOUT。
+
+### 11.3 C/D 两路电压调理
+
+对每一路电压通道：
+
+```text
+AMC OUTN -> 10k -> 运放 IN-
+运放 OUT -> 10k -> 运放 IN-
+AMC OUTP -> 10k -> 运放 IN+
+AGND_CTRL -> 10k -> 运放 IN+
+```
+
+两个 `1nF C0G` 分别并联在反馈 10k 和接地参考 10k 两端。C 通道接 U_VIN，D 通道接 U_VOUT。
+
+### 11.4 12 路 ADC 滤波的最终分配
+
+| 通道 | 串联电阻 | ADC 端对 AGND 电容 |
+|---|---:|---:|
+| ADC_VIN | 47Ohm | 1nF |
+| ADC_VOUT | 47Ohm | 1nF |
+| ADC_IIN | 47Ohm | 1nF |
+| ADC_IOUT | 47Ohm | 1nF |
+| ADC_IPRI_HF | 47Ohm | 1nF |
+| ADC_ISEC_HF | 47Ohm | 1nF |
+| ADC_TEMP_PRI | 1k | 100nF |
+| ADC_TEMP_SEC | 1k | 100nF |
+| ADC_NTC_T1 | 1k | 100nF |
+| ADC_NTC_LOUT | 1k | 100nF |
+| ADC_NTC_COUT | 1k | 100nF |
+| ADC_VBIAS_1V65 | 47Ohm | 1nF |
+
+每个电容放在连接器/ADC 一侧，电阻放在信号源一侧。
+
+## 12. 第 10 页：基准、硬件过压、故障锁存和急停
+
+### 12.1 U_REF=REF2033AIDDCR
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | VBIAS | `VBIAS_1V65` |
+| 2 | GND | `AGND_CTRL` |
+| 3 | EN | 接 pin4 `5V_CTRL`，始终启用 |
+| 4 | VIN | `5V_CTRL` |
+| 5 | VREF | `VREF_3V3` |
+
+新增：pin4 到 AGND 放 `1uF+100nF`；pin5 到 AGND 放 1uF；pin1 到 AGND 放 1uF。输出电容不得超过数据手册允许范围。
+
+### 12.2 U_OV=TLV3202AIDR
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | 1OUT | `VIN_OV_RAW` |
+| 2 | 1IN- | `ADC_VIN` |
+| 3 | 1IN+ | `VIN_THR` |
+| 4 | GND | `AGND_CTRL` |
+| 5 | 2IN+ | `VOUT_THR` |
+| 6 | 2IN- | `ADC_VOUT` |
+| 7 | 2OUT | `VOUT_OV_RAW` |
+| 8 | VCC | `3V3_AFE` |
+
+去耦：`CUOV_HF=100nF` 和 `CUOV=1uF` 跨 pin8-pin4。
+
+阈值网络：
+
+```text
+VREF_3V3 -> 7.68k -> VIN_THR
+VIN_THR -> 10.0k -> AGND
+VIN_OV_RAW -> 1.00M -> VIN_THR
+
+VBIAS_1V65 -> 4.99k -> VOUT_THR
+VOUT_OV_RAW -> 1.00M -> VOUT_THR
+```
+
+### 12.3 U_OV_OD=SN74LVC2G07 DBV-6
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | 1A | `VIN_OV_RAW` |
+| 2 | GND | `DGND_CTRL` |
+| 3 | 2A | `VOUT_OV_RAW` |
+| 4 | 2Y 开漏 | `RAW_FAULT_N` |
+| 5 | VCC | `3V3_DRV` |
+| 6 | 1Y 开漏 | `RAW_FAULT_N` |
+
+`CLOGIC_HF1=100nF` 去耦跨 pin5-pin2。
+
+### 12.4 U_LATCH=SN74LVC1G74DCTR，DCT-8
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | CLK | `DGND_CTRL` |
+| 2 | D | `DGND_CTRL` |
+| 3 | /Q | `FAULT_LATCH_N` |
+| 4 | GND | `DGND_CTRL` |
+| 5 | Q | `FAULT_LATCHED` |
+| 6 | /CLR | `FAULT_RESET_N` |
+| 7 | /PRE | `RAW_FAULT_N` |
+| 8 | VCC | `3V3_DRV` |
+
+`RRESET_PU=10k` 从 FAULT_RESET_N 上拉到 3V3_DRV。MCU 开漏复位输出经 `RRESET_SER=1k` 到 FAULT_RESET_N。`CLOGIC_HF2=100nF` 去耦跨 pin8-pin4。不得在 /CLR 上放自动上电复位电容。
+
+模型里的 `Hardware_Fault_Latch_N` 为了自动化故障测试，在 `RUN_REQ=0` 时等效清除锁存；这只是仿真测试抽象。真实 PCB 上 **RUN_REQ 不能代替 /CLR**：故障发生后 U_LATCH 必须持续保持关断，只有 MCU 已确认母线、温度、电流和急停均恢复安全，并保持所有 GPT/POEG 输出禁止时，才允许 P304 通过 `FAULT_RESET_N` 输出独立约 `20us` 的开漏低脉冲。脉冲结束后先重新检查故障总线，再由状态机重新软启动，禁止自动循环重启。
+
+`RFAULT_PU=4.7k` 从 RAW_FAULT_N 上拉到 3V3_DRV。`CFAULT_DNP=47pF` 可跨 RAW_FAULT_N-DGND，默认不装且不超过 100pF。
+
+### 12.5 U_FAULT_OD=SN74LVC07APWR
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | 1A | `PWRFLT1_N`，主板侧 100k 下拉 |
+| 2 | 1Y | `AUX_PG_N` |
+| 3 | 2A | `PWRFLT2_N`，100k 下拉 |
+| 4 | 2Y | `AUX_PG_N` |
+| 5 | 3A | `PWRFLT3_N`，100k 下拉 |
+| 6 | 3Y | `AUX_PG_N` |
+| 7 | GND | `DGND_CTRL` |
+| 8 | 4Y | `AUX_PG_N` |
+| 9 | 4A | `PWRFLT4_N`，100k 下拉 |
+| 10 | 5Y | `RAW_FAULT_N` |
+| 11 | 5A | `AUX_PG_N` |
+| 12 | 6Y | `RAW_FAULT_N` |
+| 13 | 6A | `ESTOP_N` |
+| 14 | VCC | `3V3_DRV` |
+
+`RPD_PWRFLT1-4=100k` 分别从四路 PWRFLT 输入下拉到 DGND。`RAUX_PU=2.2k` 从 AUX_PG_N 上拉到 3V3_DRV。`CLOGIC_HF3=100nF` 跨 pin14-pin7。所有六路输入均已使用，不得悬空。
+
+### 12.6 急停 U_ESTOP_SCH=SN74LVC1G17 DBV-5
+
+```text
+3V3_DRV -> R_ESTOP_SER 1k -> J_ESTOP-1
+外部常闭急停触点接 J_ESTOP-1 与 J_ESTOP-2
+J_ESTOP-2 = ESTOP_SENSE
+ESTOP_SENSE -> RPD_ESTOP_MAIN 10k -> DGND
+ESTOP_SENSE -> C_ESTOP 1nF -> DGND
+```
+
+| U_ESTOP 引脚 | 接线 |
+|---:|---|
+| 1 NC | 悬空 |
+| 2 A | `ESTOP_SENSE` |
+| 3 GND | `DGND_CTRL` |
+| 4 Y | `ESTOP_N` |
+| 5 VCC | `3V3_DRV` |
+
+`CLOGIC_HF4=100nF` 跨 pin5-pin3。ESTOP_N 同时去四块驱动板、JCTRL_DIG、U_FAULT_OD pin13。
+
+## 13. 第 11 页：温度传感器
+
+### 13.1 U_TMP_PRI/U_TMP_SEC=ISOTMP35BEDFQRQ1
+
+| 引脚 | 名称 | 接线 |
+|---:|---|---|
+| 1 | VDD | `3V3_AFE` |
+| 2 | NC | 悬空 |
+| 3 | GND | `AGND_CTRL` |
+| 4 | VOUT | 分别去 `TEMP_PRI_RAW/TEMP_SEC_RAW`，再经 1k+100nF 到 ADC |
+| 5、6、7 | TSENSE | 三脚短接后接被测高压热铜 |
+
+首板建议：`U_TMP_PRI` 的 TSENSE 接 Q1 EP 附近的 `PRI_DC_P` 漏极热铜，`U_TMP_SEC` 的 TSENSE 接 Q5 EP 附近的 `SEC_LOCAL_P` 漏极热铜。优先选择直流母线漏极热铜而不是高 dv/dt 开关节点，以减小共模瞬态干扰；若热仿真或样机证明另一只 MOS 更热，再改传感器位置。TSENSE 是与低压测量侧隔离的热输入，不能误接 AGND。
+
+每颗 pin1-pin3 放 100nF。VOUT 后使用温度通道的 1k+100nF 滤波。
+
+### 13.2 三路绝缘 NTC
+
+每路相同：
+
+```text
+VREF_3V3 -> RNTC_PU 10k -> NTC_SENSE
+NTC_SENSE -> NTC 10k/B3950 -> AGND_CTRL
+NTC_SENSE -> RADC_TEMP 1k -> ADC_NTC_x
+ADC_NTC_x -> 100nF -> AGND_CTRL
+```
+
+分别命名 `NTC_T1`、`NTC_LOUT`、`NTC_COUT`。热敏珠和两根引线全程双层绝缘，只属于控制岛，不能与磁芯、散热器或功率铜形成电连接。
+
+## 14. 第 12 页：RA8P1 功能连接器
+
+### 14.1 JCTRL_DIG 2×16
+
+| 针脚 | 网络 | 针脚 | 网络 |
+|---:|---|---:|---|
+| 1 | 5V_CTRL | 2 | DGND_CTRL |
+| 3 | 3V3_AFE | 4 | DGND_CTRL |
+| 5 | PWM_PRI_A_H | 6 | DGND_CTRL |
+| 7 | PWM_PRI_A_L | 8 | DGND_CTRL |
+| 9 | PWM_PRI_B_H | 10 | DGND_CTRL |
+| 11 | PWM_PRI_B_L | 12 | DGND_CTRL |
+| 13 | PWM_SEC_A_H | 14 | DGND_CTRL |
+| 15 | PWM_SEC_A_L | 16 | DGND_CTRL |
+| 17 | PWM_SEC_B_H | 18 | DGND_CTRL |
+| 19 | PWM_SEC_B_L | 20 | DGND_CTRL |
+| 21 | RUN_REQ | 22 | DGND_CTRL |
+| 23 | RAW_FAULT_N/POEG | 24 | DGND_CTRL |
+| 25 | FAULT_LATCHED | 26 | DGND_CTRL |
+| 27 | FAULT_RESET_N，MCU 端必须开漏 | 28 | DGND_CTRL |
+| 29 | ESTOP_N | 30 | DGND_CTRL |
+| 31 | AUX_PG_N | 32 | DGND_CTRL |
+
+主板 `RPD_RUN_MAIN=10k` 从 pin21/RUN_REQ 下拉到 DGND。
+
+### 14.2 JCTRL_ANA 2×12
+
+| 针脚 | 网络 | 针脚 | 网络 |
+|---:|---|---:|---|
+| 1 | ADC_VIN | 2 | AGND_CTRL |
+| 3 | ADC_VOUT | 4 | AGND_CTRL |
+| 5 | ADC_IIN | 6 | AGND_CTRL |
+| 7 | ADC_IOUT | 8 | AGND_CTRL |
+| 9 | ADC_IPRI_HF | 10 | AGND_CTRL |
+| 11 | ADC_ISEC_HF | 12 | AGND_CTRL |
+| 13 | ADC_TEMP_PRI | 14 | AGND_CTRL |
+| 15 | ADC_TEMP_SEC | 16 | AGND_CTRL |
+| 17 | ADC_NTC_T1 | 18 | AGND_CTRL |
+| 19 | ADC_NTC_LOUT | 20 | AGND_CTRL |
+| 21 | ADC_NTC_COUT | 22 | AGND_CTRL |
+| 23 | ADC_VBIAS_1V65 | 24 | AGND_CTRL |
+
+### 14.3 新增 JFAULT 2×5
+
+为了让软件能记录第一故障类别，旧接口缺少以下独立状态，必须新增：
+
+| 针脚 | 网络 | 针脚 | 网络 |
+|---:|---|---:|---|
+| 1 | IPRI_OC_N | 2 | DGND_CTRL |
+| 3 | ISEC_OC_N | 4 | DGND_CTRL |
+| 5 | VIN_OV_RAW | 6 | DGND_CTRL |
+| 7 | VOUT_OV_RAW | 8 | DGND_CTRL |
+| 9 | AUX_PG_N | 10 | DGND_CTRL |
+
+这些是状态读取线，不在快速关断主路径中；RAW_FAULT_N 仍直接进 POEG 和锁存器。
+
+### 14.4 本次真实引脚映射的依据
+
+本次不是根据端口名猜测，而是同时使用两层证据：
+
+1. 直接解析 `瑞萨CPKHMI-RA8P1扩展板.epro2`。工程元数据标题为“瑞萨CPKHMI-RA8P1扩展板”、编辑器版本为 `3.2.117`；目标 PCB 内含 29 个器件、122 个网络和 1218 条 `PAD_NET` 焊盘网络映射。
+2. 用瑞萨 `RA8P1 Group User's Manual: Hardware, R01UH1064EJ0130 Rev.1.30` 的 Standard product/BGA289 引脚表复核 Pxxx 的 GPT、GTETRG、ADC 和通信复用功能。
+
+扩展板不是裸 MCU 板：P1/P2/P3 是三只 `DF40C-80DS-0.4V` 80-pin 核心板连接器，P4/P5/P6/P7/P10 是实际可接线排针。本设计只从 P5/P6/P7/P10 接主功率板，不在 DAB PCB 上重画 289 球 MCU。
+
+### 14.5 四组互补 PWM 的最终物理映射
+
+GPT0-GPT3 都是 RA8P1 的 32-bit GPT，并且官方手册明确指出通道 0-3 支持高分辨率 PWM、死区和同步启动能力。最终映射如下：
+
+| DAB 功能 | RA8P1 外设 | 端口 | 扩展板针脚 | 核心板追溯 | 接主板 |
+|---|---|---|---|---|---|
+| `PWM_PRI_A_H` | `GTIOC0A` | `P512` | `P6-40` | `P1-49` | `JCTRL_DIG-5` |
+| `PWM_PRI_A_L` | `GTIOC0B` | `P511` | `P6-38` | `P1-51` | `JCTRL_DIG-7` |
+| `PWM_PRI_B_H` | `GTIOC1A` | `P105` | `P7-1` | `P2-36` | `JCTRL_DIG-9` |
+| `PWM_PRI_B_L` | `GTIOC1B` | `P104` | `P7-3` | `P2-56` | `JCTRL_DIG-11` |
+| `PWM_SEC_A_H` | `GTIOC2A` | `PD06` | `P7-5` | `P1-69` | `JCTRL_DIG-13` |
+| `PWM_SEC_A_L` | `GTIOC2B` | `P102` | `P7-7` | `P2-50` | `JCTRL_DIG-15` |
+| `PWM_SEC_B_H` | `GTIOC3A` | `P403` | `P7-11` | `P2-6` | `JCTRL_DIG-17` |
+| `PWM_SEC_B_L` | `GTIOC3B` | `P404` | `P7-15` | `P2-4` | `JCTRL_DIG-19` |
+
+这里的 A/B 是同一 GPT 通道的互补输出，不允许改成软件翻转 GPIO。上电后先保持 GPT 输出禁止和 `RUN_REQ=0`，完成周期、死区、初始电平和 POEG 配置后再同步启动四个计数器。
+
+最终模型用 `10ns` 步长生成边沿，并把 EPS 相移命令量化为 `10ns` 档位；这表示 **GPT 比较边沿的目标等效分辨率**，不表示 CPU 每 `10ns` 运行一次 PI。实际固件仍由 GPT 硬件连续输出 `300kHz` PWM，电压/电流调节器约每 `10us` 更新一次比较寄存器并使用缓冲同步装载。若最终 FSP 时钟配置得到 `8.33ns`、`10ns` 或其他计数分辨率，应把 `0.29us/0.30us` EPS 档位换算为实际整数计数，并重新做一次固件在环边沿与死区验证；四组命令死区目标仍为 `120ns`，同时保留 UCC21520 的硬件最小死区。
+
+模型在 24V 输入、300W、48V 预充稳态验证中使用的 EPS 基准约为 `0.295us`，通过 `0.29us/0.30us` 脉冲密度量化、积分微调和 `Ipri<50A/Isec<28A` 软件守卫工作。这些全是固件参数，不产生任何新的原理图网络或物料，也不能直接当作全输入范围的最终标定表；真实板必须用校准后的 ADC 比例、实际 GPT 时钟和磁件实测值重新标定。
+
+### 14.6 运行许可、POEG 和故障诊断 GPIO
+
+| DAB 网络 | 方向（相对 MCU） | RA8P1 端口/功能 | 扩展板针脚 | 核心板追溯 | 主板接口 |
+|---|---|---|---|---|---|
+| `RUN_REQ` | 输出 | `P914` GPIO | `P7-2` | `P1-16` | `JCTRL_DIG-21` |
+| `RAW_FAULT_N` | 输入 | `PA07/GTETRGB` | `P7-20` | `P1-9` | `JCTRL_DIG-23` |
+| `FAULT_LATCHED` | 输入 | `P600` GPIO | `P7-4` | `P2-62` | `JCTRL_DIG-25` |
+| `FAULT_RESET_N` | 开漏输出 | `P304` GPIO | `P7-6` | `P3-46` | `JCTRL_DIG-27` |
+| `ESTOP_N` | 输入 | `P106` GPIO | `P7-8` | `P2-54` | `JCTRL_DIG-29` |
+| `AUX_PG_N` | 输入 | `PB07` GPIO | `P7-10` | `P1-66` | `JCTRL_DIG-31` |
+| `IPRI_OC_N` | 输入 | `P712` GPIO | `P7-9` | `P2-9` | `JFAULT-1` |
+| `ISEC_OC_N` | 输入 | `P711` GPIO | `P7-12` | `P2-11` | `JFAULT-3` |
+| `VIN_OV_RAW` | 输入 | `P912` GPIO | `P7-13` | `P1-58` | `JFAULT-5` |
+| `VOUT_OV_RAW` | 输入 | `P903` GPIO | `P7-14` | `P1-18` | `JFAULT-7` |
+
+`RAW_FAULT_N` 必须把 PA07 配成 `GTETRGB`，而不是普通 GPIO。故障总线低有效，因此 POEG group B 使用反相输入检测，令外部低电平成为输出禁止请求；四个 GPT 通道都分配到同一 POEG 组，输出禁止状态配置为 A/B 均低。硬件总线仍直接去 U_LATCH `/PRE` 和驱动关断链，MCU 只并联监听，不能串在快速关断路径中。
+
+`FAULT_RESET_N` 上电时必须高阻释放，只有满足复位条件时才以开漏方式拉低约 `20us`。若 FSP 工程未把 P304 配成 N-channel open-drain，就不能用推挽高电平硬顶主板的 3V3_DRV 上拉。
+
+### 14.7 12 路 ADC 的最终物理映射
+
+P5 的 `AVCC0/AVSS0` 和 `P000-P011` 均由 `.epro2` 实际引出。12 路信号固定使用连续的 `AN000-AN011`：
+
+| 主板信号 | ADC 通道 | 端口 | 扩展板针脚 | 核心板追溯 | 主板接口 |
+|---|---|---|---|---|---|
+| `ADC_VIN` | `AN000` | `P000` | `P5-3` | `P2-73` | `JCTRL_ANA-1` |
+| `ADC_VOUT` | `AN001` | `P001` | `P5-5` | `P2-74` | `JCTRL_ANA-3` |
+| `ADC_IIN` | `AN002` | `P002` | `P5-7` | `P2-75` | `JCTRL_ANA-5` |
+| `ADC_IOUT` | `AN003` | `P003` | `P5-9` | `P2-76` | `JCTRL_ANA-7` |
+| `ADC_IPRI_HF` | `AN004` | `P004` | `P5-11` | `P2-77` | `JCTRL_ANA-9` |
+| `ADC_ISEC_HF` | `AN005` | `P005` | `P5-13` | `P2-78` | `JCTRL_ANA-11` |
+| `ADC_TEMP_PRI` | `AN006` | `P006` | `P5-4` | `P2-27` | `JCTRL_ANA-13` |
+| `ADC_TEMP_SEC` | `AN007` | `P007` | `P5-6` | `P2-25` | `JCTRL_ANA-15` |
+| `ADC_NTC_T1` | `AN008` | `P008` | `P5-8` | `P2-31` | `JCTRL_ANA-17` |
+| `ADC_NTC_LOUT` | `AN009` | `P009` | `P5-10` | `P2-29` | `JCTRL_ANA-19` |
+| `ADC_NTC_COUT` | `AN010` | `P010` | `P5-12` | `P2-22` | `JCTRL_ANA-21` |
+| `ADC_VBIAS_1V65` | `AN011` | `P011` | `P5-14` | `P2-21` | `JCTRL_ANA-23` |
+
+`P5-2=AVSS0` 接所有 `JCTRL_ANA` 偶数脚汇成的 `AGND_CTRL`；`P5-1=AVCC0` 保持开发板原有供电，不接主板 `3V3_AFE`。`P014/AN014` 和 `P015/AN015` 作为备用模拟通道，不纳入首板连接。
+
+### 14.8 转接板上可以直接照画的连接表
+
+#### JCTRL_DIG 到开发板
+
+| JCTRL_DIG | 转接板另一端 |
+|---:|---|
+| 1 `5V_CTRL` | 默认不接开发板电源；只留带明确方向的 DNP 供电跳帽，禁止与 USB 5V 同时供电 |
+| 3 `3V3_AFE` | 不接 P6 的 3V3，禁止并联两套 3.3V 稳压器 |
+| 5/7 | `P6-40/P6-38` |
+| 9/11 | `P7-1/P7-3` |
+| 13/15 | `P7-5/P7-7` |
+| 17/19 | `P7-11/P7-15` |
+| 21/23/25/27 | `P7-2/P7-20/P7-4/P7-6` |
+| 29/31 | `P7-8/P7-10` |
+| 所有偶数脚 2-32 | 汇入转接板 DGND 平面，再并联连接 `P10-1..8`；相邻地线不能在排线中省略 |
+
+#### JCTRL_ANA 到开发板
+
+按第 14.7 节逐路连接；`JCTRL_ANA-1,3,...,23` 分别去表中对应 P5 信号脚，所有偶数脚汇入短而连续的模拟回流平面后接 `P5-2/AVSS0`。模拟排线不要与八路 PWM 排线捆扎。
+
+#### JFAULT 到开发板
+
+| JFAULT | 扩展板针脚 |
+|---:|---|
+| 1 `IPRI_OC_N` | `P7-9` |
+| 3 `ISEC_OC_N` | `P7-12` |
+| 5 `VIN_OV_RAW` | `P7-13` |
+| 7 `VOUT_OV_RAW` | `P7-14` |
+| 9 `AUX_PG_N` | 与 `JCTRL_DIG-31` 同网；首板线束二选一接 `P7-10`，不要绕两条长并行线 |
+| 2/4/6/8/10 | DGND，接转接板地平面/P10 |
+
+### 14.9 已验证但不属于首板必装的通信映射
+
+| 功能 | 端口复用 | 扩展板针脚 | 说明 |
+|---|---|---|---|
+| CAN-FD1 TX | `P909/CTX1` | `P6-24` | 去隔离 CAN 收发器 TXD |
+| CAN-FD1 RX | `P908/CRX1` | `P6-26` | 来自隔离 CAN 收发器 RXD |
+| RS485 RX | `P500/RXD8_B` | `P4-5` | SCI8_B 接收 |
+| RS485 TX | `P501/TXD8_B` | `P4-7` | SCI8_B 发送 |
+| RS485 DE | `P502/DE8` | `P4-9` | 半双工方向控制 |
+
+当前 H1.7 BOM 的 CAN 器件是 DNP，RS485 也不属于 DAB 功率板必装范围，所以这些针脚只用于以后扩展，不能为了通信改占 GPT0-3、PA07 或 AN000-AN011。
+
+### 14.10 FSP 配置通过才允许释放转接板 Gerber
+
+1. 选择器件 `R7KA8P1KFLCAC`/BGA289，并按表配置 GPT0-GPT3 的 GTIOCA/GTIOCB。
+2. 四通道使用同一 300kHz 时基、硬件同步启动和缓冲更新；A/B 为互补输出，初始命令死区约120ns；记录实际 GPT 计数时钟和边沿分辨率，并证明 EPS 档位量化误差不大于一个计数。
+3. 将 PA07 配成 GTETRGB，启用 POEG group B 的端口输入检测和低有效反相；把 GPT0-GPT3 都分配到该 POEG 组。
+4. P000-P011 配成 AN000-AN011，使用 PWM 定点触发采样；禁止在开关边沿附近自由运行采样。
+5. P304 配成开漏复位输出；其余状态线按表配置输入或输出，上电默认不得使 `RUN_REQ` 变高。
+6. Pin Configuration 必须无 SDRAM、Ethernet、USB、调试器或其他板载外设冲突；生成后的 `pin_data.c` 再与本表逐项复核。
+
+## 15. DNP 和暂不画入首板主线的器件
+
+| 器件 | 处理 |
+|---|---|
+| `CSEC_HF_DNP1-4` | 焊盘接 SEC_LOCAL_P/SEC_PGND，默认不装 |
+| `CFAULT_DNP` | 跨 RAW_FAULT_N/DGND，默认不装 |
+| `CSN1-8/RSN1-8` | 真实 RC 支路，首板八路统一安装470pF+10Ohm；双脉冲后才允许改值或有依据地拆除 |
+| `U_CAN_DNP/U_CAN_PWR_DNP/RTERM_CAN_DNP` | 当前器件集合缺少完整 CAN TVS、共模电感和总线连接器，因此整个 CAN 页暂不画入首板必装原理图；以后作为完整扩展页设计 |
+| 可选反接 MOS 区 | 当前不装；依靠有方向连接器和 TPS26600 只保护辅助支路，主功率输入反接仍需人工防错 |
+
+## 16. 新版 BOM 已补入的真实元件复核
+
+以下项目已经合并进 `26_DCDC_BOM_首板硬件定版.csv`，画完原理图后仍须逐项复核，禁止因它们未直接影响主功率仿真而省略：
+
+1. `NT1` AGND-DGND Net-Tie。
+2. 四颗 AMC 每颗 7 个规定去耦，共 28 个电容。
+3. 四颗 AMC 的 DIAG 上拉电阻，共 4 个。
+4. 两颗 TMCS 的 VS `10uF+100nF`，共 4 个电容。
+5. 两颗 TMCS 的 VOC 100nF 高频并联，共 2 个。
+6. 两颗 TMCS 的 ALERT 上拉，共 2 个电阻。
+7. U_AFE 的 `100nF+1uF`。
+8. U_REF 的输入 `1uF+100nF`、VREF 1uF、VBIAS 1uF。
+9. 两颗 ISOTMP35 的 100nF，共 2 个。
+10. 三路 NTC 的 10k 上拉、1k 串阻和 100nF，共 9 个元件。
+11. 五路温度 ADC 通道改为 1k+100nF；其余七路保留 47Ohm+1nF。
+12. TLV77333 输入/输出各补一颗 100nF。
+13. `JFAULT` 2×5 连接器。
+
+## 17. 画完原理图后逐网 ERC 检查
+
+### 17.1 绝缘和地
+
+- `PRI_PGND`、`SEC_PGND`、控制地之间无 0Ohm、安装孔或屏蔽误连。
+- `AGND_CTRL` 与 `DGND_CTRL` 只在 NT1 单点连接。
+- 四颗 UISO 的 GNDP/GNDS 完全分开。
+- 四颗 AMC 的高低侧地没有跨隔离带误连。
+- URH pin2 和 pin5 绝对不是同一个地。
+
+### 17.2 功率路径
+
+- Q1-Q8 的 EP 全部与 Drain 同网。
+- 每个开关节点只连接对应半桥中点、T1 路径和必要吸收支路。
+- T1 原副边只有磁耦合，没有网络标签误连。
+- LOUT 位于 CSEC 与 COUT 之间，不在变压器交流回路里。
+- FOUT 位于 COUT 后、输出分流器前；DTVS_CONN 位于 FOUT 后。
+- VOUT 采样、过压和泄放全部取自 FOUT 前的 VOUT_LOCAL_P。
+
+### 17.3 驱动和保护
+
+- UCC21520 pin14/16 的高侧自举回路参考高侧 Kelvin Source。
+- UCC21520 pin9/11 的低侧驱动回路参考低侧 Kelvin Source。
+- 四块 UDIS 任一允许线断开都会令 DIS 高。
+- RAW_FAULT_N 不经过 MCU 才到 U_LATCH /PRE 和 RA8P1 POEG。
+- U_LATCH 使用 DCT-8 正确封装，pin3=/Q、pin5=Q、pin6=/CLR、pin7=/PRE。
+- 两路 TMCS OC 二极管方向为 RAW 总线阳极、OC_N 阴极。
+
+### 17.4 模拟链
+
+- AMC3302 分流器 K+/K- 与大电流端分开走线。
+- AMC 的 LDO_OUT 只接 DCDC_IN，不带外部负载。
+- U_AFE 四组差分电阻比成对匹配，0.1% 电阻不混料。
+- TLV3202 的 IN- 接 ADC 信号，IN+ 接阈值。
+- 五路温度通道没有误装成 47Ohm+1nF。
+
+## 18. 最终能否直接照此打板
+
+主功率板可以以本文件作为“原理图连接基线”，但送板前仍必须完成三项：
+
+1. 在 EDA 中按本文件画完后运行 ERC，并对每个隔离器件、极性器件和自定义封装做引脚号对照。
+2. 确认实际购买的 T1、LCM1、LOUT、URH、分流器和连接器机械图，再画或校正封装；网络功能不随供应商封装编号改变。
+3. 按第14节绘制 RA8P1 转接板，在 FSP 中完成 GPT0-3、GTETRGB/POEG、AN000-AN011 和 GPIO 冲突检查，并让生成后的 `pin_data.c` 与本表逐项一致。
+
+满足上述条件后，这是一套可以进入 PCB 布局和首板验证的完整硬件原理图方案；在首板实测完成前，不能把它表述为“已经保证实物达到全部指标”。
+
+## 19. 关键官方资料
+
+- AONS66917T：<https://www.aosmd.com/sites/default/files/res/datasheets/AONS66917T.pdf>
+- UCC21520：<https://www.ti.com/lit/ds/symlink/ucc21520.pdf>
+- UCC33421-Q1：<https://www.ti.com/lit/ds/symlink/ucc33421-q1.pdf>
+- TLV61046A：<https://www.ti.com/lit/ds/symlink/tlv61046a.pdf>
+- TMCS1133：<https://www.ti.com/lit/ds/symlink/tmcs1133.pdf>
+- AMC3302：<https://www.ti.com/lit/ds/symlink/amc3302.pdf>
+- AMC3330：<https://www.ti.com/lit/ds/symlink/amc3330.pdf>
+- TPS26600：<https://www.ti.com/lit/ds/symlink/tps2660.pdf>
+- REF2033：<https://www.ti.com/lit/ds/symlink/ref2033.pdf>
+- ISOTMP35-Q1：<https://www.ti.com/lit/ds/symlink/isotmp35-q1.pdf>
+- URH2405LP-20WR3：<https://www.mornsun-power.com/html/pdf/URH2405LP-20WR3.html>
+- RA8P1 实物扩展板工程：`C:/Users/26488/Desktop/瑞萨杯/瑞萨CPKHMI-RA8P1扩展板.epro2`
+- RA8P1 R7KA8P1KFLCAC 器件页：<https://www.renesas.com/en/products/ra8p1/part-details/r7ka8p1kflcac-uc1>
+- RA8P1 Group User's Manual: Hardware：<https://www.renesas.com/en/document/mah/ra8p1-group-users-manual-hardware>
+
+## 20. BOM 组合位号精确展开索引
+
+下面这些 BOM 行在正文中使用 `x`、`PRI/SEC` 或通道名展开。画图时必须使用这里的完整位号，不能因为正文只画了一个模板而漏件。
+
+| BOM 位号 | 数量/展开 | 准确连接 |
+|---|---|---|
+| `DG1-8` | DG1…DG8 | 每只 PMEG4010ER 的阳极接对应 Qx_G，阴极经对应 RGOFFx 接 UDRV 输出 |
+| `CDAMP_DNP1-6` | 6个兼容焊盘 | 每只与已装 CDAMP 同样跨 `PRI_DC_P-PRI_PGND`，默认全部不装 |
+| `RVOC_TOP_PRI` / `RVOC_BOT_PRI` | 各1 | `3V3_AFE -> 10.0k -> IPRI_VOC -> 1.91k -> AGND_CTRL` |
+| `RVOC_TOP_SEC` / `RVOC_BOT_SEC` | 各1 | `3V3_AFE -> 9.24k -> ISEC_VOC -> 1.00k -> AGND_CTRL` |
+| `ROC_PU_PRI-SEC` | 2 | 分别从 `IPRI_OC_N/ISEC_OC_N` 上拉到3V3_AFE，均为4.7k |
+| `RALERT_PU_PRI-SEC` | 2 | 分别从 `IPRI_ALERT_N/ISEC_ALERT_N` 上拉到3V3_AFE，均为10k |
+| `CAMC_HV_DCDC_HF1-4` | 每颗AMC各1个1nF | 各自 pin1/3 到 pin2/8 |
+| `CAMC_HV_DCDC1-4` | 每颗AMC各1个1uF | 各自 pin1/3 到 pin2/8 |
+| `CAMC_HLDO_HF1-4` | 每颗AMC各1个1nF | 各自 pin5 到 pin8 |
+| `CAMC_HLDO1-4` | 每颗AMC各1个100nF | 各自 pin5 到 pin8 |
+| `CAMC_LV_DCDC1-4` | 每颗AMC各1个100nF | 各自 pin13/16 到 pin9/15 |
+| `CAMC_VDD_HF1-4` | 每颗AMC各1个1nF | 各自 pin12 `5V_SENSE` 到 pin9 |
+| `CAMC_VDD1-4` | 每颗AMC各1个1uF | 各自 pin12 `5V_SENSE` 到 pin9 |
+| `RAMC_DIAG_PU1-4` | 每颗AMC各1个10k | 各自 pin14 DIAG 上拉到3V3_AFE |
+| `RV_AFE` | 8个10.0k | VIN/VOUT 两个差分转单端通道各4个，按第11.3节连接 |
+| `RI_AFE_IN` | 4个4.02k | IIN/IOUT 两通道的 OUTP、OUTN 输入臂各1个 |
+| `RI_AFE_FB` | 4个3.01k | IIN/IOUT 两通道的反馈臂和 VBIAS 同相参考臂各1个 |
+| `CI_AFE` | 4个330pF | 分别并联在四个3.01k电阻两端 |
+| `RADC_FAST1-7` / `CADC_FAST1-7` | 各7 | VIN、VOUT、IIN、IOUT、IPRI_HF、ISEC_HF、VBIAS 七路各用47Ohm串联和1nF对AGND |
+| `RADC_TEMP1-5` / `CADC_TEMP1-5` | 各5 | TEMP_PRI、TEMP_SEC、NTC_T1、NTC_LOUT、NTC_COUT 各用1k串联和100nF对AGND |
+| `CREF_IN_HF` / `CREF_IN` | 100nF+1uF | U_REF pin4 到 pin2 |
+| `CREF_OUT` | 1uF | U_REF pin5 VREF_3V3 到 pin2 |
+| `CBIAS_OUT` | 1uF | U_REF pin1 VBIAS_1V65 到 pin2 |
+| `ROVP_VIN_TOP` / `ROVP_VIN_BOT` | 7.68k/10.0k | `VREF_3V3 -> TOP -> VIN_THR -> BOT -> AGND_CTRL` |
+| `ROVP_VIN_HYS` | 1.00M | U_OV pin1 `VIN_OV_RAW` 回到 pin3 `VIN_THR` |
+| `ROVP_VOUT_REF` | 4.99k | `VBIAS_1V65` 到 U_OV pin5 `VOUT_THR` |
+| `ROVP_VOUT_HYS` | 1.00M | U_OV pin7 `VOUT_OV_RAW` 回到 pin5 `VOUT_THR` |
+| `CUOV_HF_CUOV` | 100nF+1uF | 两颗都直接跨 U_OV pin8-pin4 |
+| `CLDO_IN_CLDO_OUT` | 2个1uF | 分别跨 U_AFE_LDO pin1-pin2、pin5-pin2 |
+| `CLDO_IN_HF-CLDO_OUT_HF` | 2个100nF | 分别跨 U_AFE_LDO pin1-pin2、pin5-pin2 |
+| `CTMP_PRI-CTMP_SEC` | 2个100nF | 分别跨 U_TMP_PRI/U_TMP_SEC pin1-pin3 |
+| `NTC_T1_LOUT_COUT` | NTC_T1/NTC_LOUT/NTC_COUT | 每只从对应 NTC_SENSE 接到 AGND_CTRL，使用绝缘引线 |
+| `RNTC_PU_T1_LOUT_COUT` | 3个10k | 从 VREF_3V3 分别上拉三个 NTC_SENSE |
+
+该索引与前文共同覆盖 `26_DCDC_BOM_首板硬件定版.csv` 的179行。装配状态仍以 BOM 为准：标成 DNP 的只画焊盘不装料，标成必装/首装必装的不得省略。
