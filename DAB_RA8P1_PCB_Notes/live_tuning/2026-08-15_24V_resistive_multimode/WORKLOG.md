@@ -420,3 +420,10 @@ The comparison is based on firmware telemetry. Final voltage-accuracy and effici
 - Binary strings verified the v39 identity, output-current architecture, BENCH guard, battery/MPPT/AI commands, joined ALG schema and CPU1 Energy task. S-record hashes and paths are stored in `firmware_v39_manifest.json`.
 - `Verify-ReferenceParity.ps1 -RequireBuildArtifacts -AllowEthernetPhase1 -AllowEnergyControlV39` passed. It proves static/configuration/build parity only.
 - No v39 flash or physical test was performed. Manual flashing and tomorrow's low-current electronic-load sequence are recorded in `V39_ELECTRONIC_LOAD_CHECKLIST.md`.
+
+## Git repository consolidation
+
+- Root remote is `https://github.com/ryule5158/DAB_DCDC.git`; the complete current workspace, firmware sources, recorded datasets and v39 release artifacts are tracked as ordinary files rather than an unresolved nested-repository pointer.
+- Implementation/data commit: `f00d52639bfaef5b65f12fb9db847a5de00f0885`.
+- Remote `main` had an unrelated H1.7 release history. It was merged without force or deletion in merge commit `8dfde618`; the original `release/` deliverables remain in place alongside the current development tree.
+- The former embedded `RA8P1_DAB_Feature_Showcase` Git history is recoverable from `RA8P1_DAB_Feature_Showcase_Backups/RA8P1_DAB_Feature_Showcase_embedded_history_2026-08-16.bundle`; bundle verification and the backup Git-object integrity check passed before the root import.
