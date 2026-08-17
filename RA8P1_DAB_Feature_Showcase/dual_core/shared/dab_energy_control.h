@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define DAB_ENERGY_ALGORITHM_VERSION "2026-08-15-v39"
+#define DAB_ENERGY_ALGORITHM_VERSION "2026-08-16-v43"
 
 typedef enum e_dab_energy_mode
 {
@@ -167,6 +167,8 @@ typedef struct st_dab_energy_state
     bool ai_modulation_hint_valid;
     uint32_t stage_started_ms;
     uint32_t below_terminate_since_ms;
+    uint32_t above_precharge_since_ms;
+    uint32_t cv_entry_since_ms;
     float charge_integral_a;
     bool mppt_initialized;
 } dab_energy_state_t;

@@ -11,7 +11,7 @@
  * here or through the bounded UART commands implemented by the application.
  */
 
-#define DAB_FW_VERSION                         "2026-08-15-dualcore-energy-control-v39"
+#define DAB_FW_VERSION                         "2026-08-16-dualcore-manual-stop-v43"
 
 /*
  * Peripheral qualification is complete, so this build permits only the
@@ -57,13 +57,14 @@
 #define DAB_SW_PROTECTION_PROFILE_ALL_ENABLED          (1U)
 
 /*
- * v38 restores automatic shutdown.  Reset still leaves every power path OFF,
- * while a runtime fault now forces PWM and the gate-driver chain OFF.
+ * v43 preserves the v40 commissioning behavior: runtime
+ * shutdown is owned by the operator while all fault inputs remain observable.
+ * This changes MCU policy only; external hardware protection is unaffected.
  */
-#define DAB_MANUAL_STOP_TEST_MODE                       (0U)
+#define DAB_MANUAL_STOP_TEST_MODE                       (1U)
 
 #ifndef DAB_SW_PROTECTION_PROFILE
- #define DAB_SW_PROTECTION_PROFILE                     DAB_SW_PROTECTION_PROFILE_ALL_ENABLED
+ #define DAB_SW_PROTECTION_PROFILE                     DAB_SW_PROTECTION_PROFILE_REFERENCE_TEST
 #endif
 
 #if (DAB_SW_PROTECTION_PROFILE == DAB_SW_PROTECTION_PROFILE_REFERENCE_TEST)

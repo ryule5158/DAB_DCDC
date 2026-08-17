@@ -1,0 +1,1 @@
+record_type,event,host_time,elapsed_ms,port,address,function_mode,cv_set_v,voltage_v,current_a,power_w,state_raw,load_active,parse_ok,raw

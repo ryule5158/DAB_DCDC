@@ -30,6 +30,7 @@
 #include "dab_ra8p1_scope_test.h"
 #include "dab_remote_control.h"
 #include "dab_tuned_parameter_table.h"
+#include "dab_validated_charger_table.h"
 #include "drv_tcan3413.h"
 #include "drv_tmp1075.h"
 
@@ -154,6 +155,7 @@ static float              s_current_pi_integral_counts;
 static float              s_current_reference_command_a = 1.0F;
 static float              s_current_reference_active_a;
 static float              s_current_error_a;
+static int8_t             s_current_control_direction = 1;
 static float              s_current_kp_ns_per_a = DAB_CURRENT_KP_DEFAULT_NS_PER_A;
 static float              s_current_ki_us_per_as = DAB_CURRENT_KI_DEFAULT_US_PER_AS;
 static float              s_current_reference_slew_a_per_s =
@@ -1013,15 +1015,17 @@ static DAB_ITCM_CODE void dab_control_update(void)
                 current_slew_step);
             s_current_error_a = s_current_reference_active_a -
                                 s_measurements.iout_a;
+            float const current_control_error_a =
+                s_current_error_a * (float) s_current_control_direction;
             float const current_kp_counts_per_a =
                 s_current_kp_ns_per_a / (float) DAB_PWM_COUNT_NS;
             float const current_ki_counts_per_as =
                 s_current_ki_us_per_as * 250.0F;
-            integral_candidate += s_current_error_a *
+            integral_candidate += current_control_error_a *
                 current_ki_counts_per_as * DAB_CONTROL_DT_S;
             integral_candidate = dab_clampf(integral_candidate, 0.0F,
                                             phase_limit);
-            target = (current_kp_counts_per_a * s_current_error_a) +
+            target = (current_kp_counts_per_a * current_control_error_a) +
                      integral_candidate;
         }
         float const unclamped_target = target;
@@ -1530,8 +1534,13 @@ static void dab_print_status(void)
                 ((s_kd_ns_s_per_v > 0.0F) ? "PID" : "PI"),
             (unsigned long) (s_manual_phase_counts * DAB_PWM_COUNT_NS));
     dab_print_parameter_bundle();
-    dab_log("[DAB][GUARD] profile=%s hard_absolute=RAW/OC/OK/ADC-stale/55V/26A-in/18A-out/temperature; bench disables cold/power/soft-current/no-rise interference\r\n",
+#if DAB_SOFTWARE_AUTO_TRIP_ENABLE
+    dab_log("[DAB][GUARD] profile=%s MCU_AUTO=ON hard_absolute=RAW/OC/OK/ADC-stale/55V/26A-in/18A-out/temperature; bench disables cold/power/soft-current/no-rise interference\r\n",
             dab_guard_profile_name(s_guard_profile));
+#else
+    dab_log("[DAB][GUARD] profile=%s MCU_AUTO=OFF MANUAL_STOP; RAW/OC/OK/ADC/current/voltage/temperature remain observable only\r\n",
+            dab_guard_profile_name(s_guard_profile));
+#endif
     dab_print_energy_status();
 }
 
@@ -1661,7 +1670,7 @@ static void dab_print_vofa(void)
         energy_age_ms = now_ms -
             g_dab_cpu0_dual_core_status.energy_reference_last_ms;
     }
-    dab_log("ALG:%lu,%u,%u,%.3f,%.3f,%.3f,%.3f,%.4f,%.3f,%u,%u,%lu,%.3f,%.1f,%.2f,%u,%u,%u,%.2f,%u,%.2f,%.3f,%u,%u,%.3f,%u,%u,%u,%lu,%lu\r\n",
+    dab_log("ALG:%lu,%u,%u,%.3f,%.3f,%.3f,%.3f,%.4f,%.3f,%u,%u,%lu,%.3f,%.1f,%.2f,%u,%u,%u,%.2f,%u,%.2f,%.3f,%u,%u,%.3f,%u,%u,%u,%lu,%lu,%d\r\n",
             (unsigned long) s_measurements.sequence,
             (unsigned int) s_control_architecture,
             (unsigned int) s_guard_profile,
@@ -1691,7 +1700,8 @@ static void dab_print_vofa(void)
             g_dab_cpu0_dual_core_status.ipc.peer_seen ? 1U : 0U,
             g_dab_cpu0_dual_core_status.ipc.peer_stale ? 1U : 0U,
             (unsigned long) g_dab_cpu0_dual_core_status.energy_config_queued,
-            (unsigned long) g_dab_cpu0_dual_core_status.energy_config_dropped);
+            (unsigned long) g_dab_cpu0_dual_core_status.energy_config_dropped,
+            (int) s_current_control_direction);
 }
 
 static void dab_print_observe(void)
@@ -1816,7 +1826,7 @@ static void dab_print_energy_status(void)
                                 (uint32_t) portTICK_PERIOD_MS;
         age_ms = now_ms - g_dab_cpu0_dual_core_status.energy_reference_last_ms;
     }
-    dab_log("[ENERGY] mode=%s arch=%s Icmd=%.2fA Iactive=%.2fA Icpu1=%.2fA valid=%u age=%lums Kp=%.2fns/A Ki=%.3fus/(A*s) slew=%.2fA/s\r\n",
+    dab_log("[ENERGY] mode=%s arch=%s Icmd=%.2fA Iactive=%.2fA Icpu1=%.2fA valid=%u age=%lums Kp=%.2fns/A Ki=%.3fus/(A*s) slew=%.2fA/s idir=%s\r\n",
             dab_energy_mode_name(c->mode),
             dab_control_architecture_name(s_control_architecture),
             (double) s_current_reference_command_a,
@@ -1826,7 +1836,8 @@ static void dab_print_energy_status(void)
             (unsigned long) age_ms,
             (double) s_current_kp_ns_per_a,
             (double) s_current_ki_us_per_as,
-            (double) s_current_reference_slew_a_per_s);
+            (double) s_current_reference_slew_a_per_s,
+            (s_current_control_direction > 0) ? "forward" : "reverse");
     dab_log("[MPPT] mode=%s step=%.2fV interval=%lums range=%.1f..%.1fV Pmax=%.0fW Ptarget=%.0fW Vtarget=%.1fV limited=%u\r\n",
             dab_mppt_mode_name(c->mppt_mode), (double) c->mppt_step_v,
             (unsigned long) c->mppt_interval_ms,
@@ -1981,11 +1992,12 @@ static void dab_control_start_request(void)
                 return;
             }
             dab_enter_state(DAB_STATE_SOFTSTART);
-            dab_log("[DAB][ON] direct path accepted; Pout ceiling=%.0fW configured cap=%luns Vref=%.1fV SPS; automatic trips active\r\n",
+            dab_log("[DAB][ON] direct path accepted; Pout ceiling=%.0fW configured cap=%luns Vref=%.1fV SPS; protection=%s\r\n",
                     (double) s_power_limit_w,
                     (unsigned long) (s_closed_loop_phase_cap_counts *
                                      DAB_PWM_COUNT_NS),
-                    (double) s_vref_v);
+                    (double) s_vref_v,
+                    DAB_SOFTWARE_AUTO_TRIP_ENABLE ? "MCU_AUTO" : "MANUAL_STOP");
             dab_print_pwm_hw_diag();
         }
         else
@@ -1994,11 +2006,12 @@ static void dab_control_start_request(void)
             s_control_enabled = true;
             dab_board_fan_set(true);
             dab_enter_state(DAB_STATE_RESET_LOW);
-            dab_log("[DAB][ON] protected path sequence; Pout ceiling=%.0fW configured cap=%luns Vref=%.1fV; cold gates and automatic trips active\r\n",
+            dab_log("[DAB][ON] path sequence; Pout ceiling=%.0fW configured cap=%luns Vref=%.1fV; protection=%s\r\n",
                     (double) s_power_limit_w,
                     (unsigned long) (s_closed_loop_phase_cap_counts *
                                      DAB_PWM_COUNT_NS),
-                    (double) s_vref_v);
+                    (double) s_vref_v,
+                    DAB_SOFTWARE_AUTO_TRIP_ENABLE ? "MCU_AUTO" : "MANUAL_STOP");
         }
     }
 }
@@ -2161,6 +2174,45 @@ static void dab_print_parameter_bundle(void)
                              (float) DAB_PWM_COUNT_NS + 0.5F),
             s_outer_saturated ? 1U : 0U,
             (unsigned long) s_outer_saturation_updates);
+}
+
+static void dab_print_validated_charger_table(void)
+{
+    dab_log("[DAB][CHGVAL] table=%s revision=%lu entries=%lu record-only=1\r\n",
+            DAB_VALIDATED_CHARGER_TABLE_VERSION,
+            (unsigned long) DAB_VALIDATED_CHARGER_TABLE_REVISION,
+            (unsigned long) DAB_VALIDATED_CHARGER_TABLE_ENTRY_COUNT);
+    for (size_t i = 0U; i < DAB_VALIDATED_CHARGER_TABLE_ENTRY_COUNT; i++)
+    {
+        dab_validated_charger_entry_t const * const p =
+            &g_dab_validated_charger_table[i];
+        dab_log("[DAB][CHGVAL] id=%lu profile=%u stage=%u mod=%u arch=%u Vin=%.1f CV=%.1f inner=%.0f/%.0f cap=%.0f Ipi=%.2f/%.3f slew=%.2f Imax=%.2f Iterm=%.2f\r\n",
+                (unsigned long) p->entry_id,
+                (unsigned int) p->battery_profile_id,
+                (unsigned int) p->charge_stage_id,
+                (unsigned int) p->modulation_id,
+                (unsigned int) p->control_architecture_id,
+                (double) p->nominal_input_v,
+                (double) p->external_cv_set_v,
+                (double) p->primary_inner_ns,
+                (double) p->secondary_inner_ns,
+                (double) p->phase_cap_ns,
+                (double) p->current_kp_ns_per_a,
+                (double) p->current_ki_us_per_as,
+                (double) p->current_slew_a_per_s,
+                (double) p->configured_imax_a,
+                (double) p->configured_iterm_a);
+        dab_log("[DAB][CHGVAL] id=%lu board=%.3fV/%.3fA %.2f->%.2fW external=%.3fV/%.3fA/%.2fW eta_ext=%.3f%%\r\n",
+                (unsigned long) p->entry_id,
+                (double) p->board_vout_v,
+                (double) p->board_iout_a,
+                (double) p->board_pin_w,
+                (double) p->board_pout_w,
+                (double) p->external_voltage_v,
+                (double) p->external_current_a,
+                (double) p->external_power_w,
+                (double) p->external_to_board_input_eff_pct);
+    }
 }
 
 static bool dab_schedule_apply_current(void)
@@ -2705,7 +2757,7 @@ static void dab_command_execute(char * p_line)
             dab_log("[ADV] measure adcdiag zero mos on/off gate q1..q8 pri/pria/prib on/off/[10..500] mode save/observe test pause/resume\r\n");
             dab_log("[ADV] mod sps/eps/tps/auto | inner PRI_NS SEC_NS/auto/show | kp 0..40 | ki 0..10 | kd 0..0.1 | unlock 400 | cap 0..480\r\n");
             dab_log("[ADV] ph 0..480=manual effective outer phase in RUN for SPS/EPS/TPS | ph auto=return to PI\r\n");
-            dab_log("[ADV] arch voltage/current/energy/show | iref/ikp/iki/islew VALUE | alglog on/off/show | protect bench/normal/show\r\n");
+            dab_log("[ADV] arch voltage/current/energy/show | iref/ikp/iki/islew VALUE | idir forward/reverse/show | alglog on/off/show | protect bench/normal/show\r\n");
             dab_log("[ENERGY] energy off/manual/mppt/charge/solar/show | mppt po/inc/off/fixed/step/interval/vmin/vmax/pmax/show\r\n");
             dab_log("[CHARGE] bat profile liion10/lfp12/lead36/custom | capacity/imax/ipre/iterm/vpre/vcv/vfloat/absorb/timeout/temp/kp/ki | start/stop/show\r\n");
             dab_log("[AIHOOK] ai off/assist/show | ai hint CURRENT_A CONFIDENCE [TTL_MS] | ai mod sps|eps|tps CONFIDENCE [TTL_MS]; modulation hint is record-only\r\n");
@@ -2816,11 +2868,11 @@ static void dab_command_execute(char * p_line)
         dab_log("[MODE] SAVE; VOFA+ FireWater numeric data every %lums; ALG extension=%s\r\n",
                 (unsigned long) DAB_VOFA_PERIOD_MS,
                 s_algorithm_logging_enabled ? "ON" : "OFF");
-        dab_log("[VOFA] schema=v39 DAB fields unchanged: seq,VIN,VOUT,IIN,IOUT,IPRI,ISEC,TPRI,TSEC,Pin,Pout,VAFE,raw_phase_ns,Plimit,Vref,state,control,pwm,fault,valid,mod_req,mod_eff,effective_phase_ns,command_phase_ns,pri_inner_ns,sec_inner_ns,inner_manual\r\n");
+        dab_log("[VOFA] schema=v40 DAB fields unchanged: seq,VIN,VOUT,IIN,IOUT,IPRI,ISEC,TPRI,TSEC,Pin,Pout,VAFE,raw_phase_ns,Plimit,Vref,state,control,pwm,fault,valid,mod_req,mod_eff,effective_phase_ns,command_phase_ns,pri_inner_ns,sec_inner_ns,inner_manual\r\n");
         dab_log("[VOFA] fields2=kp_ns_per_v,ki_us_per_vs,kd_ns_s_per_v,d_filter_alpha,phase_cap_ns,bench_vin_set_v,load_nominal_ohm,requested_power_layer_w,control_arch,schedule_enabled,table_entry_id,outer_saturated,outer_saturation_updates,feedforward_enabled,feedforward_effective_phase_ns\r\n");
         if (s_algorithm_logging_enabled)
         {
-            dab_log("[VOFA] ALG join_key=seq fields=seq,arch,guard,Iref_cmd,Iref_active,Ierr,Ikp,Iki,Islew,energy_mode,energy_valid,energy_age_ms,energy_Iref,mppt_P,mppt_V,mppt_limited,bat_profile,charge_stage,charge_V,charge_limited,ai_hint,ai_conf,ai_applied,ai_mod_hint,ai_mod_conf,ai_mod_fresh,ipc_peer,ipc_stale,config_queued,config_dropped\r\n");
+            dab_log("[VOFA] ALG join_key=seq fields=seq,arch,guard,Iref_cmd,Iref_active,Ierr,Ikp,Iki,Islew,energy_mode,energy_valid,energy_age_ms,energy_Iref,mppt_P,mppt_V,mppt_limited,bat_profile,charge_stage,charge_V,charge_limited,ai_hint,ai_conf,ai_applied,ai_mod_hint,ai_mod_conf,ai_mod_fresh,ipc_peer,ipc_stale,config_queued,config_dropped,current_control_direction\r\n");
         }
     }
     else if ((0 == strcmp(command, "view")) ||
@@ -3231,6 +3283,38 @@ static void dab_command_execute(char * p_line)
             dab_log("[DAB][CMD] use mod sps|eps|tps|auto|show\r\n");
         }
     }
+    else if (0 == strcmp(command, "idir"))
+    {
+        if ((NULL == argument) || (0 == strcmp(argument, "show")))
+        {
+            dab_log("[CURRENT][DIR] %s (%d); forward is default for SPS/EPS, reverse supports negative-gain TPS regions\r\n",
+                    (s_current_control_direction > 0) ? "forward" : "reverse",
+                    (int) s_current_control_direction);
+        }
+        else if ((DAB_STATE_READY != s_state) || s_control_enabled ||
+                 dab_pwm_hw_outputs_are_enabled())
+        {
+            dab_log("[CURRENT][BLOCK] idir changes require READY with PWM/power OFF\r\n");
+        }
+        else if ((0 == strcmp(argument, "forward")) ||
+                 (0 == strcmp(argument, "normal")))
+        {
+            s_current_control_direction = 1;
+            dab_control_reset();
+            dab_log("[CURRENT][DIR] forward (+1)\r\n");
+        }
+        else if ((0 == strcmp(argument, "reverse")) ||
+                 (0 == strcmp(argument, "negative")))
+        {
+            s_current_control_direction = -1;
+            dab_control_reset();
+            dab_log("[CURRENT][DIR] reverse (-1)\r\n");
+        }
+        else
+        {
+            dab_log("[CURRENT][CMD] use idir forward|reverse|show\r\n");
+        }
+    }
     else if ((0 == strcmp(command, "iref")) ||
              (0 == strcmp(command, "ikp")) ||
              (0 == strcmp(command, "iki")) ||
@@ -3588,6 +3672,18 @@ static void dab_command_execute(char * p_line)
     {
         dab_print_parameter_bundle();
     }
+    else if ((0 == strcmp(command, "chgtable")) ||
+             (0 == strcmp(command, "validated")))
+    {
+        if ((NULL == argument) || (0 == strcmp(argument, "show")))
+        {
+            dab_print_validated_charger_table();
+        }
+        else
+        {
+            dab_log("[DAB][CMD] use chgtable show\r\n");
+        }
+    }
     else if ((0 == strcmp(command, "sched")) ||
              (0 == strcmp(command, "schedule")))
     {
@@ -3876,11 +3972,18 @@ void User_Init_Task_entry(void * pvParameters)
             DAB_TUNED_PARAMETER_TABLE_VERSION,
             (unsigned long) DAB_TUNED_PARAMETER_TABLE_ENTRY_COUNT);
 
-    dab_log("[DAB][PROTECT] default=%s; hardware/absolute RAW/OC/OK, ADC stale, 55V, 26A/18A and temperature shutdown remain active\r\n",
+#if DAB_SOFTWARE_AUTO_TRIP_ENABLE
+    dab_log("[DAB][PROTECT] default=%s MCU_AUTO=ON; RAW/OC/OK, ADC stale, 55V, 26A/18A and temperature shutdown active\r\n",
             dab_guard_profile_name(s_guard_profile));
     dab_log("[DAB][PROTECT] BENCH removes soft power/current retreat, cold clamp and no-rise from test path; configured cap=%luns; POEG GPT clamp remains FSP-disabled\r\n",
             (unsigned long) (s_closed_loop_phase_cap_counts *
                              DAB_PWM_COUNT_NS));
+#else
+    dab_log("[DAB][PROTECT] MCU_AUTO=OFF MANUAL_STOP; RAW/OC/OK, ADC/current/voltage/temperature are telemetry only; operator off owns stop\r\n");
+    dab_log("[DAB][PROTECT] configured cap=%luns; POEG GPT clamp remains FSP-disabled; external board/supply/load protection unchanged\r\n",
+            (unsigned long) (s_closed_loop_phase_cap_counts *
+                             DAB_PWM_COUNT_NS));
+#endif
 
     if (!dab_adc_and_pwm_initialize())
     {

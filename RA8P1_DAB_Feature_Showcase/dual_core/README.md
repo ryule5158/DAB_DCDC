@@ -20,23 +20,24 @@
 - Helium：CPU0 的 `dab_measurements.c` 对八路 ADC 原始值和四路标定运算实际生成 MVE/MVE-F 向量指令。
 - CMSIS-DSP：当前控制代码没有调用 CMSIS-DSP，CPU0/CPU1 的 FSP stack、库目录和残留 include 路径均已移除；Helium 使用 `arm_mve.h` 和编译器 MVE intrinsic，与 CMSIS-DSP 无关。
 - SDRAM：驱动、分配器和快速读写测试已实现，但 `DAB_CPU1_SDRAM_ENABLE=0`。确认实板 SDRAM 型号、容量、引脚和时序前不得打开。
-- 能源控制：v39 保留原电压 PI、SPS/EPS/TPS、手动相移、调参、遥测和 Ethernet 功能，新增 `arch current|energy`、本地 P&O/增量电导 MPPT、10S 锂离子/12S LFP/36 V 铅酸及自定义充电状态机。上电仍是原 `VOLTAGE_PI_SINGLE_LOOP`，能源与 AI 模式均为 OFF，只有串口显式选择后新控制才接管。`ALG:` 扩展也默认 OFF，`save` 保持原 DAB-only 数据流；新控制命令或 `alglog on` 才启用训练行。AI 未装载模型，电流建议只能降低本地确定性上限，SPS/EPS/TPS 建议仅记录且拥有独立置信度/TTL。
+- 能源控制：v43 保留 v42/v41/v40 的电压 PI、SPS/EPS/TPS、手动相移、调参、遥测、Ethernet、`arch current|energy`、本地 P&O/增量电导 MPPT、10S 锂离子/12S LFP/36 V 铅酸及自定义充电状态机和 `idir forward|reverse` 输出电流环方向选择。v43 为 PRECHARGE→CC 和 CC→CV 增加连续资格时间及受限的 CV 电压窗口；不改变上电默认关闭能源/AI、手动启动和原控制功能。TPS 负增益区可显式用 `reverse`，`ALG:` 行末记录 `current_control_direction=1|-1`。AI 未装载模型，电流建议只能降低本地确定性上限，SPS/EPS/TPS 建议仅记录且拥有独立置信度/TTL。
+- 2026-08-16 实测合格的 24 V/LFP12/EPS 电流环参数保存在 `src/dab_validated_charger_table.h`。该表与原单电压环 `dab_tuned_parameter_table.h` 分离，默认只读、绝不自动套用；串口 `chgtable show` 可查看 42.0/43.0/43.5/43.7 V CC 和 44.0 V CV 记录。
 - Ethernet 第一阶段：CPU0 使用 FSP `r_rmac/r_rmac_phy`、RMAC1/RMII1、LAN8720A@0 和 FreeRTOS+TCP；静态 IP `192.168.10.100/24`，ICMP Echo 和 TCP JSONL Server `5000`。通信冒烟脚本默认绝不发送 `start`，GUI 等实板 Ping/TCP 通过后再加入。详见 [通信验证说明](docs/ETHERNET_PHASE1_COMMUNICATION_TEST_ZH.md) 和 [原生网表证据](docs/ETHERNET_NATIVE_NETLIST_EVIDENCE_2026-08-15.md)。
 
 ## 软件保护选择
 
-v39 编译时选择 `ALL_ENABLED` 且 `DAB_MANUAL_STOP_TEST_MODE=0U`，运行时默认 `protect bench`。BENCH 档取消会影响扫点的功率软退让、桥臂软电流退让、冷端相移钳位和无升压判断，同时保留 RAW/OC/OK、ADC 失联、55 V、输入 26 A、输出 18 A和温度等绝对关断；可在 READY/PWM OFF 时用 `protect normal` 恢复分层软限制。
+v43 保持 v42/v41/v40 已通过带载测试的 `REFERENCE_TEST` 与 `DAB_MANUAL_STOP_TEST_MODE=1U`。RAW/OC/OK、ADC、电流、电压和温度继续记录到串口，但不再由 MCU 因瞬时输入而自动锁停；测试由显式 `off` 停止。该选择不修改板上独立硬件、电源限流或电子负载保护。
 
 编译期配置仍位于 CPU0 的 `src/dab_first_power_config.h`：
 
 ```c
-#define DAB_SW_PROTECTION_PROFILE DAB_SW_PROTECTION_PROFILE_ALL_ENABLED
+#define DAB_SW_PROTECTION_PROFILE DAB_SW_PROTECTION_PROFILE_REFERENCE_TEST
 ```
 
 当前还同时固定：
 
 ```c
-#define DAB_MANUAL_STOP_TEST_MODE 0U
+#define DAB_MANUAL_STOP_TEST_MODE 1U
 #define DAB_POEG_PWM_SHUTDOWN_ENABLE 0U
 ```
 

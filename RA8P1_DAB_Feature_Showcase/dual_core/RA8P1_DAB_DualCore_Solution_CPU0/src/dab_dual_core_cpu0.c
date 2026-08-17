@@ -7,7 +7,13 @@
 #include "task.h"
 
 #define CPU0_IPC_TASK_STACK_WORDS    (384U)
-#define CPU0_IPC_TASK_PRIORITY       (tskIDLE_PRIORITY)
+/* The 10 ms energy/measurement IPC service must not compete with the idle
+ * task.  SAVE telemetry can keep the priority-1 application task runnable
+ * long enough to starve an idle-priority IPC task, leaving CPU1 with stale
+ * Vout and an old charge-current reference.  Priority 3 is above the
+ * application and Ethernet receive tasks; this task still blocks every
+ * 10 ms after its short, bounded service pass. */
+#define CPU0_IPC_TASK_PRIORITY       (tskIDLE_PRIORITY + 3U)
 #define CPU0_ENERGY_QUEUE_LENGTH      (32U)
 #define CPU0_ENERGY_REFERENCE_STALE_MS (500U)
 #define CPU0_ENERGY_CONFIG_RETRY_MS    (200U)

@@ -145,19 +145,58 @@ static void test_lithium_charger(void)
     measurement.now_ms = 200U;
     measurement.vout_v = 31.0F;
     dab_energy_update(&state, &measurement);
+    CHECK(DAB_CHARGE_STAGE_PRECHARGE == state.output.charge_stage);
+    measurement.now_ms = 700U;
+    dab_energy_update(&state, &measurement);
     CHECK(DAB_CHARGE_STAGE_CONSTANT_CURRENT == state.output.charge_stage);
-    measurement.now_ms = 300U;
+    measurement.now_ms = 800U;
     measurement.vout_v = 41.95F;
     measurement.iout_a = 0.2F;
     dab_energy_update(&state, &measurement);
+    CHECK(DAB_CHARGE_STAGE_CONSTANT_CURRENT == state.output.charge_stage);
+    measurement.now_ms = 1800U;
+    dab_energy_update(&state, &measurement);
     CHECK(DAB_CHARGE_STAGE_CONSTANT_VOLTAGE == state.output.charge_stage);
-    measurement.now_ms = 310U;
+    measurement.now_ms = 1810U;
     measurement.vout_v = 42.0F;
     dab_energy_update(&state, &measurement);
     CHECK(state.output.requested_current_a <= state.config.battery_max_current_a);
-    measurement.now_ms = 30400U;
+    measurement.now_ms = 31820U;
     dab_energy_update(&state, &measurement);
     CHECK(DAB_CHARGE_STAGE_DONE == state.output.charge_stage);
+}
+
+static void test_startup_overshoot_does_not_enter_cv(void)
+{
+    dab_energy_state_t state;
+    dab_energy_initialize(&state);
+    CHECK(dab_energy_apply_config(&state, DAB_ENERGY_CONFIG_BATTERY_PROFILE,
+                                  (float) DAB_BATTERY_PROFILE_LI_ION_10S_42V,
+                                  0U));
+    CHECK(dab_energy_apply_config(&state, DAB_ENERGY_CONFIG_MODE,
+                                  (float) DAB_ENERGY_MODE_CHARGER_ONLY, 0U));
+    CHECK(dab_energy_apply_config(&state, DAB_ENERGY_CONFIG_BATTERY_START,
+                                  1.0F, 0U));
+
+    dab_energy_measurement_t measurement =
+        valid_measurement(100U, 24.0F, 0.0F, 0.0F, 0.0F);
+    dab_energy_update(&state, &measurement);
+    CHECK(DAB_CHARGE_STAGE_PRECHARGE == state.output.charge_stage);
+
+    measurement.vout_v = 49.8F;
+    measurement.now_ms = 200U;
+    dab_energy_update(&state, &measurement);
+    measurement.now_ms = 700U;
+    dab_energy_update(&state, &measurement);
+    CHECK(DAB_CHARGE_STAGE_CONSTANT_CURRENT == state.output.charge_stage);
+    measurement.now_ms = 1800U;
+    dab_energy_update(&state, &measurement);
+    CHECK(DAB_CHARGE_STAGE_CONSTANT_CURRENT == state.output.charge_stage);
+
+    measurement.vout_v = 36.0F;
+    measurement.now_ms = 3000U;
+    dab_energy_update(&state, &measurement);
+    CHECK(DAB_CHARGE_STAGE_CONSTANT_CURRENT == state.output.charge_stage);
 }
 
 static void test_lead_and_fixed_power(void)
@@ -195,6 +234,7 @@ int main(void)
     test_payload_codec();
     test_ai_hint_isolation();
     test_lithium_charger();
+    test_startup_overshoot_does_not_enter_cv();
     test_lead_and_fixed_power();
     if (0U != s_failures)
     {

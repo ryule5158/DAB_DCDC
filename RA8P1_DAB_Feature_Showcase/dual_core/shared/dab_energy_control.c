@@ -7,6 +7,9 @@
 #define ENERGY_IPC_VALUE_MASK      (0x7FFFUL)
 #define ENERGY_IPC_SIGN_BIT        (0x4000L)
 #define ENERGY_IPC_SIGN_EXTEND     (0x8000L)
+#define ENERGY_PRECHARGE_ENTRY_DEBOUNCE_MS (500U)
+#define ENERGY_CV_ENTRY_DEBOUNCE_MS        (1000U)
+#define ENERGY_CV_ENTRY_OVERSHOOT_V        (0.50F)
 
 static float energy_min(float a, float b)
 {
@@ -197,7 +200,27 @@ static void energy_stage_enter(dab_energy_state_t * p_state,
     p_state->output.charge_stage = stage;
     p_state->stage_started_ms = now_ms;
     p_state->below_terminate_since_ms = 0U;
+    p_state->above_precharge_since_ms = 0U;
+    p_state->cv_entry_since_ms = 0U;
     p_state->charge_integral_a = 0.0F;
+}
+
+static bool energy_condition_sustained(bool condition,
+                                       uint32_t now_ms,
+                                       uint32_t duration_ms,
+                                       uint32_t * p_since_ms)
+{
+    if (!condition)
+    {
+        *p_since_ms = 0U;
+        return false;
+    }
+    if (0U == *p_since_ms)
+    {
+        *p_since_ms = now_ms;
+        return false;
+    }
+    return (uint32_t) (now_ms - *p_since_ms) >= duration_ms;
 }
 
 bool dab_energy_apply_config(dab_energy_state_t * p_state,
@@ -496,7 +519,11 @@ static float energy_charger_update(dab_energy_state_t * p_state,
     {
         case DAB_CHARGE_STAGE_PRECHARGE:
             p_state->output.charge_voltage_target_v = c->battery_precharge_v;
-            if (m->vout_v >= c->battery_precharge_v)
+            if (energy_condition_sustained(
+                    m->vout_v >= c->battery_precharge_v,
+                    m->now_ms,
+                    ENERGY_PRECHARGE_ENTRY_DEBOUNCE_MS,
+                    &p_state->above_precharge_since_ms))
             {
                 energy_stage_enter(p_state, DAB_CHARGE_STAGE_CONSTANT_CURRENT,
                                    m->now_ms);
@@ -512,7 +539,13 @@ static float energy_charger_update(dab_energy_state_t * p_state,
                 cv_target = energy_clamp(cv_target, 36.0F, 48.0F);
             }
             p_state->output.charge_voltage_target_v = cv_target;
-            if (m->vout_v >= (cv_target - 0.10F))
+            bool const cv_entry_voltage_valid =
+                (m->vout_v >= (cv_target - 0.10F)) &&
+                (m->vout_v <= (cv_target + ENERGY_CV_ENTRY_OVERSHOOT_V));
+            if (energy_condition_sustained(cv_entry_voltage_valid,
+                                           m->now_ms,
+                                           ENERGY_CV_ENTRY_DEBOUNCE_MS,
+                                           &p_state->cv_entry_since_ms))
             {
                 energy_stage_enter(p_state, DAB_CHARGE_STAGE_CONSTANT_VOLTAGE,
                                    m->now_ms);
