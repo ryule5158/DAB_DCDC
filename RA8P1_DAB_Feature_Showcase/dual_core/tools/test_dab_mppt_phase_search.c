@@ -365,10 +365,43 @@ int main(void)
     in.outer_saturated = false;
     in.measured_output_current_a = 3.0F;
 
+    /* A 0.1 V battery-CV step must run a lightweight MPPT retune immediately,
+     * rather than waiting for the cumulative SPS/EPS/TPS mode audit. Falling
+     * input power/current releases one bounded 8 ns authority step while the
+     * selected topology and all physical slew limits remain unchanged. */
+    dab_mppt_phase_search_t cv_step;
+    dab_mppt_phase_initialize(&cv_step);
+    cv_step.output.active = true;
+    cv_step.output.selection_complete = true;
+    cv_step.output.stage = DAB_MPPT_PHASE_HOLD_BEST;
+    cv_step.output.mode = DAB_MPPT_PHASE_MODE_EPS;
+    cv_step.output.primary_inner_ns = 390.0F;
+    cv_step.output.phase_cap_ns = 220.0F;
+    cv_step.trajectory_anchor_valid = true;
+    cv_step.trajectory_anchor_vout_v = 33.0F;
+    cv_step.trajectory_anchor_pin_w = 170.0F;
+    in.now_ms = 0U;
+    in.vin_v = 22.9F;
+    in.vout_v = 33.10F;
+    in.pin_w = 166.0F;
+    in.pout_w = 148.0F;
+    in.current_reference_a = 4.5F;
+    in.current_active_a = 4.5F;
+    in.measured_output_current_a = 4.0F;
+    in.outer_saturated = false;
+    in.applied_mode = DAB_MPPT_PHASE_MODE_EPS;
+    in.applied_primary_inner_ns = 390.0F;
+    in.applied_secondary_inner_ns = 0.0F;
+    dab_mppt_phase_update(&cv_step, &in);
+    assert(228.0F == cv_step.output.phase_cap_ns);
+    assert(DAB_MPPT_PHASE_MODE_EPS == cv_step.output.mode);
+    assert(DAB_MPPT_PHASE_HOLD_BEST == cv_step.output.stage);
+    assert(cv_step.output.changed);
+
     /* The physical records are firmware-resident priors, not fixed commands.
      * At the r112 neighborhood they break only an equivalent live result in
      * favor of the already qualified EPS mode. */
-    assert(6U == DAB_MPPT_PHASE_VALIDATED_RECORD_COUNT);
+    assert(8U == DAB_MPPT_PHASE_VALIDATED_RECORD_COUNT);
     assert(!g_dab_mppt_phase_validated_records[4].runtime_hint_eligible);
     dab_mppt_phase_search_t validated_tie;
     dab_mppt_phase_initialize(&validated_tie);
@@ -407,8 +440,8 @@ int main(void)
     assert(DAB_MPPT_PHASE_HOLD_BEST == s.output.stage);
     assert(s.hold_anchor_valid);
 
-    /* A selected point which cannot reproduce at least 80 percent of its
-     * recorded Pin for 3 s must be searched again, never locked low. */
+    /* A selected point which cannot reproduce at least 90 percent of its
+     * recorded Pin for 1 s must be searched again, never locked low. */
     dab_mppt_phase_search_t replay_fail;
     dab_mppt_phase_initialize(&replay_fail);
     replay_fail.output.active = true;
@@ -428,7 +461,7 @@ int main(void)
     in.applied_secondary_inner_ns = 0.0F;
     step(&replay_fail, &in, 100U, 55.0F, 90.0F);
     assert(DAB_MPPT_PHASE_HOLD_BEST == replay_fail.output.stage);
-    run_mode_window(&replay_fail, &in, 55.0F, 90.0F, 3100U);
+    run_mode_window(&replay_fail, &in, 55.0F, 90.0F, 1100U);
     assert(DAB_MPPT_PHASE_WAIT_SOURCE_PEAK == replay_fail.output.stage);
     assert(!replay_fail.output.selection_complete);
 
@@ -469,7 +502,7 @@ int main(void)
            deep_collapse.output.secondary_inner_ns);
 
     /* Small battery-voltage drift stays in HOLD; a new voltage/power region
-     * is re-ranked only after 5 s of stable current tracking. The local
+     * is re-ranked after 1 s of stable current tracking. The local
      * restart inherits the applied waveform and current reference. */
     dab_mppt_phase_search_t condition;
     dab_mppt_phase_initialize(&condition);
@@ -491,13 +524,13 @@ int main(void)
     in.applied_mode = DAB_MPPT_PHASE_MODE_SPS;
     in.applied_primary_inner_ns = 0.0F;
     in.applied_secondary_inner_ns = 0.0F;
-    in.vout_v = 36.0F;
-    run_mode_window(&condition, &in, 50.0F, 90.0F, 6100U);
+    in.vout_v = 34.5F;
+    run_mode_window(&condition, &in, 50.0F, 90.0F, 2100U);
     assert(DAB_MPPT_PHASE_HOLD_BEST == condition.output.stage);
-    in.vout_v = 38.0F;
-    run_mode_window(&condition, &in, 50.0F, 90.0F, 4000U);
+    in.vout_v = 35.2F;
+    run_mode_window(&condition, &in, 50.0F, 90.0F, 900U);
     assert(DAB_MPPT_PHASE_HOLD_BEST == condition.output.stage);
-    run_mode_window(&condition, &in, 50.0F, 90.0F, 1100U);
+    run_mode_window(&condition, &in, 50.0F, 90.0F, 200U);
     assert(DAB_MPPT_PHASE_WAIT_SOURCE_PEAK == condition.output.stage);
     assert(!condition.output.selection_complete);
     assert(condition.local_research);
@@ -529,9 +562,9 @@ int main(void)
     in.applied_mode = DAB_MPPT_PHASE_MODE_EPS;
     in.applied_primary_inner_ns = 120.0F;
     in.applied_secondary_inner_ns = 0.0F;
-    run_mode_window(&exhausted, &in, 120.0F, 90.0F, 4000U);
+    run_mode_window(&exhausted, &in, 120.0F, 90.0F, 900U);
     assert(DAB_MPPT_PHASE_HOLD_BEST == exhausted.output.stage);
-    run_mode_window(&exhausted, &in, 120.0F, 90.0F, 1100U);
+    run_mode_window(&exhausted, &in, 120.0F, 90.0F, 200U);
     assert(DAB_MPPT_PHASE_WAIT_SOURCE_PEAK == exhausted.output.stage);
     assert(exhausted.local_research);
     assert(DAB_MPPT_PHASE_MODE_EPS == exhausted.output.mode);
@@ -566,9 +599,9 @@ int main(void)
     assert(DAB_MPPT_PHASE_HOLD_BEST == hold_floor.output.stage);
     assert(hold_floor.output.selection_complete);
     in.vin_v = 16.6F;
-    run_mode_window(&hold_floor, &in, 100.0F, 90.0F, 4000U);
+    run_mode_window(&hold_floor, &in, 100.0F, 90.0F, 900U);
     assert(DAB_MPPT_PHASE_HOLD_BEST == hold_floor.output.stage);
-    run_mode_window(&hold_floor, &in, 100.0F, 90.0F, 1100U);
+    run_mode_window(&hold_floor, &in, 100.0F, 90.0F, 200U);
     assert(DAB_MPPT_PHASE_WAIT_SOURCE_PEAK == hold_floor.output.stage);
     assert(!hold_floor.output.selection_complete);
 

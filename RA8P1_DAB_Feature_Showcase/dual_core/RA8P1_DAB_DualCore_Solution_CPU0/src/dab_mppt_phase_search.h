@@ -25,6 +25,9 @@
 #define DAB_MPPT_PHASE_CAP_HEADROOM_NS       (16.0F)
 #define DAB_MPPT_PHASE_CAP_RELEASE_STEP_NS    (8.0F)
 #define DAB_MPPT_PHASE_CAP_RELEASE_MS         (250U)
+#define DAB_MPPT_PHASE_TRAJECTORY_STEP_V       (0.08F)
+#define DAB_MPPT_PHASE_TRAJECTORY_POWER_W      (2.0F)
+#define DAB_MPPT_PHASE_TRAJECTORY_POWER_RATIO  (0.01F)
 #define DAB_MPPT_PHASE_RECOVERY_HIGH_NS      (832.0F)
 #define DAB_MPPT_PHASE_RECOVERY_LOW_NS       (180.0F)
 #define DAB_MPPT_PHASE_RECOVERY_SETTLED_NS     (8.0F)
@@ -89,7 +92,7 @@ typedef struct st_dab_mppt_phase_input
     float applied_secondary_inner_ns;
 } dab_mppt_phase_input_t;
 
-/* Hardware-qualified mode/actuator records from r111--r116.  They are not
+/* Hardware-qualified mode/actuator records from r111--r141.  They are not
  * fixed operating commands: live SPS/EPS/TPS measurements remain decisive.
  * A nearby qualified record is used only to break an equivalent live result,
  * which preserves deterministic AI-OFF behavior without hiding a better MPP.
@@ -126,7 +129,16 @@ static const dab_mppt_phase_validated_record_t
     {115U, 22.1820F, 12.2025F, 36.0F, DAB_MPPT_PHASE_MODE_SPS,
      264.0F,   0.0F,   0.0F, 299.88F, 270.6757F, 86.976F, false},
     {116U, 20.9818F,  9.0866F, 36.0F, DAB_MPPT_PHASE_MODE_SPS,
-     148.0F,   0.0F,   0.0F, 185.97F, 190.6529F, 90.783F, true}
+     148.0F,   0.0F,   0.0F, 185.97F, 190.6529F, 90.783F, true},
+    /* r139: autonomous three-mode search, then >16 s stable at the proven
+     * nominal-22 V / 10 A / CV36 point with fault zero. */
+    {139U, 20.9080F, 10.4680F, 36.0F, DAB_MPPT_PHASE_MODE_SPS,
+     424.0F,   0.0F,   0.0F, 224.51F, 218.8600F, 89.290F, true},
+    /* r141: serial-upper-computer representative point. Only high-level
+     * battery/MPPT commands were used; AI was OFF and EPS held the 7 A source
+     * condition for 10 s with fault zero. */
+    {141U, 20.8900F,  7.1320F, 35.969F, DAB_MPPT_PHASE_MODE_EPS,
+     480.0F, 141.0F,   0.0F, 154.66F, 148.9780F, 90.987F, true}
 };
 
 #define DAB_MPPT_PHASE_VALIDATED_RECORD_COUNT \
@@ -194,6 +206,9 @@ typedef struct st_dab_mppt_phase_search
     float hold_anchor_vin_v;
     float hold_anchor_vout_v;
     float hold_anchor_pin_w;
+    bool trajectory_anchor_valid;
+    float trajectory_anchor_vout_v;
+    float trajectory_anchor_pin_w;
 } dab_mppt_phase_search_t;
 
 static inline float dab_mppt_phase_abs(float value)
@@ -546,16 +561,16 @@ static inline void dab_mppt_phase_initialize(
     p_state->config.settle_ms = 2000U;
     p_state->config.mode_observe_ms = 6000U;
     p_state->config.perturb_ms = 1000U;
-    p_state->config.hold_grace_ms = 10000U;
-    p_state->config.condition_confirm_ms = 5000U;
-    p_state->config.replay_confirm_ms = 3000U;
+    p_state->config.hold_grace_ms = 1500U;
+    p_state->config.condition_confirm_ms = 1000U;
+    p_state->config.replay_confirm_ms = 1000U;
     p_state->config.inner_step_ns = 16.0F;
     p_state->config.pin_equivalent_percent = 2.0F;
     p_state->config.efficiency_gain_percent = 0.30F;
     p_state->config.condition_voltage_delta_v = 1.00F;
-    p_state->config.condition_output_voltage_delta_v = 4.00F;
-    p_state->config.condition_power_delta_percent = 20.0F;
-    p_state->config.replay_min_percent = 80.0F;
+    p_state->config.condition_output_voltage_delta_v = 2.00F;
+    p_state->config.condition_power_delta_percent = 10.0F;
+    p_state->config.replay_min_percent = 90.0F;
     p_state->output = (dab_mppt_phase_output_t) {0};
     p_state->output.stage = DAB_MPPT_PHASE_DISABLED;
     p_state->output.mode = DAB_MPPT_PHASE_MODE_SPS;
@@ -594,6 +609,9 @@ static inline void dab_mppt_phase_initialize(
     p_state->hold_anchor_vin_v = 0.0F;
     p_state->hold_anchor_vout_v = 0.0F;
     p_state->hold_anchor_pin_w = 0.0F;
+    p_state->trajectory_anchor_valid = false;
+    p_state->trajectory_anchor_vout_v = 0.0F;
+    p_state->trajectory_anchor_pin_w = 0.0F;
 }
 
 static inline void dab_mppt_phase_begin(
@@ -642,6 +660,9 @@ static inline void dab_mppt_phase_begin(
     p_state->hold_anchor_vin_v = 0.0F;
     p_state->hold_anchor_vout_v = 0.0F;
     p_state->hold_anchor_pin_w = 0.0F;
+    p_state->trajectory_anchor_valid = false;
+    p_state->trajectory_anchor_vout_v = 0.0F;
+    p_state->trajectory_anchor_pin_w = 0.0F;
     /* Enter fused CC without changing the waveform which was already
      * transferring precharge current.  The current MPPT reference and outer
      * current loop remain live; if this inherited TPS/EPS waveform runs out
@@ -771,6 +792,9 @@ static inline void dab_mppt_phase_choose_best(
     p_state->hold_anchor_vin_v = 0.0F;
     p_state->hold_anchor_vout_v = 0.0F;
     p_state->hold_anchor_pin_w = 0.0F;
+    p_state->trajectory_anchor_valid = true;
+    p_state->trajectory_anchor_vout_v = p_input->vout_v;
+    p_state->trajectory_anchor_pin_w = p_input->pin_w;
 }
 
 static inline void dab_mppt_phase_update(
@@ -1019,6 +1043,51 @@ static inline void dab_mppt_phase_update(
             p_input->current_reference_a >
             (p_input->measured_output_current_a + 0.15F);
 
+        /* A charging demonstration advances the battery-equivalent CV point
+         * in 0.1 V steps. Do not wait for a multi-volt condition restart while
+         * the selected waveform loses gain. Every real 0.1 V step therefore
+         * performs a light, mode-preserving MPPT retune: when rising Vout is
+         * accompanied by falling Pin or a current deficit, release one bounded
+         * 8 ns slice of outer authority. The physical current reference and
+         * inner phases retain their existing slew limits, so this cannot make
+         * a hard power or topology transition. Full SPS/EPS/TPS efficiency
+         * ranking remains the slower cumulative-condition operation below. */
+        if (!p_state->trajectory_anchor_valid)
+        {
+            p_state->trajectory_anchor_valid = true;
+            p_state->trajectory_anchor_vout_v = p_input->vout_v;
+            p_state->trajectory_anchor_pin_w = p_input->pin_w;
+        }
+        else if (dab_mppt_phase_abs(p_input->vout_v -
+                                    p_state->trajectory_anchor_vout_v) >=
+                 DAB_MPPT_PHASE_TRAJECTORY_STEP_V)
+        {
+            float const power_drop_margin_w =
+                (DAB_MPPT_PHASE_TRAJECTORY_POWER_RATIO *
+                 p_state->trajectory_anchor_pin_w) >
+                DAB_MPPT_PHASE_TRAJECTORY_POWER_W ?
+                (DAB_MPPT_PHASE_TRAJECTORY_POWER_RATIO *
+                 p_state->trajectory_anchor_pin_w) :
+                DAB_MPPT_PHASE_TRAJECTORY_POWER_W;
+            bool const rising_output =
+                p_input->vout_v > p_state->trajectory_anchor_vout_v;
+            bool const power_receding =
+                p_input->pin_w <
+                (p_state->trajectory_anchor_pin_w - power_drop_margin_w);
+            if (rising_output && (power_receding || current_tracking_deficit) &&
+                (p_state->output.phase_cap_ns <
+                 DAB_MPPT_PHASE_SEARCH_PHASE_CAP_NS))
+            {
+                p_state->output.phase_cap_ns = dab_mppt_phase_clamp(
+                    p_state->output.phase_cap_ns +
+                        DAB_MPPT_PHASE_CAP_RELEASE_STEP_NS,
+                    0.0F, DAB_MPPT_PHASE_SEARCH_PHASE_CAP_NS);
+                p_state->output.changed = true;
+            }
+            p_state->trajectory_anchor_vout_v = p_input->vout_v;
+            p_state->trajectory_anchor_pin_w = p_input->pin_w;
+        }
+
         /* selected_outer_phase_ns is the measured winning point, not a
          * permanent actuator ceiling. If battery voltage rises and the
          * current loop reaches that ceiling, release 8 ns every 250 ms until
@@ -1118,10 +1187,13 @@ static inline void dab_mppt_phase_update(
             p_input->outer_saturated && current_tracking_deficit &&
             (p_state->output.phase_cap_ns >=
              DAB_MPPT_PHASE_SEARCH_PHASE_CAP_NS);
+        bool const source_power_degraded =
+            (p_state->hold_anchor_pin_w > 1.0F) &&
+            !source_power_available;
         bool const changed_condition = phase_authority_exhausted ||
             ((source_voltage_changed || output_voltage_changed ||
-              source_power_changed) && current_settled && current_tracking &&
-             source_power_available);
+              source_power_changed) && current_settled &&
+             (current_tracking || source_power_degraded));
         if (changed_condition)
         {
             if (0U == p_state->hold_confirm_started_ms)

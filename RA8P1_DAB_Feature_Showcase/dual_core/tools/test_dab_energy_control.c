@@ -86,7 +86,7 @@ static void test_product_mppt_defaults_are_local(void)
     dab_energy_initialize(&state);
     CHECK(test_abs(state.config.mppt_min_v - 17.5F) < 0.01F);
     CHECK(test_abs(state.config.mppt_max_v - 26.0F) < 0.01F);
-    CHECK(test_abs(state.config.mppt_step_v - 0.20F) < 0.01F);
+    CHECK(test_abs(state.config.mppt_step_v - 0.10F) < 0.01F);
     CHECK(250U == state.config.mppt_interval_ms);
     CHECK(test_abs(state.config.mppt_max_power_w - 360.0F) < 0.01F);
 }
@@ -1015,6 +1015,43 @@ static void test_peak_hold_waits_for_actuator_before_next_backoff(void)
     CHECK(test_abs(state.mppt_current_command_a - 4.23F) < 0.001F);
 }
 
+static void test_peak_hold_rebases_selected_waveform_floor(void)
+{
+    dab_energy_state_t state;
+    dab_energy_initialize(&state);
+    CHECK(dab_energy_apply_config(&state, DAB_ENERGY_CONFIG_MODE,
+                                  (float) DAB_ENERGY_MODE_MPPT_ONLY, 0U));
+    state.mppt_initialized = true;
+    state.mppt_peak_hold = true;
+    state.mppt_knee_recovered = false;
+    state.mppt_actuator_rebased = false;
+    state.mppt_current_command_a = 1.79F;
+    state.mppt_best_current_command_a = 1.79F;
+    state.mppt_best_power_w = 173.0F;
+    state.mppt_best_voltage_v = 22.9F;
+    state.mppt_hold_anchor_vin_v = 22.9F;
+
+    /* v49bg selected an EPS waveform which physically delivered 4.6 A even
+     * though the old P&O request was only 1.79 A. Adopt the already-flowing
+     * current as the new target; the lower controller's active reference still
+     * retains its <=0.5 A/s slew, so this is a bumpless logical handoff. */
+    dab_energy_measurement_t measurement =
+        valid_measurement(100U, 22.9F, 7.60F, 33.0F, 4.60F);
+    dab_energy_update(&state, &measurement);
+    CHECK(state.mppt_actuator_rebased);
+    CHECK(test_abs(state.mppt_current_command_a - 4.60F) < 0.001F);
+    CHECK(test_abs(state.output.requested_current_a - 4.60F) < 0.001F);
+
+    /* The handoff occurs once. A later real Vin sag must use the ordinary
+     * gentle knee-hold backoff instead of snapping back to measured Iout. */
+    measurement.now_ms = 200U;
+    measurement.vin_v = 22.70F;
+    measurement.iin_a = 7.60F;
+    measurement.iout_a = 4.60F;
+    dab_energy_update(&state, &measurement);
+    CHECK(test_abs(state.mppt_current_command_a - 4.59F) < 0.001F);
+}
+
 static void test_high_power_positive_probe_is_gentle(void)
 {
     dab_energy_state_t state;
@@ -1063,6 +1100,7 @@ int main(void)
     test_po_ignores_knee_until_current_actuator_tracks();
     test_peak_hold_restores_proven_power_inside_voltage_deadband();
     test_peak_hold_waits_for_actuator_before_next_backoff();
+    test_peak_hold_rebases_selected_waveform_floor();
     test_high_power_positive_probe_is_gentle();
     if (0U != s_failures)
     {

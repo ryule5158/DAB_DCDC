@@ -39,6 +39,8 @@
 #define ENERGY_MPPT_HOLD_TRIM_STEP_A               (0.010F)
 #define ENERGY_MPPT_ACTUATOR_SETTLE_A              (0.20F)
 #define ENERGY_MPPT_ACTUATOR_RELEASE_A             (0.05F)
+#define ENERGY_MPPT_WAVEFORM_REBASE_MARGIN_A       (0.25F)
+#define ENERGY_MPPT_WAVEFORM_REBASE_POWER_RATIO     (0.90F)
 #define ENERGY_MPPT_KNEE_BEND_V                    (0.12F)
 #define ENERGY_MPPT_HIGH_POWER_KNEE_BEND_V         (0.04F)
 #define ENERGY_MPPT_KNEE_MIN_POWER_W               (20.0F)
@@ -216,7 +218,7 @@ void dab_energy_initialize(dab_energy_state_t * p_state)
     p_state->config.mode = DAB_ENERGY_MODE_OFF;
     p_state->config.manual_current_a = 1.0F;
     p_state->config.mppt_mode = DAB_MPPT_MODE_PERTURB_OBSERVE;
-    p_state->config.mppt_step_v = 0.20F;
+    p_state->config.mppt_step_v = 0.10F;
     p_state->config.mppt_interval_ms = 250U;
     /* Physical qualification remains 20/22/24 V at the source terminals.
      * r117 measured about 18.1 V on the board at nominal 20 V / 10 A after
@@ -481,6 +483,7 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
         p_state->mppt_drop_confirm_count = 0U;
         p_state->mppt_peak_hold = false;
         p_state->mppt_knee_recovered = false;
+        p_state->mppt_actuator_rebased = false;
         p_state->last_mppt_ms = m->now_ms;
         p_state->mppt_initialized = true;
     }
@@ -501,6 +504,7 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
         p_state->mppt_best_voltage_v = m->vin_v;
         p_state->mppt_peak_hold = false;
         p_state->mppt_knee_recovered = false;
+        p_state->mppt_actuator_rebased = false;
         p_state->mppt_reacquire_since_ms = 0U;
         p_state->mppt_drop_confirm_count = 0U;
         p_state->po_direction = -1;
@@ -523,6 +527,41 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
          * without a watt command or a restart cycle. */
         float const knee_error_v =
             m->vin_v - p_state->mppt_hold_anchor_vin_v;
+        float const measured_output_current_a = energy_max(m->iout_a, 0.0F);
+        /* SPS/EPS/TPS ranking can select a waveform whose inner shifts already
+         * transfer more current at zero outer phase than the old P&O request.
+         * v49bg then left CPU1 requesting 1.79 A while the selected EPS
+         * waveform physically delivered 4--5 A. The outer PI could only clamp
+         * at zero, so rising battery voltage made power fall and neither the
+         * current-deficit gate nor phase-cap release could ever engage.
+         *
+         * Rebase the target once to the current which is already flowing when
+         * the selected waveform reproduces at least 90 percent of the measured
+         * MPP. CPU0 still slews its active reference at <=0.5 A/s, so this does
+         * not create a physical current step; it is a bumpless ownership
+         * handoff that restores bidirectional current-loop authority. */
+        bool const waveform_floor_exceeds_request =
+            !p_state->mppt_actuator_rebased &&
+            (measured_output_current_a >
+             (p_state->mppt_current_command_a +
+              ENERGY_MPPT_WAVEFORM_REBASE_MARGIN_A)) &&
+            ((p_state->mppt_best_power_w < ENERGY_MPPT_KNEE_MIN_POWER_W) ||
+             (pv_power >= (ENERGY_MPPT_WAVEFORM_REBASE_POWER_RATIO *
+                           p_state->mppt_best_power_w)));
+        if (waveform_floor_exceeds_request)
+        {
+            p_state->mppt_current_command_a = energy_min(
+                measured_output_current_a, current_ceiling);
+            p_state->mppt_best_current_command_a =
+                p_state->mppt_current_command_a;
+            if (pv_power > p_state->mppt_best_power_w)
+            {
+                p_state->mppt_best_power_w = pv_power;
+                p_state->mppt_best_voltage_v = m->vin_v;
+                p_state->mppt_hold_anchor_vin_v = m->vin_v;
+            }
+            p_state->mppt_actuator_rebased = true;
+        }
         bool const actuator_can_increase =
             p_state->mppt_current_command_a <=
             (energy_max(m->iout_a, 0.0F) +
@@ -661,6 +700,7 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
                 p_state->mppt_drop_confirm_count = 0U;
                 p_state->mppt_peak_hold = true;
                 p_state->mppt_knee_recovered = false;
+                p_state->mppt_actuator_rebased = false;
                 p_state->output.mppt_voltage_target_v =
                     p_state->mppt_best_voltage_v;
                 p_state->previous_pv_v = m->vin_v;
@@ -717,6 +757,7 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
                 p_state->mppt_drop_confirm_count = 0U;
                 p_state->mppt_peak_hold = true;
                 p_state->mppt_knee_recovered = false;
+                p_state->mppt_actuator_rebased = false;
                 p_state->output.mppt_voltage_target_v =
                     p_state->mppt_best_voltage_v;
                 p_state->previous_pv_v = m->vin_v;

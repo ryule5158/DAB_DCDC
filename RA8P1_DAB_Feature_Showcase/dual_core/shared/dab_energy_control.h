@@ -183,6 +183,7 @@ typedef struct st_dab_energy_state
     bool mppt_initialized;
     bool mppt_peak_hold;
     bool mppt_knee_recovered;
+    bool mppt_actuator_rebased;
 } dab_energy_state_t;
 
 void dab_energy_initialize(dab_energy_state_t * p_state);
