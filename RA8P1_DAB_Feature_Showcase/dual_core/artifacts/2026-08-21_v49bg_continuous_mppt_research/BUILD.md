@@ -14,4 +14,6 @@
 - Dual-core build passed. CPU0 text/data/bss: `188850/560/172697`; CPU1: `18658/132/9136`.
 - CPU0 ELF/SREC SHA256: `155B5E30FFF0075DF3DB605979AC3B56AFD06EBD88B8DF39D375EFD4A2C440F7` / `9A8FF2EF1E3D6217009F8BB924E483085F60E52365DB0F25EEE6AD92F3C018E4`.
 - CPU1 ELF/SREC SHA256: `3568EEE0B4666968A11F12BF60618D86EC79F357FE5654D973D321692FC58945` / `0D89F3ADFB83E54459BDEAC34FFF979727443E4B4007CA4A3312A6220429E25E`.
-- Hardware state: `OFFLINE_BUILT_NOT_FLASHED`; r143 remains failed until the same continuous LFP trajectory passes physically.
+- J-Link dual-core flash and verify passed. CPU0 Bank0 programmed and verified `190464 bytes`; CPU1 contents matched.
+- Post-flash query confirmed v49bg, `READY / CTRL OFF / PWM=0 / GPT_RUN=0`, every power path off, `fault=0`, LFP `Vpre=32.40 V / Vcv=43.80 V`, and deterministic local AI-OFF fallback. COM4 was released immediately and COM24 was not accessed.
+- Hardware state: `FLASHED_READY_AWAITING_R143_SAME_TRAJECTORY_RETEST`; r143 remains failed until the same continuous LFP trajectory passes physically.

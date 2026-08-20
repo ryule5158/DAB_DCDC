@@ -1,0 +1,7 @@
+halt
+loadfile "C:\Users\LENOVO\Desktop\Electric Simulation\RA8P1_DAB_Feature_Showcase\dual_core\artifacts\2026-08-21_v49bg_continuous_mppt_research\CPU0.elf"
+loadfile "C:\Users\LENOVO\Desktop\Electric Simulation\RA8P1_DAB_Feature_Showcase\dual_core\artifacts\2026-08-21_v49bg_continuous_mppt_research\CPU1.elf"
+r
+g
+sleep 500
+qc
