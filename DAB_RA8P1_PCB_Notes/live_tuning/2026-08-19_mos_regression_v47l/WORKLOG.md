@@ -1641,3 +1641,13 @@ v49bi修复两层所有权。CPU1在任一模式中选后，只要Vin不低于�
 离线结果：energy与phase新增断言执行通过，promoted tables、advanced control和CAN host测试通过；上位机30/30；参数表charger/current/voltage=`29/13/2`。第一次RA构建因本文件不存在`dab_absf`按失败即停规则终止，改用既有`dab_measurements_abs`后CPU0/CPU1完整构建通过，大小`189522/560/172709`与`18834/132/9140`。产物和哈希在`artifacts/2026-08-21_v49bi_mppt_track_hold`，状态`OFFLINE_BUILT_NOT_FLASHED_AWAITING_R145_SAME_TRAJECTORY_RETEST`。
 
 刷写前只读上位机JSONL的最后有效帧为03:03:38：`READY / CTRL OFF / PWM OFF / stage OFF / fault0`，Vin21.413 V、Vout0.108 V、Pin0.28 W。随后J-Link/SWD刷写v49bi，CPU0 Bank0实际编程/校验190464 bytes，CPU1实际编程/校验20480 bytes，脚本完成并启动双核；日志为`DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bi_mppt_track_hold_dualcore_flash.log`。agent未打开COM4、未访问COM24。刷写后原上位机会话没有继续写入，因此新版本identity与READY仍待操作者在上位机重新连接后自动记录；当前`FLASHED_AWAITING_UPPER_RECONNECT_AND_R145_SAME_TRAJECTORY_RETEST`。
+
+### r145 v49bi整轨迹失败；v49bj持续无扰重搜
+
+`session_20260821_031325.jsonl`确认v49bi版本和完整LFP 31→44.2 V轨迹。PRECHARGE约1 A，32.4 V进入CC；CC内最初达到Iin约8.9 A、Pin约185 W，但35.3 V和36.5 V附近的重复本地三模式重搜误入832/180 ns卸载波形，分别把Iin降至约4.1 A和0.8 A，低功率持续约10 s。之后37→43.4 V虽然fault始终为0，Iin仍从约8.7 A逐步降至5.7 A；43.5 V进入CV后电流正常下降。整轮峰值Pin/Iin/Tpri为189.3 W/9.14 A/61.9 C，fault0，结论为CC/MPPT失败，不能进入下一工况。
+
+v49bj不采用“首次选优后锁定”。三模式仍会根据持续条件变化重复本地重搜，但搜索电压地板由距当前Vin仅0.25 V改为2.0 V余量，正常MPP摆动不再触发卸载波形；真实低Vin崩落仍保留卸载恢复。单轮搜索等待由约20 s缩到约9 s，inner实际斜率仍不超过0.2 ns/ms，电流实际斜率仍不超过0.5 A/s。另修复波形电流无扰重基准与P&O同周期误判MPP拐点：重基准周期不可学习拐点，peak hold重基准要求Vin距已证实knee不低于0.02 V。
+
+离线门禁：energy、phase、promoted-table、advanced-control、CAN五组MinGW C11实际执行通过；上位机30/30；参数表29/13/2。Renesas LLVM CPU0/CPU1构建通过，大小`189450/560/172709`与`18846/132/9140`。旧ReferenceParity仍报告10项克隆/参考工程基线差异，单独记录为非本次MPPT回归，不虚报PASS。产物与哈希已固化到`artifacts/2026-08-21_v49bj_mppt_continuous_bumpless`。最终r145停止帧确认`READY / CTRL OFF / PWM OFF / charge OFF / fault0`、Vout0.388 V、Pin-0.11 W；当前`OFFLINE_BUILT_AWAITING_FLASH`。
+
+v49bj随后按刷写脚本中明确列出的同目录CPU0/CPU1 ELF执行J-Link/SWD升级。刷写前再次核对CPU0/CPU1 SHA256分别为`594A82CA44B8072114B30FB0A3324482E7C9249E73EEC5C47D12C2EC4FAD3E1B`和`0E798F7EE25DD6C2E4AF754F6815A831280184D44486B000FCA14674B9EA7E69`，CPU0镜像内含完整v49bj版本串。J-Link连接`R7KA8P1KF_CPU1`，CPU0 Bank0实际编程并校验190464 bytes，CPU1 Bank0实际编程并校验20480 bytes，两个`loadfile`均返回`O.K.`，随后复位运行；原始日志为`DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bj_mppt_continuous_bumpless_dualcore_flash.log`。本次未打开COM4、未访问COM24或电子负载。当前`FLASHED_AWAITING_UPPER_IDENTITY_AND_R146_RETEST`；必须由操作者重新连接上位机后先记录版本/READY/fault，再执行同一31→45 V连续轨迹，实物通过前不进入下一功能。
