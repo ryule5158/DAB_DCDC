@@ -46,6 +46,14 @@ bool dab_pwm_hw_primary_outputs_enable(void);
 bool dab_pwm_hw_primary_half_bridge_outputs_enable(uint32_t bridge_index);
 
 /*
+ * No-power secondary-bridge diagnosis.  The full form exposes Q5..Q8 and the
+ * half-bridge form exposes Q5/Q6 (index 0) or Q7/Q8 (index 1).  Primary gates
+ * and every unselected secondary gate remain forced GPIO LOW.
+ */
+bool dab_pwm_hw_secondary_outputs_enable(void);
+bool dab_pwm_hw_secondary_half_bridge_outputs_enable(uint32_t bridge_index);
+
+/*
  * No-power gate diagnosis: leaves GPT disconnected, forces seven PWM pins LOW,
  * and drives exactly one selected input HIGH.  RUN_REQ is controlled by the
  * caller and must be dropped before/after use.

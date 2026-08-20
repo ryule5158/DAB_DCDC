@@ -325,6 +325,22 @@ DAB_ITCM_CODE bool dab_adc_dma_latest(dab_adc_frame_t * p_frame)
     return false;
 }
 
+bool dab_adc_dma_direct_read(dab_adc_channel_t channel,
+                             uint16_t * p_raw,
+                             bool * p_invalid)
+{
+    if ((!s_open) || (NULL == p_raw) || (NULL == p_invalid) ||
+        ((uint32_t) channel >= DAB_ADC_CHANNEL_COUNT))
+    {
+        return false;
+    }
+
+    uint32_t const result = R_ADC_B->ADDR[s_physical_index[channel]];
+    *p_raw = (uint16_t) (result & DAB_ADC_RESULT_DATA_MASK);
+    *p_invalid = (0U != (result & DAB_ADC_RESULT_INVALID_MASK));
+    return true;
+}
+
 void dab_adc_dma_stats_get(dab_adc_dma_stats_t * p_stats)
 {
     if (NULL == p_stats)

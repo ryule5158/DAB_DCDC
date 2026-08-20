@@ -30,8 +30,11 @@
  * running at 49.96 kHz, without delaying the independent hardware trips. */
 #define MEASUREMENT_FILTER_ALPHA          (0.03125F)
 
-#define ACS_ZERO_MIN_V                    (1.35F)
-#define ACS_ZERO_MAX_V                    (1.95F)
+#define ACS_IIN_ZERO_MIN_V                (1.35F)
+#define ACS_IIN_ZERO_MAX_V                (1.95F)
+/* Bidirectional 3.3 V ACS725 channels must remain close to VCC/2 at zero A. */
+#define ACS_IOUT_ZERO_MIN_V               (1.35F)
+#define ACS_IOUT_ZERO_MAX_V               (1.95F)
 #define TMCS_DIVIDED_ZERO_MIN_V           (1.45F)
 #define TMCS_DIVIDED_ZERO_MAX_V           (1.85F)
 #define VAFE_HALF_MIN_V                   (1.35F)
@@ -122,8 +125,10 @@ bool dab_measurements_zero_set(dab_current_zero_t const * p_zero)
     {
         return false;
     }
-    if ((p_zero->iin_v < ACS_ZERO_MIN_V) || (p_zero->iin_v > ACS_ZERO_MAX_V) ||
-        (p_zero->iout_v < ACS_ZERO_MIN_V) || (p_zero->iout_v > ACS_ZERO_MAX_V) ||
+    if ((p_zero->iin_v < ACS_IIN_ZERO_MIN_V) ||
+        (p_zero->iin_v > ACS_IIN_ZERO_MAX_V) ||
+        (p_zero->iout_v < ACS_IOUT_ZERO_MIN_V) ||
+        (p_zero->iout_v > ACS_IOUT_ZERO_MAX_V) ||
         (p_zero->ipri_v < TMCS_DIVIDED_ZERO_MIN_V) ||
         (p_zero->ipri_v > TMCS_DIVIDED_ZERO_MAX_V) ||
         (p_zero->isec_v < TMCS_DIVIDED_ZERO_MIN_V) ||

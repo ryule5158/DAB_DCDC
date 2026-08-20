@@ -1,0 +1,356 @@
+{
+  "dataset": {
+    "bundle_count": 4,
+    "files": [
+      "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\tools\\ai_training\\data\\provisional_2026-08-21\\modulation_conditions_provisional.csv"
+    ],
+    "mode_counts": {
+      "EPS": 2,
+      "TPS": 2
+    },
+    "rows": 4,
+    "sha256": "0d635146fd9dacd60292e5e3d6afb2dd71fba763c29911f2a7d9805e9a3fbc71",
+    "split_is_grouped_by": "condition_id",
+    "split_rows": {
+      "test": 1,
+      "train": 2,
+      "validation": 1
+    },
+    "unique_conditions": 4
+  },
+  "deployment_ready": false,
+  "input": {
+    "category_maps": {
+      "battery": {
+        "LEAD36": 3,
+        "LEAD_ACID_36V": 3,
+        "LFP12": 2,
+        "LFP_12S": 2,
+        "LIION10": 1,
+        "LI_ION_10S": 1,
+        "NONE": 0
+      },
+      "charge_stage": {
+        "ABSORPTION": 3,
+        "BULK": 2,
+        "CC": 2,
+        "CV": 3,
+        "DONE": 5,
+        "FLOAT": 4,
+        "IDLE": 0,
+        "OFF": 0,
+        "PRECHARGE": 1
+      },
+      "control_arch": {
+        "CPU1_ENERGY_SUPERVISOR": 2,
+        "CP_DAMPED_CASCADE": 3,
+        "CP_POWER_PI_CURRENT_PI_DAMPED": 3,
+        "ENERGY_SUPERVISOR": 2,
+        "OUTPUT_CURRENT_PI": 1,
+        "VOLTAGE_PI_SINGLE": 0,
+        "VOLTAGE_PI_SINGLE_LOOP": 0
+      },
+      "load_mode": {
+        "CC": 3,
+        "CP": 1,
+        "CR": 2,
+        "CV": 0
+      },
+      "scenario": {
+        "CC_SUPPORT": 5,
+        "CP_ENERGY_ROUTE": 1,
+        "CR_SUPPORT": 4,
+        "CV_CHARGE": 0,
+        "MPPT_ONLY": 2,
+        "SOLAR_CHARGER": 3
+      }
+    },
+    "feature_order": [
+      "vin_v",
+      "vout_target_v",
+      "iout_target_a",
+      "pout_target_w",
+      "source_current_limit_a",
+      "power_limit_w",
+      "temp_primary_c",
+      "temp_secondary_c",
+      "scenario_code",
+      "load_mode_code",
+      "control_arch_code",
+      "battery_code",
+      "charge_stage_code",
+      "vinadapt_enabled",
+      "cp_damping_enabled"
+    ],
+    "normalization": "clip_to_range_then_map_to_minus1_plus1",
+    "physical_ranges": {
+      "battery_code": {
+        "maximum": 3.0,
+        "minimum": 0.0
+      },
+      "charge_stage_code": {
+        "maximum": 5.0,
+        "minimum": 0.0
+      },
+      "control_arch_code": {
+        "maximum": 3.0,
+        "minimum": 0.0
+      },
+      "cp_damping_enabled": {
+        "maximum": 1.0,
+        "minimum": 0.0
+      },
+      "iout_target_a": {
+        "maximum": 18.0,
+        "minimum": 0.0
+      },
+      "load_mode_code": {
+        "maximum": 3.0,
+        "minimum": 0.0
+      },
+      "pout_target_w": {
+        "maximum": 400.0,
+        "minimum": 0.0
+      },
+      "power_limit_w": {
+        "maximum": 400.0,
+        "minimum": 20.0
+      },
+      "scenario_code": {
+        "maximum": 5.0,
+        "minimum": 0.0
+      },
+      "source_current_limit_a": {
+        "maximum": 25.0,
+        "minimum": 0.0
+      },
+      "temp_primary_c": {
+        "maximum": 110.0,
+        "minimum": -20.0
+      },
+      "temp_secondary_c": {
+        "maximum": 110.0,
+        "minimum": -20.0
+      },
+      "vin_v": {
+        "maximum": 26.0,
+        "minimum": 16.0
+      },
+      "vinadapt_enabled": {
+        "maximum": 1.0,
+        "minimum": 0.0
+      },
+      "vout_target_v": {
+        "maximum": 50.0,
+        "minimum": 34.0
+      }
+    }
+  },
+  "metric_issues": [
+    "INT8 mode accuracy below 0.68",
+    "INT8 bundle accuracy below 0.60",
+    "INT8 mode accuracy drop exceeds 0.05"
+  ],
+  "metrics": {
+    "float_bundle": {
+      "accuracy": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "labels": [
+        "advanced-G2_EPS_CV36_I2",
+        "advanced-G5_EPS_CV48_I0P5",
+        "bundle-tps_128_40_300",
+        "bundle-tps_i7_40_20_ok"
+      ],
+      "macro_f1": 0.0
+    },
+    "float_mode": {
+      "accuracy": 1.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "labels": [
+        "SPS",
+        "EPS",
+        "TPS"
+      ],
+      "macro_f1": 1.0
+    },
+    "int8_bundle": {
+      "accuracy": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "labels": [
+        "advanced-G2_EPS_CV36_I2",
+        "advanced-G5_EPS_CV48_I0P5",
+        "bundle-tps_128_40_300",
+        "bundle-tps_i7_40_20_ok"
+      ],
+      "macro_f1": 0.0
+    },
+    "int8_mode": {
+      "accuracy": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "labels": [
+        "SPS",
+        "EPS",
+        "TPS"
+      ],
+      "macro_f1": 0.0
+    }
+  },
+  "model_role": "SPS_EPS_TPS_SELECTOR_AND_PARAMETER_BUNDLE",
+  "model_version": "modulation-selector-v1",
+  "output": {
+    "firmware_returns": [
+      "modulation_hint",
+      "parameter_bundle_id",
+      "confidence",
+      "ttl_ms",
+      "valid"
+    ],
+    "single_tensor_layout": {
+      "bundle_scores": {
+        "labels": [
+          "advanced-G2_EPS_CV36_I2",
+          "advanced-G5_EPS_CV48_I0P5",
+          "bundle-tps_128_40_300",
+          "bundle-tps_i7_40_20_ok"
+        ],
+        "length": 4,
+        "offset": 3
+      },
+      "mode_scores": {
+        "labels": [
+          "SPS",
+          "EPS",
+          "TPS"
+        ],
+        "length": 3,
+        "offset": 0
+      }
+    }
+  },
+  "readiness_issues": [
+    "rows 4 < 180",
+    "conditions 4 < 60",
+    "labels do not cover SPS, EPS, and TPS",
+    "at least one modulation class has fewer than 10 rows",
+    "fewer than five independent condition groups",
+    "provisional/non-independent efficiency labels are present",
+    "each parameter bundle needs at least three repeats"
+  ],
+  "safety_contract": {
+    "firmware_owns_dwell_bumpless_switch_and_rollback": true,
+    "firmware_validates_bundle": true,
+    "model_never_writes_pwm": true,
+    "output_is_advisory": true
+  },
+  "schema_version": "ra8p1-dab-ai-v1",
+  "tflite": {
+    "inputs": [
+      {
+        "dtype": "int8",
+        "name": "serving_default_condition_features:0",
+        "scale": 0.007843137718737125,
+        "shape": [
+          1,
+          15
+        ],
+        "zero_point": -1
+      }
+    ],
+    "outputs": [
+      {
+        "dtype": "int8",
+        "name": "StatefulPartitionedCall_1:0",
+        "scale": 0.001973663689568639,
+        "shape": [
+          1,
+          7
+        ],
+        "zero_point": -128
+      }
+    ],
+    "sha256": "e5d3ab73e87d075dcf4cc7c5a399f0c4f5c05d8cd68975d59d0af91d5cc3694f",
+    "size_bytes": 7352
+  }
+}

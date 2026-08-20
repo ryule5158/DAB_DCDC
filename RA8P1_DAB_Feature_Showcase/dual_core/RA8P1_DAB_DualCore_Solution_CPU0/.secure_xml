@@ -111,7 +111,7 @@
     <node id="board.clock.spiclk.source" option="board.clock.spiclk.source.disabled"/>
     <node id="board.clock.spiclk.div" option="board.clock.spiclk.div.1"/>
     <node id="board.clock.spiclk.display" option="board.clock.spiclk.display.value"/>
-    <node id="board.clock.canfdclk.source" option="board.clock.canfdclk.source.disabled"/>
+    <node id="board.clock.canfdclk.source" option="board.clock.canfdclk.source.pll2r"/>
     <node id="board.clock.canfdclk.div" option="board.clock.canfdclk.div.6"/>
     <node id="board.clock.canfdclk.display" option="board.clock.canfdclk.display.value"/>
     <node id="board.clock.gptclk.source" option="board.clock.gptclk.source.disabled"/>

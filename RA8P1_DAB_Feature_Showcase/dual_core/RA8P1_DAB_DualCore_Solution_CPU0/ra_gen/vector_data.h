@@ -6,7 +6,7 @@
         #endif
 /* Number of interrupts allocated */
 #ifndef VECTOR_DATA_IRQ_COUNT
-#define VECTOR_DATA_IRQ_COUNT    (13)
+#define VECTOR_DATA_IRQ_COUNT    (18)
 #endif
 /* ISR prototypes */
 void sci_b_uart_rxi_isr(void);
@@ -19,6 +19,10 @@ void iic_master_rxi_isr(void);
 void iic_master_txi_isr(void);
 void iic_master_tei_isr(void);
 void iic_master_eri_isr(void);
+void canfd_error_isr(void);
+void canfd_channel_tx_isr(void);
+void canfd_common_fifo_rx_isr(void);
+void canfd_rx_fifo_isr(void);
 void layer3_switch_gwdi_isr(void);
 void layer3_switch_eaei_isr(void);
 
@@ -43,14 +47,24 @@ void layer3_switch_eaei_isr(void);
 #define IIC2_TEI_IRQn          ((IRQn_Type) 8) /* IIC2 TEI (Transmit end) */
 #define VECTOR_NUMBER_IIC2_ERI ((IRQn_Type) 9) /* IIC2 ERI (Transfer error) */
 #define IIC2_ERI_IRQn          ((IRQn_Type) 9) /* IIC2 ERI (Transfer error) */
-#define VECTOR_NUMBER_ETHER_GWDI0 ((IRQn_Type) 10) /* ETHER GWDI0 (GWCA Data Interrupt 0) */
-#define ETHER_GWDI0_IRQn          ((IRQn_Type) 10) /* ETHER GWDI0 (GWCA Data Interrupt 0) */
-#define VECTOR_NUMBER_ETHER_EAEI0 ((IRQn_Type) 11) /* ETHER EAEI0 (ETHA0 Error Interrupt) */
-#define ETHER_EAEI0_IRQn          ((IRQn_Type) 11) /* ETHER EAEI0 (ETHA0 Error Interrupt) */
-#define VECTOR_NUMBER_ETHER_EAEI1 ((IRQn_Type) 12) /* ETHER EAEI1 (ETHA1 Error Interrupt) */
-#define ETHER_EAEI1_IRQn          ((IRQn_Type) 12) /* ETHER EAEI1 (ETHA1 Error Interrupt) */
+#define VECTOR_NUMBER_CAN0_CHERR ((IRQn_Type) 10) /* CAN0 CHERR (Channel  error) */
+#define CAN0_CHERR_IRQn          ((IRQn_Type) 10) /* CAN0 CHERR (Channel  error) */
+#define VECTOR_NUMBER_CAN0_TX ((IRQn_Type) 11) /* CAN0 TX (Transmit interrupt) */
+#define CAN0_TX_IRQn          ((IRQn_Type) 11) /* CAN0 TX (Transmit interrupt) */
+#define VECTOR_NUMBER_CAN0_COMFRX ((IRQn_Type) 12) /* CAN0 COMFRX (Common FIFO receive interrupt) */
+#define CAN0_COMFRX_IRQn          ((IRQn_Type) 12) /* CAN0 COMFRX (Common FIFO receive interrupt) */
+#define VECTOR_NUMBER_CAN_GLERR ((IRQn_Type) 13) /* CAN GLERR (Global error) */
+#define CAN_GLERR_IRQn          ((IRQn_Type) 13) /* CAN GLERR (Global error) */
+#define VECTOR_NUMBER_CAN_RXF ((IRQn_Type) 14) /* CAN RXF (Global receive FIFO interrupt) */
+#define CAN_RXF_IRQn          ((IRQn_Type) 14) /* CAN RXF (Global receive FIFO interrupt) */
+#define VECTOR_NUMBER_ETHER_GWDI0 ((IRQn_Type) 15) /* ETHER GWDI0 (GWCA Data Interrupt 0) */
+#define ETHER_GWDI0_IRQn          ((IRQn_Type) 15) /* ETHER GWDI0 (GWCA Data Interrupt 0) */
+#define VECTOR_NUMBER_ETHER_EAEI0 ((IRQn_Type) 16) /* ETHER EAEI0 (ETHA0 Error Interrupt) */
+#define ETHER_EAEI0_IRQn          ((IRQn_Type) 16) /* ETHER EAEI0 (ETHA0 Error Interrupt) */
+#define VECTOR_NUMBER_ETHER_EAEI1 ((IRQn_Type) 17) /* ETHER EAEI1 (ETHA1 Error Interrupt) */
+#define ETHER_EAEI1_IRQn          ((IRQn_Type) 17) /* ETHER EAEI1 (ETHA1 Error Interrupt) */
 /* The number of entries required for the ICU vector table. */
-#define BSP_ICU_VECTOR_NUM_ENTRIES (13)
+#define BSP_ICU_VECTOR_NUM_ENTRIES (18)
 
 #ifdef __cplusplus
         }

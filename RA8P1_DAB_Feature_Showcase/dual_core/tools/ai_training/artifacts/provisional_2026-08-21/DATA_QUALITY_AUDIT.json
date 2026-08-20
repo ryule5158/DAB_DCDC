@@ -1,0 +1,177 @@
+{
+  "intended_use": "pipeline smoke and first-pass training only",
+  "blocking_boundary_passed": true,
+  "overall_data_quality_for_deployment": "FAIL",
+  "modulation_dataset": {
+    "grain": "one selected winner per independent matched condition",
+    "rows": 4,
+    "columns": 34,
+    "unique_conditions": 4,
+    "duplicate_record_ids": 0,
+    "null_required_key_fields": 0,
+    "class_counts": {
+      "TPS": 2,
+      "EPS": 2
+    },
+    "unique_parameter_bundles": 4,
+    "minimum_bundle_repeat_count": 1,
+    "all_external_efficiency_validated": false,
+    "group_split": {
+      "passed": true,
+      "overlap": [],
+      "rows": {
+        "train": 2,
+        "validation": 1,
+        "test": 1
+      },
+      "groups": {
+        "train": [
+          "vin24_cv36_i6",
+          "vin24_cv36_i7"
+        ],
+        "validation": [
+          "advanced-2-CV-36.0-2.0-20"
+        ],
+        "test": [
+          "advanced-5-CV-48.0-0.5-20"
+        ]
+      }
+    }
+  },
+  "mppt_dataset": {
+    "grain": "one reconstructed nine-point scan per source log",
+    "rows": 10,
+    "columns": 17,
+    "unique_curves": 10,
+    "duplicate_episode_ids": 0,
+    "duplicate_curve_ids": 0,
+    "negative_power_cells": 0,
+    "ground_truth_validated_rows": 0,
+    "represented_nearest_half_volt_classes": 6,
+    "labels_derived_from_same_input_rows": 10,
+    "edge_hold_interpolation_rows": 10,
+    "group_split": {
+      "passed": true,
+      "overlap": [],
+      "rows": {
+        "train": 6,
+        "validation": 2,
+        "test": 2
+      },
+      "groups": {
+        "train": [
+          "2026-08-20_FMP_VIN20_ILIM10_CV36_v49ai_r117_po_outerreplay_continuous",
+          "2026-08-20_FMP_VIN22_ILIM10_CV36_v49ai_r116_po_outerreplay_continuous",
+          "2026-08-20_FMP_VIN22_ILIM5PPLUS_CV33_v49ab_r99_po_trajectory_keep_continuous",
+          "2026-08-20_FMP_VIN22_ILIM8_CV36_v49ai_r112_po_outerreplay_continuous",
+          "2026-08-20_FMP_VIN24_ILIM10_CV36_v49ai_r114_po_outerreplay_continuous",
+          "2026-08-20_FMP_VIN24_ILIM12_CV36_v49ai_r115_po_outerreplay_continuous"
+        ],
+        "validation": [
+          "2026-08-20_FMP_VIN20_ILIM8_CV36_v49ai_r111_po_outerreplay_continuous",
+          "2026-08-20_FMP_VIN24_ILIM5PPLUS_CV33_v49ab_r101_po_trajectory_keep_continuous"
+        ],
+        "test": [
+          "2026-08-20_FMP_VIN20_ILIM5PPLUS_CV33_v49ad_r105_po_hold_floor_debounce_continuous",
+          "2026-08-20_FMP_VIN24_ILIM8_CV36_v49ai_r113_po_outerreplay_continuous"
+        ]
+      }
+    }
+  },
+  "models": {
+    "modulation": {
+      "metadata": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\tools\\ai_training\\artifacts\\provisional_2026-08-21\\modulation_selector_v1_run1\\metadata.json",
+      "tflite": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\tools\\ai_training\\artifacts\\provisional_2026-08-21\\modulation_selector_v1_run1\\modulation_selector_int8.tflite",
+      "deployment_ready": false,
+      "readiness_issues": [
+        "rows 4 < 180",
+        "conditions 4 < 60",
+        "labels do not cover SPS, EPS, and TPS",
+        "at least one modulation class has fewer than 10 rows",
+        "fewer than five independent condition groups",
+        "provisional/non-independent efficiency labels are present",
+        "each parameter bundle needs at least three repeats"
+      ],
+      "metric_issues": [
+        "INT8 mode accuracy below 0.68",
+        "INT8 bundle accuracy below 0.60",
+        "INT8 mode accuracy drop exceeds 0.05"
+      ],
+      "fully_int8_io": true,
+      "sha256_matches": true,
+      "sha256": "e5d3ab73e87d075dcf4cc7c5a399f0c4f5c05d8cd68975d59d0af91d5cc3694f",
+      "input_shapes": [
+        [
+          1,
+          15
+        ]
+      ],
+      "output_shapes": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    "mppt": {
+      "metadata": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\tools\\ai_training\\artifacts\\provisional_2026-08-21\\mppt_v1_run1\\metadata.json",
+      "tflite": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\tools\\ai_training\\artifacts\\provisional_2026-08-21\\mppt_v1_run1\\mppt_vmpp_int8.tflite",
+      "deployment_ready": false,
+      "readiness_issues": [
+        "episodes 10 < 50",
+        "heuristic/unvalidated Vmpp labels are present"
+      ],
+      "metric_issues": [
+        "INT8 Vmpp MAE exceeds 0.50 V",
+        "fewer than 90 percent of INT8 predictions are within one bin"
+      ],
+      "fully_int8_io": true,
+      "sha256_matches": true,
+      "sha256": "365852c98f39915e936c166721ce6b9f7356d100e990753be86ed77574e5f59d",
+      "input_shapes": [
+        [
+          1,
+          9
+        ]
+      ],
+      "output_shapes": [
+        [
+          1,
+          13
+        ]
+      ]
+    }
+  },
+  "findings": [
+    {
+      "severity": "critical",
+      "confidence": "high",
+      "finding": "both datasets fail formal sample and label gates",
+      "impact": "no deployment, RUHMI promotion, firmware integration, or control claim"
+    },
+    {
+      "severity": "critical",
+      "confidence": "high",
+      "finding": "MPPT labels are derived from the same nine input powers in 10/10 rows",
+      "impact": "test metrics cannot measure independent Vmpp generalization"
+    },
+    {
+      "severity": "high",
+      "confidence": "high",
+      "finding": "MPPT interpolation holds an observed edge in 10/10 rows",
+      "impact": "unobserved scan voltages can create artificial plateaus and boundary labels"
+    },
+    {
+      "severity": "high",
+      "confidence": "high",
+      "finding": "modulation labels cover only EPS and TPS; SPS is absent and each parameter bundle appears once",
+      "impact": "mode and parameter-bundle accuracy are not statistically meaningful"
+    }
+  ],
+  "automated_gate": {
+    "must_remain_deployment_ready_false": true,
+    "must_have_disjoint_group_splits": true,
+    "must_have_fully_int8_io": true,
+    "must_have_matching_tflite_sha256": true
+  }
+}

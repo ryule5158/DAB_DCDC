@@ -11,7 +11,11 @@
  * here or through the bounded UART commands implemented by the application.
  */
 
-#define DAB_FW_VERSION                         "2026-08-16-dualcore-manual-stop-v43"
+#define DAB_FW_VERSION                         "2026-08-21-dualcore-continuous-mppt-research-v49bg"
+
+/* CP target/current startup is deliberately no faster than the already
+ * hardware-qualified charge/MPPT transition rule. */
+#define DAB_CP_CURRENT_REFERENCE_SLEW_A_PER_S  (0.50F)
 
 /*
  * Peripheral qualification is complete, so this build permits only the
@@ -27,6 +31,8 @@
  */
 #define DAB_GATE_DIAG_MAX_VIN_V                (12.0F)
 #define DAB_GATE_DIAG_MAX_VOUT_V               (5.0F)
+#define DAB_PWM8_DIAG_MAX_VIN_V                 (2.0F)
+#define DAB_PWM8_DIAG_MAX_VOUT_V                (2.0F)
 #define DAB_GATE_DIAG_PULSE_MS                 (100UL)
 
 /*
@@ -38,6 +44,26 @@
 #define DAB_PRIMARY_TEST_MIN_MS                 (10UL)
 #define DAB_PRIMARY_TEST_DEFAULT_MS             (100UL)
 #define DAB_PRIMARY_TEST_MAX_MS                 (500UL)
+
+/*
+ * Secondary diagnosis is deliberately timed-only.  It requires both measured
+ * buses below the PWM8 no-power limits, keeps all power-path MOSFETs open, and
+ * always returns RUN_REQ and all eight PWM inputs LOW after the bounded pulse.
+ */
+#define DAB_SECONDARY_TEST_MIN_MS               (20UL)
+#define DAB_SECONDARY_TEST_DEFAULT_MS           (100UL)
+#define DAB_SECONDARY_TEST_MAX_MS               (200UL)
+#define DAB_ADC_CROSSCHECK_SAMPLES               (32UL)
+#define DAB_ADC_CROSSCHECK_INTERVAL_US           (100UL)
+#define DAB_NOPOWER_DIAG_ARM_MS                  (15000UL)
+#define DAB_LIVE_BURST_MAX_PHASE_NS              (80UL)
+#define DAB_LIVE_BURST_MIN_MS                    (1UL)
+#define DAB_LIVE_BURST_SHORT_MAX_MS              (50UL)
+#define DAB_LIVE_BURST_LONG_PHASE_MAX_NS         (32UL)
+#define DAB_LIVE_BURST_MAX_MS                  (15000UL)
+#define DAB_LIVE_BURST_IDLE_IIN_MAX_A            (0.5F)
+#define DAB_LIVE_BURST_IDLE_IOUT_MAX_A           (0.5F)
+#define DAB_LIVE_BURST_IDLE_BRIDGE_MAX_A         (1.0F)
 
 /*
  * Software-protection profile.
@@ -57,9 +83,9 @@
 #define DAB_SW_PROTECTION_PROFILE_ALL_ENABLED          (1U)
 
 /*
- * v43 preserves the v40 commissioning behavior: runtime
- * shutdown is owned by the operator while all fault inputs remain observable.
- * This changes MCU policy only; external hardware protection is unaffected.
+ * Runtime shutdown is owned by the operator while all fault inputs remain
+ * observable.  This changes MCU policy only; external hardware protection is
+ * unaffected.
  */
 #define DAB_MANUAL_STOP_TEST_MODE                       (1U)
 
@@ -106,9 +132,9 @@
 #endif
 
 /*
- * POEG remains present in the FSP stack for observation and later protected
- * builds, but it is deliberately not opened or consulted by this test image.
- * The generated GPT configuration also prohibits POEG output disable.
+ * POEG remains present in the FSP stack for observation, but it is deliberately
+ * not opened or consulted by this manual-stop test image.  The generated GPT
+ * configuration also prohibits POEG output disable.
  */
 #ifndef DAB_POEG_PWM_SHUTDOWN_ENABLE
  #define DAB_POEG_PWM_SHUTDOWN_ENABLE                  (0U)
@@ -178,6 +204,7 @@
 #define DAB_CURRENT_KI_MAX_US_PER_AS             (20.0F)
 #define DAB_CURRENT_REFERENCE_MAX_A              (18.0F)
 #define DAB_CURRENT_REFERENCE_SLEW_DEFAULT_A_PER_S (2.0F)
+#define DAB_SCHEDULE_VALIDATION_SLEW_MIN_A_PER_S   (1.0F)
 #define DAB_CURRENT_REFERENCE_SLEW_MAX_A_PER_S   (100.0F)
 #define DAB_ENERGY_REFERENCE_STALE_MS            (500UL)
 
@@ -194,8 +221,63 @@
      (float) DAB_PWM_COUNT_NS)
 #define DAB_PHASE_FALL_COUNTS_PER_UPDATE        (8.0F)
 
+/*
+ * Hard startup envelope.  This is a control constraint, not an automatic
+ * shutdown path, and therefore remains active in manual-stop bench mode.
+ * Every ON starts in SPS with zero inner shift.  After the hold, an explicit
+ * manual EPS/TPS target may slew in SOFTSTART to avoid a high-ratio startup
+ * deadlock; AUTO still waits for RUN.  Effective outer phase is limited to one
+ * 4 ns hardware count until RUN and then released one count at a time.
+ */
+#define DAB_STARTUP_PHASE_MIN_COUNTS             (1UL)
+#define DAB_STARTUP_PHASE_HOLD_MS                 (1000UL)
+#define DAB_STARTUP_PHASE_STEP_INTERVAL_MS        (100UL)
+#define DAB_STARTUP_INNER_SLOW_WINDOW_MS          (3000UL)
+#define DAB_STARTUP_INNER_SLEW_NS_PER_MS          (0.020F)
+
+/*
+ * Board-local charger scheduling.  The locked 18 V/CV43 V repair keeps the
+ * proven TPS 100/564 ns bootstrap partition until RUN is established, then
+ * slews to the 100/536 ns steady candidate without any host command.  This
+ * candidate is intentionally restricted to the 1 A LFP workpoint and must be
+ * physically revalidated before promotion into the PASS table.
+ */
+#define DAB_CHARGER_RUNTIME_RESELECT_MS             (250UL)
+#define DAB_CHARGER_RUNTIME_CONFIRM_MS              (3000UL)
+#define DAB_CHARGER_LOW_INPUT_MAX_V                 (18.0F)
+#define DAB_CHARGER_LOW_OUTPUT_MIN_V                (42.5F)
+#define DAB_CHARGER_LOW_OUTPUT_MAX_V                (44.0F)
+#define DAB_CHARGER_LOW_CURRENT_MIN_A                (0.8F)
+#define DAB_CHARGER_LOW_CURRENT_MAX_A                (1.2F)
+#define DAB_CHARGER_LOW_START_PRIMARY_NS            (100.0F)
+#define DAB_CHARGER_LOW_START_SECONDARY_NS          (564.0F)
+#define DAB_CHARGER_LOW_RUN_PRIMARY_NS              (100.0F)
+#define DAB_CHARGER_LOW_RUN_SECONDARY_NS            (536.0F)
+#define DAB_CHARGER_LOW_RUN_SETTLE_MS                (500UL)
+#define DAB_CHARGER_LOW_PHASE_CAP_NS                 (320.0F)
+#define DAB_CHARGER_LOW_ENTRY_ID                  (48018001UL)
+
+/* Physical endpoints at 22 V/CV40 V are 1.443 A for SPS 0/0 at zero phase
+ * and about zero transfer for EPS 600/0 at its compensated zero.  The latter
+ * consumes 300 ns of a 480 ns raw-phase range and reaches only 0.243 A at an
+ * effective 120 ns.  Use the normal 240 ns inner limit as an interpolated,
+ * lower-start-power partition with enough forward actuator headroom. */
+#define DAB_CHARGER_LIION_MID_INPUT_MAX_V          (22.0F)
+#define DAB_CHARGER_LIION_MID_OUTPUT_MIN_V         (39.0F)
+#define DAB_CHARGER_LIION_MID_OUTPUT_MAX_V         (42.5F)
+#define DAB_CHARGER_LIION_MID_PRIMARY_NS           (240.0F)
+#define DAB_CHARGER_LIION_MID_SECONDARY_NS         (0.0F)
+#define DAB_CHARGER_LIION_MID_PHASE_CAP_NS         (124.0F)
+#define DAB_CHARGER_LIION_MID_ENTRY_ID          (22040009UL)
+#define DAB_CHARGER_LIION_LOW_INPUT_MAX_V           (20.5F)
+#define DAB_CHARGER_LIION_LOW_PRIMARY_NS            (100.0F)
+#define DAB_CHARGER_LIION_LOW_SECONDARY_NS          (536.0F)
+#define DAB_CHARGER_LIION_LOW_PHASE_CAP_NS          (260.0F)
+#define DAB_CHARGER_LIION_LOW_ENTRY_ID            (22040014UL)
+
 /* EPS/TPS shift is narrowed so the 400 ns dead-time schedule always fits. */
 #define DAB_INNER_SHIFT_MAX_COUNTS              (180UL)
+#define DAB_PRECHARGE_PRIMARY_INNER_MAX_COUNTS  (216UL)
 #define DAB_INNER_NORMAL_MAX_COUNTS             (60UL)
 /* Keep inner-shift motion slow enough for the outer voltage loop to follow. */
 #define DAB_INNER_SLEW_NS_PER_MS                (0.04F)
@@ -227,7 +309,7 @@
 
 #define DAB_POWER_DEFAULT_W                     (20.0F)
 #define DAB_POWER_NORMAL_MAX_W                  (100.0F)
-#define DAB_POWER_ABSOLUTE_MAX_W                (400.0F)
+#define DAB_POWER_ABSOLUTE_MAX_W                (360.0F)
 
 /* Training-condition metadata.  These values never energize the converter. */
 #define DAB_BENCH_VIN_SET_DEFAULT_V             (24.0F)
@@ -238,7 +320,7 @@
 #define DAB_LOAD_NOMINAL_MAX_OHM                (100.0F)
 #define DAB_POWER_LAYER_DEFAULT_W               (200.0F)
 #define DAB_POWER_LAYER_MIN_W                   (20.0F)
-#define DAB_POWER_LAYER_MAX_W                   (400.0F)
+#define DAB_POWER_LAYER_MAX_W                   (360.0F)
 
 /*
  * Software current limits are intentionally far below the fitted hardware
@@ -290,6 +372,12 @@
       DAB_INNER_SHIFT_MAX_COUNTS + \
       DAB_PWM_HALF_COUNTS + DAB_DEADTIME_COUNTS) >= DAB_PWM_PERIOD_COUNTS)
 #error "The maximum phase/dead-time edge schedule does not fit the PWM period."
+#endif
+
+#if ((DAB_PWM_EDGE_GUARD_COUNTS + \
+      DAB_PRECHARGE_PRIMARY_INNER_MAX_COUNTS + DAB_PWM_HALF_COUNTS + \
+      DAB_DEADTIME_COUNTS) >= DAB_PWM_PERIOD_COUNTS)
+#error "The special precharge primary-inner edge schedule does not fit."
 #endif
 
 #endif /* DAB_FIRST_POWER_CONFIG_H */

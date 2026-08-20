@@ -1,0 +1,103 @@
+{
+  "modulation": {
+    "purpose": "non-deployable first-pass training on existing measured records",
+    "source_rows_inspected": 50,
+    "promoted_rows": 4,
+    "unique_conditions": 4,
+    "mode_counts": {
+      "TPS": 2,
+      "EPS": 2
+    },
+    "external_efficiency_validated": false,
+    "selection_rule": "legacy selected_overall, or highest board-ADC Pout/Pin among completed matched SPS/EPS/TPS PASS trials"
+  },
+  "mppt": {
+    "purpose": "non-deployable MPPT pipeline training from existing P&O trajectories",
+    "episodes": 10,
+    "unique_curves": 10,
+    "ground_truth_validated": false,
+    "warning": "P&O trajectory medians and interpolation are not a complete independent P-V scan and must not be promoted as deployable Vmpp ground truth",
+    "diagnostics": [
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN22_ILIM5PPLUS_CV33_v49ab_r99_po_trajectory_keep_continuous.log",
+        "positive_points": 1719,
+        "observed_vmin": 20.0,
+        "observed_vmax": 21.3,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 21.75
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN24_ILIM5PPLUS_CV33_v49ab_r101_po_trajectory_keep_continuous.log",
+        "positive_points": 1720,
+        "observed_vmin": 20.0,
+        "observed_vmax": 23.3,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 22.5
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN20_ILIM5PPLUS_CV33_v49ad_r105_po_hold_floor_debounce_continuous.log",
+        "positive_points": 1626,
+        "observed_vmin": 18.5,
+        "observed_vmax": 19.4,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 18.0
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN20_ILIM8_CV36_v49ai_r111_po_outerreplay_continuous.log",
+        "positive_points": 1909,
+        "observed_vmin": 18.5,
+        "observed_vmax": 19.5,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 18.0
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN22_ILIM8_CV36_v49ai_r112_po_outerreplay_continuous.log",
+        "positive_points": 2752,
+        "observed_vmin": 18.5,
+        "observed_vmax": 21.4,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 20.25
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN24_ILIM8_CV36_v49ai_r113_po_outerreplay_continuous.log",
+        "positive_points": 1952,
+        "observed_vmin": 18.5,
+        "observed_vmax": 23.4,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 23.25
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN24_ILIM10_CV36_v49ai_r114_po_outerreplay_continuous.log",
+        "positive_points": 1723,
+        "observed_vmin": 19.3,
+        "observed_vmax": 23.4,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 19.5
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN24_ILIM12_CV36_v49ai_r115_po_outerreplay_continuous.log",
+        "positive_points": 2641,
+        "observed_vmin": 18.5,
+        "observed_vmax": 23.4,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 18.0
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN22_ILIM10_CV36_v49ai_r116_po_outerreplay_continuous.log",
+        "positive_points": 1997,
+        "observed_vmin": 18.5,
+        "observed_vmax": 21.4,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 19.5
+      },
+      {
+        "source_log": "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\DAB_RA8P1_PCB_Notes\\serial_logs\\2026-08-20_FMP_VIN20_ILIM10_CV36_v49ai_r117_po_outerreplay_continuous.log",
+        "positive_points": 2410,
+        "observed_vmin": 18.5,
+        "observed_vmax": 19.5,
+        "interpolation_includes_edge_hold": true,
+        "provisional_vmpp_v": 19.5
+      }
+    ]
+  }
+}

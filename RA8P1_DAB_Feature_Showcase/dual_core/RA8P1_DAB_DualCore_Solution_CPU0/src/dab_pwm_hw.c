@@ -10,6 +10,10 @@
 #define DAB_PRIMARY_GATE_COUNT          (4UL)
 #define DAB_PRIMARY_HALF_GATE_COUNT     (2UL)
 #define DAB_PRIMARY_HALF_BRIDGE_COUNT   (2UL)
+#define DAB_SECONDARY_FIRST_GATE        (4UL)
+#define DAB_SECONDARY_GATE_COUNT        (4UL)
+#define DAB_SECONDARY_HALF_GATE_COUNT   (2UL)
+#define DAB_SECONDARY_HALF_BRIDGE_COUNT (2UL)
 
 typedef struct st_dab_pwm_pin
 {
@@ -68,12 +72,14 @@ static bool dab_pwm_hw_pins_gpt(void)
     return true;
 }
 
-static bool dab_pwm_hw_primary_pin_range_gpt(uint32_t first_gate,
-                                              uint32_t gate_count)
+static bool dab_pwm_hw_pin_range_gpt(uint32_t first_gate,
+                                     uint32_t gate_count)
 {
+    uint32_t const total_gate_count =
+        (uint32_t) (sizeof(s_pwm_pins) / sizeof(s_pwm_pins[0]));
     if ((0U == gate_count) ||
-        (first_gate >= DAB_PRIMARY_GATE_COUNT) ||
-        ((first_gate + gate_count) > DAB_PRIMARY_GATE_COUNT))
+        (first_gate >= total_gate_count) ||
+        ((first_gate + gate_count) > total_gate_count))
     {
         return false;
     }
@@ -181,8 +187,8 @@ static bool dab_pwm_hw_restart_synchronized(uint32_t phase_counts,
            (TIMER_STATE_COUNTING == sec_b.state);
 }
 
-static bool dab_pwm_hw_primary_gate_range_enable(uint32_t first_gate,
-                                                  uint32_t gate_count)
+static bool dab_pwm_hw_gate_range_enable(uint32_t first_gate,
+                                         uint32_t gate_count)
 {
     if ((!s_open) || (!s_clock_running))
     {
@@ -190,10 +196,10 @@ static bool dab_pwm_hw_primary_gate_range_enable(uint32_t first_gate,
     }
 
     /* Start from eight explicit LOW GPIOs, then expose only the requested
-     * primary gate pair/range to the zero-phase production edge schedule. */
+     * gate pair/range to the zero-phase production edge schedule. */
     dab_pwm_hw_outputs_disable();
     if (!dab_pwm_hw_restart_synchronized(0U, 0U, 0U) ||
-        !dab_pwm_hw_primary_pin_range_gpt(first_gate, gate_count))
+        !dab_pwm_hw_pin_range_gpt(first_gate, gate_count))
     {
         dab_pwm_hw_outputs_disable();
         return false;
@@ -289,7 +295,7 @@ bool dab_pwm_hw_outputs_enable(void)
 
 bool dab_pwm_hw_primary_outputs_enable(void)
 {
-    return dab_pwm_hw_primary_gate_range_enable(0U, DAB_PRIMARY_GATE_COUNT);
+    return dab_pwm_hw_gate_range_enable(0U, DAB_PRIMARY_GATE_COUNT);
 }
 
 bool dab_pwm_hw_primary_half_bridge_outputs_enable(uint32_t bridge_index)
@@ -299,9 +305,28 @@ bool dab_pwm_hw_primary_half_bridge_outputs_enable(uint32_t bridge_index)
         return false;
     }
 
-    return dab_pwm_hw_primary_gate_range_enable(
+    return dab_pwm_hw_gate_range_enable(
         bridge_index * DAB_PRIMARY_HALF_GATE_COUNT,
         DAB_PRIMARY_HALF_GATE_COUNT);
+}
+
+bool dab_pwm_hw_secondary_outputs_enable(void)
+{
+    return dab_pwm_hw_gate_range_enable(DAB_SECONDARY_FIRST_GATE,
+                                        DAB_SECONDARY_GATE_COUNT);
+}
+
+bool dab_pwm_hw_secondary_half_bridge_outputs_enable(uint32_t bridge_index)
+{
+    if (bridge_index >= DAB_SECONDARY_HALF_BRIDGE_COUNT)
+    {
+        return false;
+    }
+
+    return dab_pwm_hw_gate_range_enable(
+        DAB_SECONDARY_FIRST_GATE +
+            (bridge_index * DAB_SECONDARY_HALF_GATE_COUNT),
+        DAB_SECONDARY_HALF_GATE_COUNT);
 }
 
 DAB_ITCM_CODE void dab_pwm_hw_outputs_disable(void)
@@ -359,9 +384,17 @@ DAB_ITCM_CODE bool dab_pwm_hw_modulation_set(uint32_t phase_counts,
                                              uint32_t primary_inner_counts,
                                              uint32_t secondary_inner_counts)
 {
+    uint32_t const latest_offset_counts =
+        (primary_inner_counts > (phase_counts + secondary_inner_counts)) ?
+        primary_inner_counts : (phase_counts + secondary_inner_counts);
+    bool const edge_schedule_fits =
+        (DAB_PWM_EDGE_GUARD_COUNTS + latest_offset_counts +
+         DAB_PWM_HALF_COUNTS + DAB_DEADTIME_COUNTS) <
+        DAB_PWM_PERIOD_COUNTS;
     if ((!s_open) || (phase_counts > DAB_PHASE_ABSOLUTE_MAX_COUNTS) ||
-        (primary_inner_counts > DAB_INNER_SHIFT_MAX_COUNTS) ||
-        (secondary_inner_counts > DAB_INNER_SHIFT_MAX_COUNTS))
+        (primary_inner_counts > DAB_PRECHARGE_PRIMARY_INNER_MAX_COUNTS) ||
+        (secondary_inner_counts > DAB_INNER_SHIFT_MAX_COUNTS) ||
+        !edge_schedule_fits)
     {
         return false;
     }

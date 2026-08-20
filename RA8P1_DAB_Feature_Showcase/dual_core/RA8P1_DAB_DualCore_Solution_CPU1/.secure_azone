@@ -184,6 +184,7 @@
         <peripheral name="GPT8.CPU0" group="GPT" security="s"/>
         <peripheral name="GPT_POEG0.CPU0" group="GPT_POEG" security="s"/>
         <peripheral name="IIC2.CPU0" group="IIC" security="s"/>
+        <peripheral name="CANFD0.CPU0" group="CANFD" security="s"/>
         <peripheral name="ICU.CPU0">
             <slot name="IRQ0.CPU0" secure="true"/>
             <slot name="IRQ1.CPU0" secure="true"/>
@@ -198,6 +199,11 @@
             <slot name="IRQ10.CPU0" secure="true"/>
             <slot name="IRQ11.CPU0" secure="true"/>
             <slot name="IRQ12.CPU0" secure="true"/>
+            <slot name="IRQ13.CPU0" secure="true"/>
+            <slot name="IRQ14.CPU0" secure="true"/>
+            <slot name="IRQ15.CPU0" secure="true"/>
+            <slot name="IRQ16.CPU0" secure="true"/>
+            <slot name="IRQ17.CPU0" secure="true"/>
         </peripheral>
     </partition>
     <zones>
@@ -296,6 +302,7 @@
             <assign group="GPT" peripheral="GPT8"/>
             <assign group="GPT_POEG" peripheral="GPT_POEG0"/>
             <assign group="IIC" peripheral="IIC2"/>
+            <assign group="CANFD" peripheral="CANFD0"/>
             <assign peripheral="ICU.IRQ0"/>
             <assign peripheral="ICU.IRQ1"/>
             <assign peripheral="ICU.IRQ2"/>
@@ -309,6 +316,11 @@
             <assign peripheral="ICU.IRQ10"/>
             <assign peripheral="ICU.IRQ11"/>
             <assign peripheral="ICU.IRQ12"/>
+            <assign peripheral="ICU.IRQ13"/>
+            <assign peripheral="ICU.IRQ14"/>
+            <assign peripheral="ICU.IRQ15"/>
+            <assign peripheral="ICU.IRQ16"/>
+            <assign peripheral="ICU.IRQ17"/>
         </zone>
     </zones>
 </azone>

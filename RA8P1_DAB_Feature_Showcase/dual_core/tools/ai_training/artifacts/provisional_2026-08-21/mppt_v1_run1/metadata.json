@@ -1,0 +1,577 @@
+{
+  "dataset": {
+    "episodes": 10,
+    "files": [
+      "C:\\Users\\LENOVO\\Desktop\\Electric Simulation\\RA8P1_DAB_Feature_Showcase\\dual_core\\tools\\ai_training\\data\\provisional_2026-08-21\\mppt_episodes_provisional.csv"
+    ],
+    "ground_truth_sources": [
+      "PROVISIONAL_P_AND_O_TRAJECTORY_INTERPOLATION"
+    ],
+    "sha256": "ac03eef2dbef05b88d8df83baa35cbb6a55438972d17abd9d8cdc9a96d916d91",
+    "split_is_grouped_by": "curve_id",
+    "split_rows": {
+      "test": 2,
+      "train": 6,
+      "validation": 2
+    },
+    "unique_curves": 10
+  },
+  "deployment_ready": false,
+  "input": {
+    "column_order": [
+      "p0_w",
+      "p1_w",
+      "p2_w",
+      "p3_w",
+      "p4_w",
+      "p5_w",
+      "p6_w",
+      "p7_w",
+      "p8_w"
+    ],
+    "normalization": "clip(power_w / power_scale_w, 0, 1)",
+    "power_scale_w": 555.6,
+    "scan_voltages_v": [
+      18.0,
+      18.75,
+      19.5,
+      20.25,
+      21.0,
+      21.75,
+      22.5,
+      23.25,
+      24.0
+    ],
+    "tensor_elements": 9
+  },
+  "metric_issues": [
+    "INT8 Vmpp MAE exceeds 0.50 V",
+    "fewer than 90 percent of INT8 predictions are within one bin"
+  ],
+  "metrics": {
+    "float_classification": {
+      "accuracy": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "labels": [
+        "18.0V",
+        "18.5V",
+        "19.0V",
+        "19.5V",
+        "20.0V",
+        "20.5V",
+        "21.0V",
+        "21.5V",
+        "22.0V",
+        "22.5V",
+        "23.0V",
+        "23.5V",
+        "24.0V"
+      ],
+      "macro_f1": 0.0
+    },
+    "float_voltage": {
+      "mae_v": 2.5,
+      "maximum_error_v": 3.5,
+      "within_one_bin_fraction": 0.0
+    },
+    "int8_classification": {
+      "accuracy": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "labels": [
+        "18.0V",
+        "18.5V",
+        "19.0V",
+        "19.5V",
+        "20.0V",
+        "20.5V",
+        "21.0V",
+        "21.5V",
+        "22.0V",
+        "22.5V",
+        "23.0V",
+        "23.5V",
+        "24.0V"
+      ],
+      "macro_f1": 0.0
+    },
+    "int8_voltage": {
+      "mae_v": 2.5,
+      "maximum_error_v": 3.5,
+      "within_one_bin_fraction": 0.0
+    }
+  },
+  "model_role": "MPPT_VMPP_HINT",
+  "model_version": "mppt-vmpp-bin-v1",
+  "output": {
+    "class_labels": [
+      "18.0V",
+      "18.5V",
+      "19.0V",
+      "19.5V",
+      "20.0V",
+      "20.5V",
+      "21.0V",
+      "21.5V",
+      "22.0V",
+      "22.5V",
+      "23.0V",
+      "23.5V",
+      "24.0V"
+    ],
+    "class_voltages_v": [
+      18.0,
+      18.5,
+      19.0,
+      19.5,
+      20.0,
+      20.5,
+      21.0,
+      21.5,
+      22.0,
+      22.5,
+      23.0,
+      23.5,
+      24.0
+    ],
+    "confidence": "maximum_softmax_score",
+    "firmware_adapter_change_required": {
+      "output_classes": 13,
+      "vmpp_min_mv": 18000,
+      "vmpp_step_mv": 500
+    }
+  },
+  "readiness_issues": [
+    "episodes 10 < 50",
+    "heuristic/unvalidated Vmpp labels are present"
+  ],
+  "safety_contract": {
+    "fallback": [
+      "PERTURB_AND_OBSERVE",
+      "INCREMENTAL_CONDUCTANCE"
+    ],
+    "firmware_clamps_voltage_and_power": true,
+    "model_never_writes_pwm": true,
+    "output_is_advisory": true
+  },
+  "schema_version": "ra8p1-dab-ai-v1",
+  "tflite": {
+    "inputs": [
+      {
+        "dtype": "int8",
+        "name": "serving_default_normalized_power_scan:0",
+        "scale": 0.00254097324796021,
+        "shape": [
+          1,
+          9
+        ],
+        "zero_point": -128
+      }
+    ],
+    "outputs": [
+      {
+        "dtype": "int8",
+        "name": "StatefulPartitionedCall_1:0",
+        "scale": 0.00390625,
+        "shape": [
+          1,
+          13
+        ],
+        "zero_point": -128
+      }
+    ],
+    "sha256": "365852c98f39915e936c166721ce6b9f7356d100e990753be86ed77574e5f59d",
+    "size_bytes": 5912
+  }
+}

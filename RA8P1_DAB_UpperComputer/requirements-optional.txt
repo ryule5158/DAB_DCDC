@@ -1,0 +1,2 @@
+# The field interface exposes only the COM4 serial link.
+pyserial>=3.5

@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "bsp_api.h"
 #include "common_data.h"
+#include "r_canfd.h"
+#include "r_can_api.h"
 #include "r_iic_master.h"
 #include "r_i2c_master_api.h"
 #include "r_adc_b.h"
@@ -15,6 +17,19 @@
 #include "r_sci_b_uart.h"
 #include "r_uart_api.h"
 FSP_HEADER
+/** CANFD on CANFD Instance. */
+extern const can_instance_t g_canfd0;
+/** Access the CANFD instance using these structures when calling API functions directly (::p_api is not used). */
+extern canfd_instance_ctrl_t g_canfd0_ctrl;
+extern const can_cfg_t g_canfd0_cfg;
+extern const canfd_extended_cfg_t g_canfd0_cfg_extend;
+
+#ifndef dab_canfd_callback
+void dab_canfd_callback(can_callback_args_t *p_args);
+#endif
+
+/* Global configuration (referenced by all instances) */
+extern canfd_global_cfg_t g_canfd_global_cfg;
 /* I2C Master on IIC Instance. */
 extern const i2c_master_instance_t g_i2c2;
 

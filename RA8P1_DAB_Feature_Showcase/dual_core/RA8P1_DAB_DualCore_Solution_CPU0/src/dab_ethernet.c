@@ -23,6 +23,7 @@
 
 static TaskHandle_t       s_ethernet_task;
 static volatile BaseType_t s_network_up;
+static volatile dab_ethernet_diag_t s_diag;
 
 static uint8_t const s_ip_address[4]      = {192U, 168U, 10U, 100U};
 static uint8_t const s_netmask[4]         = {255U, 255U, 255U, 0U};
@@ -726,6 +727,8 @@ static void dab_ethernet_task(void * p_context)
 {
     FSP_PARAMETER_NOT_USED(p_context);
 
+    s_diag.task_started = true;
+
     /* The pin starts LOW in dab_board_initialize_safe().  Keep it asserted
      * beyond LAN8720A's 25 ms power-up requirement and pulse width, then let
      * r_rmac_phy perform the standard Clause-22 software reset/autonegotiation. */
@@ -733,13 +736,17 @@ static void dab_ethernet_task(void * p_context)
     dab_board_phy_reset_set(false);
     vTaskDelay(pdMS_TO_TICKS(1U));
     dab_board_phy_reset_set(true);
+    s_diag.reset_released = true;
     vTaskDelay(pdMS_TO_TICKS(2U));
 
+    s_diag.ip_init_called = true;
     BaseType_t const initialized = FreeRTOS_IPInit(s_ip_address,
                                                    s_netmask,
                                                    s_gateway_address,
                                                    s_dns_address,
                                                    s_mac_address);
+    s_diag.ip_init_returned = true;
+    s_diag.ip_init_ok       = (pdFALSE != initialized);
     if (pdFALSE == initialized)
     {
         dab_board_phy_reset_set(false);
@@ -777,9 +784,32 @@ bool dab_ethernet_start(void)
     return pdPASS == created;
 }
 
+void dab_ethernet_diag_get (dab_ethernet_diag_t * p_diag)
+{
+    if (NULL == p_diag)
+    {
+        return;
+    }
+
+    taskENTER_CRITICAL();
+    *p_diag = s_diag;
+    taskEXIT_CRITICAL();
+
+    /* These generated driver control fields are read-only diagnostics.  Word
+     * reads are atomic on Cortex-M85 and do not initiate any RMII/MDIO access,
+     * so they cannot contend with the FreeRTOS+TCP link-monitor task. */
+    p_diag->tcp_open              = g_freertos_plus_tcp0.p_ctrl->open;
+    p_diag->rmac_open             = g_ether0_ctrl.open;
+    p_diag->phy_open              = g_rmac_phy0_ctrl.open;
+    p_diag->phy_interface_status  = (uint32_t) g_rmac_phy0_ctrl.interface_status;
+    p_diag->link_establish_status = (uint32_t) g_ether0_ctrl.link_establish_status;
+}
+
 void vApplicationIPNetworkEventHook(eIPCallbackEvent_t event)
 {
     s_network_up = (eNetworkUp == event) ? pdTRUE : pdFALSE;
+    s_diag.network_up = (pdTRUE == s_network_up);
+    s_diag.network_event_count++;
 }
 
 uint32_t ulApplicationGetNextSequenceNumber(uint32_t source_address,

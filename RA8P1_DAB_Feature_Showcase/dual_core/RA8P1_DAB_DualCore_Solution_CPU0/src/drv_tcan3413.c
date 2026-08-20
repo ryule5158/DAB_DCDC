@@ -8,5 +8,5 @@ bool tcan3413_board_normal_mode(void)
 
 char const * tcan3413_board_note(void)
 {
-    return "TCAN3413 normal mode is hardware-strapped; CANFD0 transport pins are P704/P705";
+    return "TCAN3413 STB=10k pulldown normal mode; TXD/RXD=P704/P705 via 33R; split 2x60.4R termination";
 }

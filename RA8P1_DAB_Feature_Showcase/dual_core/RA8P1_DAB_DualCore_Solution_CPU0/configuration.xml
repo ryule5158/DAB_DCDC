@@ -364,6 +364,10 @@
       <description>I2C Master Interface</description>
       <originalPack>Renesas.RA.6.4.0.pack</originalPack>
     </component>
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_canfd" variant="" vendor="Renesas" version="6.4.0">
+      <description>CAN Flexible Data Rate</description>
+      <originalPack>Renesas.RA.6.4.0.pack</originalPack>
+    </component>
     <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_poeg" variant="" vendor="Renesas" version="6.4.0">
       <description>Port Output Enable for GPT</description>
       <originalPack>Renesas.RA.6.4.0.pack</originalPack>
@@ -1546,6 +1550,19 @@
       <property id="module.driver.i2c_master.p_callback" value="i2c_master_callback"/>
       <property id="module.driver.i2c_master.ipl" value="board.icu.common.irq.priority12"/>
     </module>
+    <module id="module.driver.canfd_on_canfd.208174704">
+      <property id="module.driver.canfd.name" value="g_canfd0"/>
+      <property id="module.driver.canfd.channel" value="0"/>
+      <property id="module.driver.canfd.bitrate.automatic.nominal_rate" value="500000"/>
+      <property id="module.driver.canfd.bitrate.automatic.data_rate" value="2000000"/>
+      <property id="module.driver.canfd.bitrate.automatic.sample_point" value="75"/>
+      <property id="module.driver.canfd.bitrate.automatic.delay_compensation" value="module.driver.canfd.bitrate.automatic.delay_compensation.disabled"/>
+      <property id="module.driver.canfd.bitrate.manual.use_manual" value="module.driver.canfd.bitrate.manual.use_manual.disabled"/>
+      <property id="module.driver.canfd.p_callback" value="dab_canfd_callback"/>
+      <property id="module.driver.canfd.txmb.int" value="module.driver.canfd.txmb.int.0"/>
+      <property id="module.driver.canfd.ipl" value="board.icu.common.irq.priority10"/>
+      <property id="module.driver.canfd.afl_array" value="p_canfd0_afl"/>
+    </module>
     <context id="_hal.0">
       <stack module="module.driver.ioport_on_ioport.0"/>
       <stack module="module.middleware.rm_freertos_port.0"/>
@@ -1557,6 +1574,7 @@
       <stack module="module.driver.poeg_on_poeg.26097610"/>
       <stack module="module.driver.adc_on_adc_b.1900612749"/>
       <stack module="module.driver.i2c_on_iic_master.405257482"/>
+      <stack module="module.driver.canfd_on_canfd.208174704"/>
     </context>
     <context id="rtos.awsfreertos.thread.0">
       <property id="_symbol" value="User_Init_Task"/>
@@ -1606,6 +1624,22 @@
       <property id="config.driver.rmac_phy.target_vsc8541" value="config.driver.rmac_phy.target_vsc8541.disabled"/>
       <property id="config.driver.rmac_phy.use_custom_phy_lsi" value="config.driver.rmac_phy.use_custom_phy_lsi.disabled"/>
       <property id="config.driver.rmac_phy.use_reference_clock" value="config.driver.rmac_phy.use_reference_clock.enabled"/>
+    </config>
+    <config id="config.driver.canfd">
+      <property id="config.driver.canfd.param_checking_enable" value="config.driver.canfd.param_checking_enable.bsp"/>
+      <property id="config.driver.canfd.global_err.cb_channel" value="config.driver.canfd.global_err.cb_channel.0"/>
+      <property id="config.driver.canfd.global_err.ipl" value="board.icu.common.irq.priority10"/>
+      <property id="config.driver.canfd.rxfifo.ipl" value="board.icu.common.irq.priority10"/>
+      <property id="config.driver.canfd.fd.protocol_exception" value="config.driver.canfd.fd.protocol_exception.iso"/>
+      <property id="config.driver.canfd.rxmb.number" value="0"/>
+      <property id="config.driver.canfd.rxmb.size" value="config.driver.canfd.rxmb.size.8"/>
+      <property id="config.driver.canfd.rxfifo.0.enable" value="config.driver.canfd.rxfifo.0.enable.enabled"/>
+      <property id="config.driver.canfd.rxfifo.0.int_mode" value="enum.driver.canfd.fifo.int_mode.every_frame"/>
+      <property id="config.driver.canfd.rxfifo.0.int_threshold" value="enum.driver.canfd.fifo.int_threshold.1_2"/>
+      <property id="config.driver.canfd.rxfifo.0.payload" value="enum.driver.canfd.fifo.payload.8"/>
+      <property id="config.driver.canfd.rxfifo.0.depth" value="enum.driver.canfd.fifo.depth.4"/>
+      <property id="config.driver.canfd.afl.ch0_num" value="1"/>
+      <property id="config.driver.canfd.afl.ch1_num" value="0"/>
     </config>
     <config id="config.driver.layer3_switch">
       <property id="config.driver.layer3_switch.param_checking_enable" value="config.driver.layer3_switch.param_checking_enable.bsp"/>

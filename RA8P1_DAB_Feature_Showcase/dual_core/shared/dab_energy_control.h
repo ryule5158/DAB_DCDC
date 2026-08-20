@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define DAB_ENERGY_ALGORITHM_VERSION "2026-08-16-v43"
+#define DAB_ENERGY_ALGORITHM_VERSION "2026-08-21-v49be-finalize-after-tps-floor"
 
 typedef enum e_dab_energy_mode
 {
@@ -158,7 +158,14 @@ typedef struct st_dab_energy_state
     float previous_pv_v;
     float previous_pv_i;
     float previous_pv_power_w;
-    float mppt_power_command_w;
+    float mppt_best_power_w;
+    float mppt_current_command_a;
+    float mppt_best_current_command_a;
+    float mppt_best_voltage_v;
+    float mppt_hold_anchor_vin_v;
+    uint32_t mppt_hold_started_ms;
+    uint32_t mppt_reacquire_since_ms;
+    uint8_t mppt_drop_confirm_count;
     int8_t po_direction;
     uint32_t last_mppt_ms;
     uint32_t ai_current_hint_received_ms;
@@ -168,12 +175,20 @@ typedef struct st_dab_energy_state
     uint32_t stage_started_ms;
     uint32_t below_terminate_since_ms;
     uint32_t above_precharge_since_ms;
+    uint32_t below_precharge_since_ms;
     uint32_t cv_entry_since_ms;
+    uint32_t below_cv_since_ms;
     float charge_integral_a;
+    bool cv_termination_hold_active;
     bool mppt_initialized;
+    bool mppt_peak_hold;
+    bool mppt_knee_recovered;
 } dab_energy_state_t;
 
 void dab_energy_initialize(dab_energy_state_t * p_state);
+dab_energy_mode_t dab_energy_charge_start_mode(
+    dab_battery_profile_t battery_profile,
+    dab_mppt_mode_t mppt_mode);
 bool dab_energy_apply_config(dab_energy_state_t * p_state,
                              dab_energy_config_key_t key,
                              float value,

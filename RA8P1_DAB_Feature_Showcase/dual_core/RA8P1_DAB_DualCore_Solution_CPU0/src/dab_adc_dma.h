@@ -53,6 +53,11 @@ void dab_adc_dma_service(void);
 /* Coherent copy of the newest complete frame in the DMA ring. */
 bool dab_adc_dma_latest(dab_adc_frame_t * p_frame);
 
+/* Direct result-register read for comparison with the latest DMA ring frame. */
+bool dab_adc_dma_direct_read(dab_adc_channel_t channel,
+                             uint16_t * p_raw,
+                             bool * p_invalid);
+
 void        dab_adc_dma_stats_get(dab_adc_dma_stats_t * p_stats);
 uint32_t    dab_adc_raw_to_mv(uint16_t raw);
 const char * dab_adc_channel_pin_name(dab_adc_channel_t channel);
