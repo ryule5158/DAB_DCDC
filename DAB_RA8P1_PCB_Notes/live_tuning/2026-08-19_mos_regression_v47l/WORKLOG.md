@@ -1639,3 +1639,5 @@ v49bh随后经J-Link/SWD连接`R7KA8P1KF_CPU1`完成双核刷写与校验：CPU0
 v49bi修复两层所有权。CPU1在任一模式中选后，只要Vin不低于本轮最佳电压0.20 V以上、实际Iout已经高于旧请求0.25 A且Pin不低于20 W，就把MPPT逻辑参考重基准到已经流过的电流；每次后续中选均可再次执行，真实Vin下探时禁止。CPU0只在CC/MPPT、phase HOLD且CPU1目标与ADC实际相差不超过0.25 A时，把active reference无扰重基准到该现有电流；物理电流不跳变，outer PI立即获得升降双向控制权。
 
 离线结果：energy与phase新增断言执行通过，promoted tables、advanced control和CAN host测试通过；上位机30/30；参数表charger/current/voltage=`29/13/2`。第一次RA构建因本文件不存在`dab_absf`按失败即停规则终止，改用既有`dab_measurements_abs`后CPU0/CPU1完整构建通过，大小`189522/560/172709`与`18834/132/9140`。产物和哈希在`artifacts/2026-08-21_v49bi_mppt_track_hold`，状态`OFFLINE_BUILT_NOT_FLASHED_AWAITING_R145_SAME_TRAJECTORY_RETEST`。
+
+刷写前只读上位机JSONL的最后有效帧为03:03:38：`READY / CTRL OFF / PWM OFF / stage OFF / fault0`，Vin21.413 V、Vout0.108 V、Pin0.28 W。随后J-Link/SWD刷写v49bi，CPU0 Bank0实际编程/校验190464 bytes，CPU1实际编程/校验20480 bytes，脚本完成并启动双核；日志为`DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bi_mppt_track_hold_dualcore_flash.log`。agent未打开COM4、未访问COM24。刷写后原上位机会话没有继续写入，因此新版本identity与READY仍待操作者在上位机重新连接后自动记录；当前`FLASHED_AWAITING_UPPER_RECONNECT_AND_R145_SAME_TRAJECTORY_RETEST`。

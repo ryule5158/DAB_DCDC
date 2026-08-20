@@ -11,4 +11,6 @@
 - Dual-core Renesas LLVM build passed. CPU0 text/data/bss: `189522/560/172709`; CPU1: `18834/132/9140`.
 - CPU0 ELF/SREC SHA256: `25B9B8D20D32A515FBC893CF562E87A3CF5640D105F9710BA36AF1BF789BBF3F` / `FA14BE2EE454C65B325786B1041BFEE34DC13C0E4295B08EE8A502D4D28B4FF6`.
 - CPU1 ELF/SREC SHA256: `5388F6DFE20379101694563318AA0C37062A3080441985E4B9C330B1DE54F237` / `D2D79EC6152842C1DAF3E564E0099D3EB80811DD4EF995BECC6AC194A020A177`.
-- State: `OFFLINE_BUILT_NOT_FLASHED_AWAITING_R145_SAME_TRAJECTORY_RETEST`. No physical PASS is claimed.
+- J-Link/SWD flash and verify passed after a log-confirmed `READY / CTRL OFF / PWM OFF / charge OFF / fault0` gate. CPU0 Bank0 programmed and verified 190464 bytes; CPU1 programmed and verified 20480 bytes. COM4 and the electronic load were not accessed by the agent.
+- Flash log: `DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bi_mppt_track_hold_dualcore_flash.log`.
+- State: `FLASHED_AWAITING_UPPER_RECONNECT_AND_R145_SAME_TRAJECTORY_RETEST`. The upper computer was not connected after reset, so the new identity/READY banner still needs to be captured before the powered retest. No physical PASS is claimed.
