@@ -11,7 +11,7 @@
  * here or through the bounded UART commands implemented by the application.
  */
 
-#define DAB_FW_VERSION                         "2026-08-21-dualcore-mppt-continuous-bumpless-v49bj"
+#define DAB_FW_VERSION                         "2026-08-21-dualcore-mppt-track-hold-v49bi"
 
 /* CP target/current startup is deliberately no faster than the already
  * hardware-qualified charge/MPPT transition rule. */

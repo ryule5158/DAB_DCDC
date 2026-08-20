@@ -14,4 +14,4 @@
 - Pre-flash gate from the final r145 JSONL frame: `READY / CTRL OFF / PWM OFF / charge OFF / fault0`, Vout `0.388 V`, Pin `-0.11 W`.
 - J-Link/SWD flash completed against device `R7KA8P1KF_CPU1` at 4 MHz. CPU0 Bank0 programmed and verified `190464 bytes`; CPU1 Bank0 programmed and verified `20480 bytes`; both `loadfile` operations returned `O.K.`, followed by reset and run. Raw log: `DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bj_mppt_continuous_bumpless_dualcore_flash.log`.
 - The flash operation did not open COM4 and did not access COM24/electronic load.
-- State: `FLASHED_AWAITING_UPPER_IDENTITY_AND_R146_RETEST`.
+- State: `FLASHED_THEN_ROLLED_BACK_TO_V49BI_BY_USER_REQUEST`; v49bj remains preserved as historical evidence but is no longer the firmware running on the board.

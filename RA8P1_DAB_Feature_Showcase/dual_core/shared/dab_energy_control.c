@@ -41,7 +41,6 @@
 #define ENERGY_MPPT_ACTUATOR_RELEASE_A             (0.05F)
 #define ENERGY_MPPT_WAVEFORM_REBASE_MARGIN_A       (0.25F)
 #define ENERGY_MPPT_WAVEFORM_REBASE_VIN_MARGIN_V     (0.20F)
-#define ENERGY_MPPT_HOLD_REBASE_VIN_MARGIN_V          (0.02F)
 #define ENERGY_MPPT_KNEE_BEND_V                    (0.12F)
 #define ENERGY_MPPT_HIGH_POWER_KNEE_BEND_V         (0.04F)
 #define ENERGY_MPPT_KNEE_MIN_POWER_W               (20.0F)
@@ -531,12 +530,10 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
      * a real source sag, and allow it again after every later modulation
      * search instead of treating the first waveform as permanent. */
     float const measured_output_current_a = energy_max(m->iout_a, 0.0F);
-    float const rebase_vin_margin_v = p_state->mppt_peak_hold ?
-        ENERGY_MPPT_HOLD_REBASE_VIN_MARGIN_V :
-        ENERGY_MPPT_WAVEFORM_REBASE_VIN_MARGIN_V;
     float const rebase_vin_floor_v = energy_max(
         c->mppt_min_v,
-        p_state->mppt_best_voltage_v - rebase_vin_margin_v);
+        p_state->mppt_best_voltage_v -
+            ENERGY_MPPT_WAVEFORM_REBASE_VIN_MARGIN_V);
     bool const waveform_floor_exceeds_request =
         (measured_output_current_a >
          (p_state->mppt_current_command_a +
@@ -679,7 +676,6 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
             bool const source_knee_bend =
                 (p_state->mppt_best_power_w >=
                  ENERGY_MPPT_KNEE_MIN_POWER_W) &&
-                !waveform_floor_exceeds_request &&
                 (energy_abs(p_state->mppt_current_command_a -
                             energy_max(m->iout_a, 0.0F)) <=
                  ENERGY_MPPT_ACTUATOR_SETTLE_A) &&

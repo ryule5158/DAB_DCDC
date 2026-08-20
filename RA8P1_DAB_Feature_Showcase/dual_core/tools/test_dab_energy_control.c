@@ -833,7 +833,6 @@ static void test_po_locks_crossed_peak_during_modulation_search(void)
     float const held_current_a = state.mppt_current_command_a;
     measurement.now_ms = 4000U;
     measurement.vin_v = best_voltage_v + 1.0F;
-    measurement.iout_a = held_current_a;
     dab_energy_update(&state, &measurement);
     CHECK(state.mppt_initialized);
     CHECK(state.mppt_peak_hold);

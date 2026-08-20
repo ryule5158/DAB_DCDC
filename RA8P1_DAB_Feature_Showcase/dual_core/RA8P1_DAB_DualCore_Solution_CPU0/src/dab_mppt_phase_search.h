@@ -28,7 +28,6 @@
 #define DAB_MPPT_PHASE_TRAJECTORY_STEP_V       (0.08F)
 #define DAB_MPPT_PHASE_TRAJECTORY_POWER_W      (2.0F)
 #define DAB_MPPT_PHASE_TRAJECTORY_POWER_RATIO  (0.01F)
-#define DAB_MPPT_PHASE_LOCAL_FLOOR_MARGIN_V     (2.0F)
 #define DAB_MPPT_PHASE_RECOVERY_HIGH_NS      (832.0F)
 #define DAB_MPPT_PHASE_RECOVERY_LOW_NS       (180.0F)
 #define DAB_MPPT_PHASE_RECOVERY_SETTLED_NS     (8.0F)
@@ -559,15 +558,12 @@ static inline void dab_mppt_phase_initialize(
      * that accepted point control margin; it is not another physical point. */
     p_state->config.vin_min_v = 17.5F;
     p_state->config.vin_recovery_margin_v = 0.50F;
-    /* Complete one SPS/EPS/TPS audit inside the operator's 10 s dwell.  The
-     * physical inner-phase slew remains 0.2 ns/ms, so this shortens only idle
-     * observation windows; it does not make a waveform edge jump. */
-    p_state->config.settle_ms = 1500U;
-    p_state->config.mode_observe_ms = 1500U;
-    p_state->config.perturb_ms = 500U;
+    p_state->config.settle_ms = 2000U;
+    p_state->config.mode_observe_ms = 6000U;
+    p_state->config.perturb_ms = 1000U;
     p_state->config.hold_grace_ms = 1500U;
-    p_state->config.condition_confirm_ms = 500U;
-    p_state->config.replay_confirm_ms = 500U;
+    p_state->config.condition_confirm_ms = 1000U;
+    p_state->config.replay_confirm_ms = 1000U;
     p_state->config.inner_step_ns = 16.0F;
     p_state->config.pin_equivalent_percent = 2.0F;
     p_state->config.efficiency_gain_percent = 0.30F;
@@ -695,7 +691,8 @@ static inline void dab_mppt_phase_begin_local_research(
     p_state->local_research = true;
     p_state->source_peak_seen = true;
     p_state->search_floor_vin_v = dab_mppt_phase_clamp(
-        p_input->vin_v - DAB_MPPT_PHASE_LOCAL_FLOOR_MARGIN_V,
+        p_input->vin_v -
+            (0.5F * p_state->config.vin_recovery_margin_v),
         p_state->config.vin_min_v,
         p_input->vin_v);
 }
@@ -948,7 +945,7 @@ static inline void dab_mppt_phase_update(
              * nominal-22 V trial could still reach 18.0 V before crossing it. */
             p_state->search_floor_vin_v = dab_mppt_phase_clamp(
                 p_state->source_best_vin_v -
-                    DAB_MPPT_PHASE_LOCAL_FLOOR_MARGIN_V,
+                    (0.5F * p_state->config.vin_recovery_margin_v),
                 p_state->config.vin_min_v,
                 p_state->source_best_vin_v);
             /* A genuine source collapse still uses the commissioned unload
@@ -1143,8 +1140,7 @@ static inline void dab_mppt_phase_update(
                              p_state->config.replay_confirm_ms)
                     {
                         /* Never lock the low-power replay of a transient
-                         * sample.  Repeat the live, current-regulated local
-                         * search from the waveform which is already applied. */
+                         * sample.  Repeat the smooth local search instead. */
                         dab_mppt_phase_begin_local_research(p_state, p_input);
                     }
                     return;
@@ -1163,7 +1159,7 @@ static inline void dab_mppt_phase_update(
         /* Continuous P&O handles ordinary movement. A materially new Vin,
          * Vout or available-power region still deserves a fresh efficiency
          * comparison, but only after it persists and current is tracking.
-         * The local restart inherits the live waveform/reference. */
+         * The local restart above inherits the live waveform/reference. */
         bool const source_voltage_changed =
             dab_mppt_phase_abs(p_input->vin_v -
                                p_state->hold_anchor_vin_v) >

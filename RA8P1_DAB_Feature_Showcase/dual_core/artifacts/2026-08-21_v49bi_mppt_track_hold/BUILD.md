@@ -13,4 +13,5 @@
 - CPU1 ELF/SREC SHA256: `5388F6DFE20379101694563318AA0C37062A3080441985E4B9C330B1DE54F237` / `D2D79EC6152842C1DAF3E564E0099D3EB80811DD4EF995BECC6AC194A020A177`.
 - J-Link/SWD flash and verify passed after a log-confirmed `READY / CTRL OFF / PWM OFF / charge OFF / fault0` gate. CPU0 Bank0 programmed and verified 190464 bytes; CPU1 programmed and verified 20480 bytes. COM4 and the electronic load were not accessed by the agent.
 - Flash log: `DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bi_mppt_track_hold_dualcore_flash.log`.
-- State: `FLASHED_AWAITING_UPPER_RECONNECT_AND_R145_SAME_TRAJECTORY_RETEST`. The upper computer was not connected after reset, so the new identity/READY banner still needs to be captured before the powered retest. No physical PASS is claimed.
+- User-requested rollback flash repeated after v49bj: J-Link programmed and verified CPU0 `190464 bytes` and CPU1 `20480 bytes`; both returned `O.K.` and the target was reset and run. Raw rollback log: `DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bi_requested_rollback_dualcore_flash.log`. COM4 and COM24/electronic load were not accessed.
+- State: `RESTORED_BY_USER_REQUEST_AWAITING_UPPER_RECONNECT_AND_RETEST`. No physical PASS is claimed.
