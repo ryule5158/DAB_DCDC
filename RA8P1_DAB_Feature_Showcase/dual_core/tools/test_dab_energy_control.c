@@ -1042,14 +1042,50 @@ static void test_peak_hold_rebases_selected_waveform_floor(void)
     CHECK(test_abs(state.mppt_current_command_a - 4.60F) < 0.001F);
     CHECK(test_abs(state.output.requested_current_a - 4.60F) < 0.001F);
 
-    /* The handoff occurs once. A later real Vin sag must use the ordinary
-     * gentle knee-hold backoff instead of snapping back to measured Iout. */
+    /* A later mode search is allowed to make the same bumpless logical
+     * handoff again while Vin remains healthy. */
     measurement.now_ms = 200U;
+    measurement.vin_v = 22.90F;
+    measurement.iin_a = 8.20F;
+    measurement.iout_a = 4.95F;
+    dab_energy_update(&state, &measurement);
+    CHECK(test_abs(state.mppt_current_command_a - 4.95F) < 0.001F);
+
+    /* A real Vin sag must use the ordinary gentle knee-hold backoff instead
+     * of snapping the target upward to measured Iout. */
+    measurement.now_ms = 300U;
     measurement.vin_v = 22.70F;
     measurement.iin_a = 7.60F;
-    measurement.iout_a = 4.60F;
+    measurement.iout_a = 4.95F;
     dab_energy_update(&state, &measurement);
-    CHECK(test_abs(state.mppt_current_command_a - 4.59F) < 0.001F);
+    CHECK(test_abs(state.mppt_current_command_a - 4.94F) < 0.001F);
+}
+
+static void test_search_rebases_waveform_before_peak_hold(void)
+{
+    dab_energy_state_t state;
+    dab_energy_initialize(&state);
+    CHECK(dab_energy_apply_config(&state, DAB_ENERGY_CONFIG_MODE,
+                                  (float) DAB_ENERGY_MODE_MPPT_ONLY, 0U));
+    state.mppt_initialized = true;
+    state.mppt_peak_hold = false;
+    state.mppt_current_command_a = 2.12F;
+    state.mppt_best_current_command_a = 2.12F;
+    state.mppt_best_power_w = 172.0F;
+    state.mppt_best_voltage_v = 23.0F;
+    state.previous_pv_v = 23.0F;
+    state.previous_pv_i = 7.45F;
+    state.previous_pv_power_w = 171.4F;
+    state.last_mppt_ms = 0U;
+
+    /* v49bh never entered peak hold, yet an EPS trial was already carrying
+     * 4.62 A at 171 W. The MPPT owner must still adopt that physical point. */
+    dab_energy_measurement_t measurement =
+        valid_measurement(100U, 22.90F, 7.49F, 32.8F, 4.62F);
+    dab_energy_update(&state, &measurement);
+    CHECK(state.mppt_actuator_rebased);
+    CHECK(test_abs(state.mppt_current_command_a - 4.62F) < 0.001F);
+    CHECK(test_abs(state.output.requested_current_a - 4.62F) < 0.001F);
 }
 
 static void test_high_power_positive_probe_is_gentle(void)
@@ -1101,6 +1137,7 @@ int main(void)
     test_peak_hold_restores_proven_power_inside_voltage_deadband();
     test_peak_hold_waits_for_actuator_before_next_backoff();
     test_peak_hold_rebases_selected_waveform_floor();
+    test_search_rebases_waveform_before_peak_hold();
     test_high_power_positive_probe_is_gentle();
     if (0U != s_failures)
     {

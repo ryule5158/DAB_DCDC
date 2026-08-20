@@ -40,7 +40,7 @@
 #define ENERGY_MPPT_ACTUATOR_SETTLE_A              (0.20F)
 #define ENERGY_MPPT_ACTUATOR_RELEASE_A             (0.05F)
 #define ENERGY_MPPT_WAVEFORM_REBASE_MARGIN_A       (0.25F)
-#define ENERGY_MPPT_WAVEFORM_REBASE_POWER_RATIO     (0.90F)
+#define ENERGY_MPPT_WAVEFORM_REBASE_VIN_MARGIN_V     (0.20F)
 #define ENERGY_MPPT_KNEE_BEND_V                    (0.12F)
 #define ENERGY_MPPT_HIGH_POWER_KNEE_BEND_V         (0.04F)
 #define ENERGY_MPPT_KNEE_MIN_POWER_W               (20.0F)
@@ -517,6 +517,44 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
         return p_state->mppt_current_command_a;
     }
 
+    /* A completed SPS/EPS/TPS trial can already be transferring much more
+     * current than the old MPPT request, especially when an inner shift has a
+     * non-zero natural-transfer floor.  v49bh repeatedly demonstrated this:
+     * the bridge physically delivered 4--5 A while CPU1 remained at
+     * 2.12--2.44 A.  The outer PI was therefore pinned at its lower stop and
+     * every 0.1 V battery-CV increase made input current fall.
+     *
+     * Adopt the current which is already flowing whenever the source voltage
+     * is still healthy.  This changes only the logical operating point; it
+     * cannot create a physical current step.  Do not make the handoff during
+     * a real source sag, and allow it again after every later modulation
+     * search instead of treating the first waveform as permanent. */
+    float const measured_output_current_a = energy_max(m->iout_a, 0.0F);
+    float const rebase_vin_floor_v = energy_max(
+        c->mppt_min_v,
+        p_state->mppt_best_voltage_v -
+            ENERGY_MPPT_WAVEFORM_REBASE_VIN_MARGIN_V);
+    bool const waveform_floor_exceeds_request =
+        (measured_output_current_a >
+         (p_state->mppt_current_command_a +
+          ENERGY_MPPT_WAVEFORM_REBASE_MARGIN_A)) &&
+        (m->vin_v >= rebase_vin_floor_v) &&
+        (pv_power >= ENERGY_MPPT_KNEE_MIN_POWER_W);
+    if (waveform_floor_exceeds_request)
+    {
+        p_state->mppt_current_command_a = energy_min(
+            measured_output_current_a, current_ceiling);
+        p_state->mppt_best_current_command_a =
+            p_state->mppt_current_command_a;
+        if (pv_power > p_state->mppt_best_power_w)
+        {
+            p_state->mppt_best_power_w = pv_power;
+            p_state->mppt_best_voltage_v = m->vin_v;
+            p_state->mppt_hold_anchor_vin_v = m->vin_v;
+        }
+        p_state->mppt_actuator_rebased = true;
+    }
+
     if (p_state->mppt_peak_hold)
     {
         /* Regulate the measured knee voltage after P&O finds it. The request
@@ -527,41 +565,6 @@ static float energy_mppt_update(dab_energy_state_t * p_state,
          * without a watt command or a restart cycle. */
         float const knee_error_v =
             m->vin_v - p_state->mppt_hold_anchor_vin_v;
-        float const measured_output_current_a = energy_max(m->iout_a, 0.0F);
-        /* SPS/EPS/TPS ranking can select a waveform whose inner shifts already
-         * transfer more current at zero outer phase than the old P&O request.
-         * v49bg then left CPU1 requesting 1.79 A while the selected EPS
-         * waveform physically delivered 4--5 A. The outer PI could only clamp
-         * at zero, so rising battery voltage made power fall and neither the
-         * current-deficit gate nor phase-cap release could ever engage.
-         *
-         * Rebase the target once to the current which is already flowing when
-         * the selected waveform reproduces at least 90 percent of the measured
-         * MPP. CPU0 still slews its active reference at <=0.5 A/s, so this does
-         * not create a physical current step; it is a bumpless ownership
-         * handoff that restores bidirectional current-loop authority. */
-        bool const waveform_floor_exceeds_request =
-            !p_state->mppt_actuator_rebased &&
-            (measured_output_current_a >
-             (p_state->mppt_current_command_a +
-              ENERGY_MPPT_WAVEFORM_REBASE_MARGIN_A)) &&
-            ((p_state->mppt_best_power_w < ENERGY_MPPT_KNEE_MIN_POWER_W) ||
-             (pv_power >= (ENERGY_MPPT_WAVEFORM_REBASE_POWER_RATIO *
-                           p_state->mppt_best_power_w)));
-        if (waveform_floor_exceeds_request)
-        {
-            p_state->mppt_current_command_a = energy_min(
-                measured_output_current_a, current_ceiling);
-            p_state->mppt_best_current_command_a =
-                p_state->mppt_current_command_a;
-            if (pv_power > p_state->mppt_best_power_w)
-            {
-                p_state->mppt_best_power_w = pv_power;
-                p_state->mppt_best_voltage_v = m->vin_v;
-                p_state->mppt_hold_anchor_vin_v = m->vin_v;
-            }
-            p_state->mppt_actuator_rebased = true;
-        }
         bool const actuator_can_increase =
             p_state->mppt_current_command_a <=
             (energy_max(m->iout_a, 0.0F) +

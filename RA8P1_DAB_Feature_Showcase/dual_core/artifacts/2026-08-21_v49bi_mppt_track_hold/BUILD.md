@@ -1,0 +1,14 @@
+# v49bi MPPT track-and-hold build
+
+- Firmware: `2026-08-21-dualcore-mppt-track-hold-v49bi`.
+- Failed live evidence: `RA8P1_DAB_UpperComputer/logs/session_20260821_025831.jsonl`, high-level upper-computer commands only. No fixed power, current, outer phase, inner phase, cap, or energy-mode command was sent.
+- The run was fault-free but failed MPPT hold. Representative CC points were: Vout 32.8 V / Iin 7.49 A / Pin 171.4 W; 35.6 V / 8.85 A / 203.0 W; 36.8 V / 6.24 A / 143.4 W; 37.1 V / 8.71 A / 199.8 W; 41.3 V / 5.41 A / 124.6 W; 42.4 V / 4.93 A / 113.5 W. Peak Pin/Iin/temperature were 208.1 W / 9.12 A / 64.0 C and fault remained zero.
+- Root cause: ranked EPS/TPS inner shifts physically delivered about 4--5 A while CPU1's MPPT reference remained only 2.12--2.44 A. The outer current PI stayed pinned at its lower stop. v49bh's 0.1 V retune released cap headroom, but the actual outer command did not touch that cap, so the release had no control effect.
+- Fix: whenever a ranked waveform is already carrying at least 0.25 A more than the stale MPPT request and Vin remains within 0.20 V of the healthy measured knee, CPU1 adopts the current already flowing. This is allowed before peak hold and after every later SPS/EPS/TPS selection; a true Vin sag blocks it.
+- Fix: after CPU1 and measured Iout agree, CPU0 rebases only its logical active reference to that same already-flowing current while the ranked waveform is in HOLD. Physical current does not step. This immediately restores bidirectional outer-PI authority instead of waiting several seconds for a stale 0.5 A/s logical ramp.
+- Acceptance for the present source setting: throughout the bulk CC/MPPT zone, Vin should stay around 22--23 V and Iin should remain at least 8.5 A (about 195 W or more). The firmware does not hard-code 8.5 A or a watt target; it must reach this live boundary from measured Vin*Iin and remain stable.
+- Native C11 execution passed for energy control, MPPT phase search, promoted tables, advanced control, and CAN protocol. Added tests cover rebase before peak hold, repeated rebase after a later mode selection, and no rebase during a real Vin sag. Upper-computer tests: 30/30. Parameter generator check: charger/current/voltage entries 29/13/2.
+- Dual-core Renesas LLVM build passed. CPU0 text/data/bss: `189522/560/172709`; CPU1: `18834/132/9140`.
+- CPU0 ELF/SREC SHA256: `25B9B8D20D32A515FBC893CF562E87A3CF5640D105F9710BA36AF1BF789BBF3F` / `FA14BE2EE454C65B325786B1041BFEE34DC13C0E4295B08EE8A502D4D28B4FF6`.
+- CPU1 ELF/SREC SHA256: `5388F6DFE20379101694563318AA0C37062A3080441985E4B9C330B1DE54F237` / `D2D79EC6152842C1DAF3E564E0099D3EB80811DD4EF995BECC6AC194A020A177`.
+- State: `OFFLINE_BUILT_NOT_FLASHED_AWAITING_R145_SAME_TRAJECTORY_RETEST`. No physical PASS is claimed.

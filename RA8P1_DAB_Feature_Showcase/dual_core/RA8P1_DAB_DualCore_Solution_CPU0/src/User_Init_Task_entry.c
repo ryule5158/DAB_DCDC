@@ -1324,9 +1324,49 @@ static DAB_ITCM_CODE void dab_control_update(void)
                                            DAB_CURRENT_REFERENCE_MAX_A);
             float const current_slew_step =
                 s_current_reference_slew_a_per_s * DAB_CONTROL_DT_S;
-            s_current_reference_active_a = dab_slew(
-                s_current_reference_active_a, requested_current,
-                current_slew_step);
+            /* A ranked EPS/TPS waveform can already be carrying the new
+             * CPU1 request through its inner-shift floor.  Slewing the logical
+             * active reference from the stale pre-search value then leaves the
+             * PI pinned at zero for several seconds, even though snapping the
+             * reference to the current already flowing cannot make a physical
+             * step.  Rebase only in bulk MPPT HOLD, only when CPU1 and the ADC
+             * agree, and only while Vin is still at the healthy knee. */
+            bool const mppt_bulk_current =
+                ((DAB_ENERGY_MODE_MPPT_ONLY ==
+                  g_dab_cpu0_dual_core_status.energy_mode) ||
+                 ((DAB_ENERGY_MODE_SOLAR_CHARGER ==
+                   g_dab_cpu0_dual_core_status.energy_mode) &&
+                  (DAB_CHARGE_STAGE_CONSTANT_CURRENT ==
+                   g_dab_cpu0_dual_core_status.charge_stage)));
+            bool const ranked_waveform_held =
+                s_mppt_phase_search.output.active &&
+                s_mppt_phase_search.output.selection_complete &&
+                (DAB_MPPT_PHASE_HOLD_BEST ==
+                 s_mppt_phase_search.output.stage);
+            bool const cpu1_matches_physical =
+                (dab_measurements_abs(requested_current -
+                                      s_measurements.iout_a) <= 0.25F);
+            bool const physical_above_active =
+                s_measurements.iout_a >
+                (s_current_reference_active_a + 0.25F);
+            bool const source_at_knee =
+                s_measurements.vin_v >=
+                (g_dab_cpu0_dual_core_status.mppt_voltage_target_v - 0.20F);
+            if (mppt_bulk_current && ranked_waveform_held &&
+                cpu1_matches_physical && physical_above_active &&
+                source_at_knee)
+            {
+                s_current_reference_active_a = dab_clampf(
+                    s_measurements.iout_a,
+                    s_current_reference_active_a,
+                    requested_current);
+            }
+            else
+            {
+                s_current_reference_active_a = dab_slew(
+                    s_current_reference_active_a, requested_current,
+                    current_slew_step);
+            }
 
             dab_autotune_update(&s_autotune,
                                 s_measurements.iout_a,

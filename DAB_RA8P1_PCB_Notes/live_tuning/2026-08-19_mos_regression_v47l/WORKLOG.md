@@ -1625,3 +1625,17 @@ v49bh加入一次性无扰执行器交接：峰值保持中的中选波形若已
 离线门禁全部通过：MinGW本机执行energy、phase、promoted tables、advanced control、CAN protocol五组严格C11测试；参数生成器`--check`仍为charger/current/voltage=`29/13/2`；上位机30/30。CPU0完整构建text/data/bss=`189162/560/172709`，CPU1=`18802/132/9140`。CPU0 ELF/SREC SHA256=`F45E69715938E943E01FB6225C705EFB2F03D157BBBD8B3055C491551FB04241`/`7A4B6F47A36EB5552D58ECD1884AD558B98679F9FA3AAC130136738999A05D44`；CPU1=`1E838F48936A41F24D42F90176F95DBBCCE0AA7B1BEC2A366B680F09491D2910`/`8764CF95D3F1DE59563E8A6D14B8E337B557703875C5FC4E54A4A9BC493BAB33`。产物固化于`RA8P1_DAB_Feature_Showcase/dual_core/artifacts/2026-08-21_v49bh_cv_step_continuous_mppt`；当前`OFFLINE_BUILT_NOT_FLASHED_AWAITING_R144_SAME_TRAJECTORY_RETEST`。
 
 v49bh随后经J-Link/SWD连接`R7KA8P1KF_CPU1`完成双核刷写与校验：CPU0 Bank0实际编程/校验190464 bytes，CPU1实际编程/校验20480 bytes，退出码0。刷写后短时打开COM4只发送`version/show/bat show/ai show`，确认版本`2026-08-21-dualcore-cv-step-mppt-v49bh`、READY、CTRL OFF、PWM0、PRE/MAIN/OUT/RESET_N/RUN_REQ全0、fault0、P&O默认step0.10 V/interval250 ms、LFP Vpre32.40 V/Vcv43.80 V、AI fallback LOCAL；随即释放COM4，COM24未访问。刷写日志`DAB_RA8P1_PCB_Notes/serial_logs/2026-08-21_v49bh_cv_step_continuous_mppt_dualcore_flash.log`，回读日志`2026-08-21_v49bh_postflash_queryonly.log`。当前`FLASHED_READY_AWAITING_R144_SAME_TRAJECTORY_RETEST`。
+
+### r145 v49bh 0.1 V轨迹仍退功率；v49bi恢复MPPT闭环所有权
+
+只读审阅`RA8P1_DAB_UpperComputer/logs/session_20260821_025831.jsonl`。有效RUN为02:58:39.526~03:02:42.898，4815个关联遥测点。上位机TX只有连接查询、`ai off`、`bat profile lfp12`、`mppt po`、`bat start`和`bat stop`，排除主机固定功率或底层相移干预。全过程fault0，峰值Pin208.1 W、Iin9.12 A、最高温度64.0 C。
+
+按0.1 V聚合后，Vout32.8 V时Iin7.49 A/Pin171.4 W；35.6 V时TPS达到Iin8.85 A/Pin203.0 W；继续升压到36.8 V却掉到6.24 A/143.4 W；第二轮搜索在37.1 V重新达到8.71 A/199.8 W，随后又降到41.3 V的5.41 A/124.6 W和42.4 V的4.93 A/113.5 W。Vout43.5 V附近进入CV后减流趋势另行有效，不属于本次MPPT失败。
+
+日志显示CPU1 energy Iref在前半段锁为2.12 A、后半段仅2.42~2.44 A，而实际EPS/TPS Iout多次为4~5 A；outer saturation长期为真。35.6 V中选TPS outer48 ns/cap64 ns/inner190/96 ns后，Vout逐步升高时程序只把cap放到104 ns，实际outer仍48 ns，故所谓轻量retune没有改变执行器。结论`FAIL_MPPT_FINDS_8P5A_BUT_LOSES_IT_V49BH_R145`。
+
+用户补充本次物理验收：CC/MPPT区Vin约22~23 V时Iin应持续不低于8.5 A；硬件已两次达到该点，后续掉点即失败。该数值不固化为控制指令，板端仍以实时`Vin*Iin`自主寻找源边界；进入LFP CV阶段后由充电状态机减流。
+
+v49bi修复两层所有权。CPU1在任一模式中选后，只要Vin不低于本轮最佳电压0.20 V以上、实际Iout已经高于旧请求0.25 A且Pin不低于20 W，就把MPPT逻辑参考重基准到已经流过的电流；每次后续中选均可再次执行，真实Vin下探时禁止。CPU0只在CC/MPPT、phase HOLD且CPU1目标与ADC实际相差不超过0.25 A时，把active reference无扰重基准到该现有电流；物理电流不跳变，outer PI立即获得升降双向控制权。
+
+离线结果：energy与phase新增断言执行通过，promoted tables、advanced control和CAN host测试通过；上位机30/30；参数表charger/current/voltage=`29/13/2`。第一次RA构建因本文件不存在`dab_absf`按失败即停规则终止，改用既有`dab_measurements_abs`后CPU0/CPU1完整构建通过，大小`189522/560/172709`与`18834/132/9140`。产物和哈希在`artifacts/2026-08-21_v49bi_mppt_track_hold`，状态`OFFLINE_BUILT_NOT_FLASHED_AWAITING_R145_SAME_TRAJECTORY_RETEST`。
