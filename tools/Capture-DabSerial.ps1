@@ -11,7 +11,7 @@ $ErrorActionPreference = 'Stop'
 
 if ([string]::IsNullOrWhiteSpace($LogPath)) {
     $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-    $logDirectory = Join-Path $PSScriptRoot '..\DAB_RA8P1_PCB_Notes\serial_logs'
+    $logDirectory = Join-Path $PSScriptRoot '..\docs\validation\serial_logs'
     $LogPath = Join-Path $logDirectory "dab_serial_${stamp}.log"
 }
 

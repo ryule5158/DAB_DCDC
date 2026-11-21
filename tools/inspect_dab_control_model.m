@@ -2,7 +2,7 @@ function inspect_dab_control_model()
 %INSPECT_DAB_CONTROL_MODEL Print controller and operating-point evidence.
 
 rootDir = fileparts(fileparts(mfilename('fullpath')));
-notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
+notesDir = fullfile(rootDir, 'docs', 'validation');
 modelName = "DAB_RA8P1_Final_Physical_MOSFET";
 modelFile = fullfile(notesDir, modelName + ".slx");
 

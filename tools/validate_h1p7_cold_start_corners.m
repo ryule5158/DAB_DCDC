@@ -1,7 +1,7 @@
 function results = validate_h1p7_cold_start_corners()
 %VALIDATE_H1P7_COLD_START_CORNERS Check limited startup over Vin and Llk.
 rootDir = fileparts(fileparts(mfilename('fullpath')));
-notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
+notesDir = fullfile(rootDir, 'docs', 'validation');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if ~bdIsLoaded(mdl)
     open_system(fullfile(notesDir, mdl + ".slx"));

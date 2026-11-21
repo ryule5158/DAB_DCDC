@@ -28,14 +28,14 @@ SCAN_VOLTAGES_V = np.asarray(
 )
 
 LEGACY_MODULATION_FILES = [
-    Path("DAB_RA8P1_PCB_Notes/live_tuning/2026-08-16_RK8510_v39/")
+    Path("docs/validation/live_tuning/2026-08-16_RK8510_v39/")
     / "modulation_training_24v_cv36_i6.csv",
-    Path("DAB_RA8P1_PCB_Notes/live_tuning/2026-08-16_RK8510_v39/")
+    Path("docs/validation/live_tuning/2026-08-16_RK8510_v39/")
     / "modulation_training_24v_cv36_i7_v42.csv",
 ]
 
 ADVANCED_MODULATION_FILE = Path(
-    "DAB_RA8P1_PCB_Notes/live_tuning/2026-08-17_v44_advanced_control/"
+    "docs/validation/live_tuning/2026-08-17_v44_advanced_control/"
     "advanced_control_trials.csv"
 )
 
@@ -58,7 +58,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--workspace-root",
         type=Path,
-        default=Path(__file__).resolve().parents[4],
+        default=Path(__file__).resolve().parents[5],
     )
     parser.add_argument(
         "--output-dir",
@@ -217,7 +217,7 @@ def aggregate_scan(voltages: np.ndarray, powers: np.ndarray) -> np.ndarray:
 
 
 def build_mppt_dataset(workspace_root: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
-    log_root = workspace_root / "DAB_RA8P1_PCB_Notes" / "serial_logs"
+    log_root = workspace_root / "docs" / "validation" / "serial_logs"
     rows: list[dict[str, Any]] = []
     diagnostics: list[dict[str, Any]] = []
     for file_name in MPPT_LOG_FILES:

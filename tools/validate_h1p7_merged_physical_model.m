@@ -4,7 +4,7 @@ function summary = validate_h1p7_merged_physical_model()
 %   5 ns gate/Vds case. Each case starts from a fresh simulation state.
 
 rootDir = fileparts(fileparts(mfilename('fullpath')));
-notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
+notesDir = fullfile(rootDir, 'docs', 'validation');
 outDir = fullfile(notesDir, 'validation_results');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if bdIsLoaded(mdl)

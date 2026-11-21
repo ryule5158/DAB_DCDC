@@ -293,11 +293,11 @@ def main():
                         help="fail if generated files differ; do not overwrite")
     args = parser.parse_args()
     dual_core = Path(__file__).resolve().parents[2]
-    workspace = Path(__file__).resolve().parents[4]
-    advanced = workspace / "DAB_RA8P1_PCB_Notes/live_tuning/2026-08-17_v44_advanced_control/advanced_control_trials.csv"
-    older = workspace / "DAB_RA8P1_PCB_Notes/live_tuning/2026-08-15_24V_resistive_multimode/best_parameters_by_condition.jsonl"
-    charger = workspace / "DAB_RA8P1_PCB_Notes/live_tuning/2026-08-16_RK8510_v39/smart_charge_trajectory_points_24v_cv.csv"
-    charger_regression = workspace / "DAB_RA8P1_PCB_Notes/live_tuning/2026-08-19_mos_regression_v47l/mos_regression_trials.csv"
+    workspace = Path(__file__).resolve().parents[5]
+    advanced = workspace / "docs/validation/live_tuning/2026-08-17_v44_advanced_control/advanced_control_trials.csv"
+    older = workspace / "docs/validation/live_tuning/2026-08-15_24V_resistive_multimode/best_parameters_by_condition.jsonl"
+    charger = workspace / "docs/validation/live_tuning/2026-08-16_RK8510_v39/smart_charge_trajectory_points_24v_cv.csv"
+    charger_regression = workspace / "docs/validation/live_tuning/2026-08-19_mos_regression_v47l/mos_regression_trials.csv"
     src = dual_core / "RA8P1_DAB_DualCore_Solution_CPU0/src"
     tuned_out = src / "dab_tuned_parameter_records.generated.h"
     charger_out = src / "dab_validated_charger_records.generated.h"

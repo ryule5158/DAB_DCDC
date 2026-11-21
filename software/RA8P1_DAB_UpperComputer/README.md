@@ -16,10 +16,9 @@ CP 能源路由因本轮时间不足且无法用少量点完成稳定性、输�
 python -m pip install -r .\requirements-optional.txt
 ```
 
-启动界面：
+在本目录启动界面：
 
 ```powershell
-cd "C:\Users\LENOVO\Desktop\Electric Simulation\RA8P1_DAB_UpperComputer"
 python .\app.py
 ```
 

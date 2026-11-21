@@ -2,7 +2,7 @@
 
 ## 证据源与范围
 
-本记录来自 EasyEDA Pro 原生工程 `C:\Users\LENOVO\Desktop\Electric Simulation\ProPrj_瑞萨杯_2026-08-09.epro2` 内的 `瑞萨杯.epru`，源文件 SHA-256 为 `3CCFE86BFF829EE4CE75A6BE83E0EE56066F4AC9F99CDBB7495A23E06B2CCB69`。连接关系由原生符号引脚、器件变换、WIRE/LINE 几何和网络标号解析得到，不以截图推断。
+本记录来自 EasyEDA Pro 原生工程 `..\..\..\hardware\eda\DAB.epro2` 内的 `瑞萨杯.epru`，源文件 SHA-256 为 `3CCFE86BFF829EE4CE75A6BE83E0EE56066F4AC9F99CDBB7495A23E06B2CCB69`。连接关系由原生符号引脚、器件变换、WIRE/LINE 几何和网络标号解析得到，不以截图推断。
 
 可复现产物：
 
@@ -36,10 +36,10 @@ CPU0 应使用 RA8P1 `CANFD0`：`CTX0=P704`、`CRX0=P705`。当前 FSP 配置将
 
 以上只证明 EDA 设计连接、FSP 静态配置和软件构建关系，不证明损坏板卡上的器件已正确贴装、焊接、电源正常，也不证明 CAN 波形、终端阻值、收发器方向或总线通信已在实物上通过。板卡修复后仍需单独验证静态电阻、供电、示波器波形、ACK、错误计数和双向报文。
 
-复现命令：
+在双核工程目录运行：
 
 ```powershell
 python .\tools\easyeda_can_netlist_extract.py `
-  "C:\Users\LENOVO\Desktop\Electric Simulation\ProPrj_瑞萨杯_2026-08-09.epro2" `
+  "..\..\..\hardware\eda\DAB.epro2" `
   --output .\tools\easyeda_can_netlist_evidence.json
 ```

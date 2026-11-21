@@ -1,54 +1,33 @@
-# DAB_DCDC
+# 双向隔离 DAB DC-DC 电源
 
-基于瑞萨 RA8P1 的双有源桥 DCDC 功率变换器统一工程。仓库保存硬件交付、仿真、双核固件、串口实测数据和训练数据；实物结论以原生 EDA 网表与仪器记录为准。
+这是我们为光伏与储能直流母线做的双有源桥（DAB）变换器。主功率板和栅极驱动板分开设计，两侧全桥通过 1:2 高频变压器隔离，由瑞萨 RA8P1 控制。我负责这两块板的器件选型、原理图和四层 PCB 布局布线。
 
-## 当前入口
+[![DAB 主功率板正面实拍](docs/images/main-board-front.webp)](docs/images/main-board-front.webp)
 
-| 内容 | 路径 | 说明 |
-|---|---|---|
-| 双核固件 | [`RA8P1_DAB_Feature_Showcase/dual_core/`](RA8P1_DAB_Feature_Showcase/dual_core/) | CPU0 实时控制，CPU1 FreeRTOS 能量管理 |
-| v39 烧录文件 | [`firmware_v39/`](DAB_RA8P1_PCB_Notes/live_tuning/2026-08-15_24V_resistive_multimode/firmware_v39/) | CPU0、CPU1 S-record 与 manifest |
-| 电子负载清单 | [`V39_ELECTRONIC_LOAD_CHECKLIST.md`](DAB_RA8P1_PCB_Notes/live_tuning/2026-08-15_24V_resistive_multimode/V39_ELECTRONIC_LOAD_CHECKLIST.md) | 新功能串口调用与分级测试顺序 |
-| 工作记录 | [`WORKLOG.md`](DAB_RA8P1_PCB_Notes/live_tuning/2026-08-15_24V_resistive_multimode/WORKLOG.md) | 固件、数据、参数和验证边界 |
-| 训练字段 | [`TRAINING_DATA_SCHEMA.md`](DAB_RA8P1_PCB_Notes/live_tuning/2026-08-15_24V_resistive_multimode/TRAINING_DATA_SCHEMA.md) | SPS/EPS/TPS 同工况训练格式 |
-| 最新硬件工程 | `ProPrj_瑞萨杯_2026-08-09.epro2` | 原理图、PCB和真实网表的最高优先级事实来源 |
-| H1.7 冻结交付 | [`release/`](release/) | 合并保留的远端硬件冻结历史 |
+**[下载嘉立创 EDA 专业版工程](hardware/eda/DAB.epro2?raw=true)** · [浏览硬件文件](hardware/) · [查看固件与上位机](software/) · [下载完整仓库](https://github.com/ryule5158/DAB_DCDC/archive/refs/heads/main.zip)
 
-## v39 兼容边界
+## 硬件设计
 
-- 上电仍为昨天验证过的单电压环，能量管理、MPPT、充电控制与 AI 提示均默认关闭。
-- 原有 `DAB:` 串口字段顺序不变；扩展 `ALG:` 日志默认关闭。
-- 新功能只在串口显式执行 `arch current`、`arch energy` 或相关能量配置命令后参与控制。
-- `ai mod sps|eps|tps` 只记录候选调制方式，不会自动切换功率调制。
-- `save` 在未启用新功能时继续生成旧格式记录；`alglog off` 可恢复为仅输出旧记录。
+- **双有源桥。** 原、副边各用一组 MOSFET 全桥，共 8 颗 MOSFET。竞赛样机的典型升压场景为 18–24 V 输入、36–48 V 母线。输入端有共模滤波、TVS 和预充电路。
+- **隔离栅极驱动。** 驱动子板采用 UCC21520，配有隔离偏置、自举供电、独立的开通与关断电阻，以及栅源钳位。功率板上的故障信号可直接禁用驱动。
+- **采样与保护。** TMCS1133 采集两侧高频电流，ACS725 采集输入和输出直流电流，AMC3330 用于母线电压隔离采样。TPS48111/TPS48110 驱动背靠背 MOSFET，配合预充和故障锁存电路。CAN 接口使用 TCAN3413。
+- **四层 PCB。** 主板按功率、驱动、采样和控制分区。我把高频母线去耦靠近桥臂，缩短换流与栅极回路，并在原副边的隔离边界留出禁铜区。
 
-## H1.7 冻结交付物
+## 样机与测试
 
-### 最终交付物
+<a href="docs/images/main-board-angle.webp"><img src="docs/images/main-board-angle.webp" alt="主功率板斜视实拍，可见磁件、电容和插接驱动板" height="240"></a>
+<a href="docs/images/gate-driver-test.webp"><img src="docs/images/gate-driver-test.webp" alt="栅极驱动子板和示波器测试台" height="240"></a>
 
-| 文件 | 用途 |
-|---|---|
-| [`DAB_RA8P1_Final_Physical_MOSFET.slx`](release/DAB_RA8P1_Final_Physical_MOSFET.slx) | MATLAB/Simulink R2024b 最终物理 MOSFET 模型 |
-| [`DAB_RA8P1_首板硬件定版BOM.csv`](release/DAB_RA8P1_首板硬件定版BOM.csv) | 179 行机器可读 BOM |
-| [`DAB_RA8P1_首板硬件定版BOM_H1.7.xlsx`](release/DAB_RA8P1_首板硬件定版BOM_H1.7.xlsx) | 适合查看与采购核对的 Excel BOM |
-| [`DAB_RA8P1_完整原理图逐引脚接线表.md`](release/DAB_RA8P1_完整原理图逐引脚接线表.md) | 画原理图时使用的逐器件、逐引脚连接依据 |
-| [`DAB_RA8P1_四层PCB布局布线规范.md`](release/DAB_RA8P1_四层PCB布局布线规范.md) | 四层 PCB、功率回路、驱动与隔离布局要求 |
-| [`DAB_RA8P1_H1.7_硬件冻结报告.md`](release/DAB_RA8P1_H1.7_硬件冻结报告.md) | 首板硬件边界、保护与下单前检查结论 |
-| [`DAB_RA8P1_H1.7_双版本对比与验证报告.md`](release/DAB_RA8P1_H1.7_双版本对比与验证报告.md) | 两套模型对比、合并过程和扩展工况验证结果 |
+样机装配后做了限流上电、栅极驱动输出和电阻负载测试。报告记录的栅极驱动波形为 **299.42 kHz、11.60 Vpp**。五个带载工况记录的最高**电源侧输入功率**为 **237.8 W**。波形、测试条件和各工况读数见[竞赛报告第 3.5 节](docs/competition/project-report.pdf)。
 
-### 冻结状态
+[![DAB 主功率板 PCB 布局](docs/images/main-board-layout.webp)](docs/images/main-board-layout.webp)
 
-- MATLAB 版本：R2024b。
-- 模型 SHA-256：`580E5A5A10FD5BF3788AD1598480B99ABF9739F4D72B83A485ABA804762194DF`。
-- H1.7 硬件冻结审计：`86/86 PASS`。
-- BOM：179 行，无空引用位号、无重复引用位号。
-- 最终变压器：固定 `1:2`，副边实测漏感 `0.50uH +/-20%`，板上不增加外接传输电感。
+## 工程文件
 
-### 使用顺序
-
-1. 先读硬件冻结报告，确认不能改动的参数和首板边界。
-2. 按逐引脚接线表绘制原理图，并以 CSV/Excel BOM 放置元件。
-3. 按四层 PCB 规范完成布局布线，重点复核换流环路、Kelvin 回路、隔离禁铜和保护链。
-4. 用最终模型复核控制策略；实板仍需按报告要求完成 ERC、封装、热设计和分级上电验证。
-
-远端原有 `release/` 历史与当前研发工程合并保留，禁止用强制推送覆盖任一侧历史。仿真和静态检查不等同于实物功率、温升或效率验证。
+| 内容 | 从这里打开 |
+| --- | --- |
+| 原理图与 PCB | [DAB.epro2](hardware/eda/DAB.epro2)，下载后导入嘉立创 EDA 专业版 |
+| BOM 和设计记录 | [H1.7 设计归档](hardware/H1.7/)，含 BOM、逐引脚连接表、四层板布局说明和 Simulink 模型 |
+| RA8P1 双核固件 | [双核工程说明](software/RA8P1_DAB_Feature_Showcase/dual_core/) |
+| 串口上位机 | [Python 项目及运行说明](software/RA8P1_DAB_UpperComputer/) |
+| 仿真、实测与调试记录 | [验证资料](docs/validation/)和[台架工具](tools/) |

@@ -1,7 +1,7 @@
 function results = validate_h1p7_startup_voltage_stages()
 %VALIDATE_H1P7_STARTUP_VOLTAGE_STAGES Check startup progress toward NORMAL_SPS.
 rootDir = fileparts(fileparts(mfilename('fullpath')));
-notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
+notesDir = fullfile(rootDir, 'docs', 'validation');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if ~bdIsLoaded(mdl)
     open_system(fullfile(notesDir, mdl + ".slx"));

@@ -10,7 +10,7 @@ $ErrorActionPreference = 'Stop'
 $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
 $rawDirectory = Join-Path $PSScriptRoot 'raw_serial'
 $captureTool = [System.IO.Path]::GetFullPath(
-    (Join-Path $PSScriptRoot '..\..\..\tools\Capture-DabSerial.ps1')
+    (Join-Path $PSScriptRoot '..\..\..\..\tools\Capture-DabSerial.ps1')
 )
 $logPath = Join-Path $rawDirectory "dab_serial_${stamp}.log"
 

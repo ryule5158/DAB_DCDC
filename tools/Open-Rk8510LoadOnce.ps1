@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 
 if ([string]::IsNullOrWhiteSpace($LogPath)) {
     $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-    $LogPath = Join-Path $PSScriptRoot "..\DAB_RA8P1_PCB_Notes\serial_logs\rk8510_load_on_${stamp}.log"
+    $LogPath = Join-Path $PSScriptRoot "..\docs\validation\serial_logs\rk8510_load_on_${stamp}.log"
 }
 
 $resolvedLogPath = [System.IO.Path]::GetFullPath($LogPath)

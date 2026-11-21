@@ -25,7 +25,7 @@ if ($DwellSeconds | Where-Object { $_ -lt 1 }) {
 
 if ([string]::IsNullOrWhiteSpace($LogPath)) {
     $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-    $logDirectory = Join-Path $PSScriptRoot '..\DAB_RA8P1_PCB_Notes\serial_logs'
+    $logDirectory = Join-Path $PSScriptRoot '..\docs\validation\serial_logs'
     $LogPath = Join-Path $logDirectory "rk8510_cv_battery_ramp_${stamp}.csv"
 }
 

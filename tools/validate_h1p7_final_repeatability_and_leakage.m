@@ -4,7 +4,7 @@ function results = validate_h1p7_final_repeatability_and_leakage()
 %   precharge, minimum-tolerance OC thresholds, and a 28-30 ms tail window.
 
 rootDir = fileparts(fileparts(mfilename('fullpath')));
-notesDir = fullfile(rootDir, 'DAB_RA8P1_PCB_Notes');
+notesDir = fullfile(rootDir, 'docs', 'validation');
 mdl = "DAB_RA8P1_Final_Physical_MOSFET";
 if bdIsLoaded(mdl)
     close_system(mdl, 0);
